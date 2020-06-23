@@ -16,10 +16,11 @@ Install Haxe and HashLink for compiling and running the demos.
 
 # P.1 Color
 
-[P.1.0 Hello Color](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_0_hello_color/)
-
-[P.1.1 Grid Spectrum](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_1_grid_spectrum/)
+* [P.1.0 Hello Color](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_0_hello_color/)
+* [P.1.1 Grid Spectrum](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_1_grid_spectrum/)
 
 # P.2 Shape
 
-[P.2.0 Hello Shape](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_2_0_hello_shape/)
+* [P.2.0 Hello Shape](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_2_0_hello_shape/)
+  * [P.2.0.1 Persist](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_2_0_1_persist/)
+  
