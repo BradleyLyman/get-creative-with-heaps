@@ -22,6 +22,7 @@ class Main extends hxd.App {
     }
 
     override function update(dt: Float) {
+        graphics.clear();
         updateSteps();
         drawSpectrumGrid();
     }

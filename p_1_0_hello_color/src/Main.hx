@@ -35,6 +35,7 @@ class Main extends hxd.App {
         final normalized_y = window.mouseY / s2d.height;
         foregroundHue = normalized_y * (Math.PI * 2);
 
+        graphics.clear();
         drawBackground();
         drawForeground();
     }
