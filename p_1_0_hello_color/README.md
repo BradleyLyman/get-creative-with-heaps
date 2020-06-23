@@ -12,6 +12,8 @@ The program automatically starts when built.
 > haxe ./build.hxml
 ```
 
+![Demo Screenshot](./screenshot.png)
+
 ## What Is Happening?
 
 Hello Color is an application which draws a foreground rectangle over a colored
