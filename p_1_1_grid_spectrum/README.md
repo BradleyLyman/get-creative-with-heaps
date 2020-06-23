@@ -14,6 +14,8 @@ The program automatically starts when built.
 
 ![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_1_grid_spectrum/Screenshot.png)
 
+![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_1_grid_spectrum/Screenshot2.png)
+
 ## What Is Happening?
 
 The screen is divided into a grid of rectangles. The x coordinate of the left
