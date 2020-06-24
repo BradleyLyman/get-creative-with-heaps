@@ -18,6 +18,7 @@ Install Haxe and HashLink for compiling and running the demos.
 
 * [P.1.0 Hello Color](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_0_hello_color/)
 * [P.1.1 Grid Spectrum](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_1_grid_spectrum/)
+* [P.1.2 Color Palette](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_2_color_palette/)
 
 # P.2 Shape
 
