@@ -1,8 +1,7 @@
-# Hello Color
+# Palette From Image
 
-The classic introduction to a new programming language is the 'hello world'
-program. Instead, for this project `Hello Color` is the introduction to visual
-design with Heaps.io.
+This demo shows how every image has a hidden color palette. By reorganizing the pixels in a image
+that palette can be teased out. 
 
 ## How To Run
 
@@ -12,12 +11,24 @@ The program automatically starts when built.
 > haxe ./build.hxml
 ```
 
-![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_0_hello_color/Screenshot.png)
+**Raw Image**
+![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_2_2_from_image/NoFilter.png)
 
-## What Is Happening?
+**Pixels Ordered By Hue**
+![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_2_2_from_image/OrderByHue.png)
 
-Hello Color is an application which draws a foreground rectangle over a colored
-background. The foreground rectangle's size is controlled by the mouse's X
-coordinate. The HUE of the foreground and background is controlled by the
-mouse's Y coordinate, set such that they're always on the opposite sides of the
-color wheel.
+**Pixels Ordered By Saturation**
+![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_2_2_from_image/OrderBySaturation.png)
+
+**Pixels Ordered By Value**
+![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_2_2_from_image/OrderByValue.png)
+
+## Controls
+
+Click the mouse anywhere on the screen to cycle to the next image.
+
+Press a number key to select the pixel order:
+  * `1` orders pixels by hue
+  * `2` orders pixels by saturation
+  * `3` orders pixels by value (lightness)
+  * any other key resets the pixels to their original order
