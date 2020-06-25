@@ -1,36 +1,32 @@
 class Main extends hxd.App {
 
-    /**
-     * Graphics is used for immediate-mode 2d rendering.
-     */
+    /* Used for drawing 2d shapes on screen. */
     var graphics : h2d.Graphics;
 
-    /**
-     * A reference to the main window. Useful for quickly checking the mouse
-     * position.
-     */
+    /* A reference to the main window, used to get the mouse position. */
     var window : hxd.Window;
 
+    /* How many rows and columns to divide the screen into. */
     var columnCount : Int = 3;
     var rowCount : Int = 3;
 
-    final TWO_PI = Math.PI * 2;
-
+    /* Initialize the demo. Called automatically by Heaps. */
     override function init() {
         graphics = new h2d.Graphics(s2d);
         window = hxd.Window.getInstance();
     }
 
+    /* Update the screen. Called before each frame. */
     override function update(dt: Float) {
-        graphics.clear();
+        graphics.clear(); // clear the grid from the previous frame
         updateSteps();
         drawSpectrumGrid();
     }
 
     /**
-     * Use the mouse coordinates to calculate new horizontal and vertical
-     * step values. These are used to divide the screen into rows and columns.
-     */
+        Use the mouse coordinates to calculate new horizontal and vertical
+        step values. These are used to divide the screen into rows and columns.
+    **/
     private function updateSteps() {
         final normalized = {
             x: window.mouseX / s2d.width,
@@ -45,10 +41,10 @@ class Main extends hxd.App {
     }
 
     /**
-     * Draw the spectrum grid by dividing the screen into rows and colums.
-     * Each column is a different hue. Each row is a different value, aka
-     * lightness.
-     */
+        Draw the spectrum grid by dividing the screen into rows and colums.
+        Each column is a different hue. Each row is a different value, aka
+        brightness.
+    **/
     private function drawSpectrumGrid() {
         // compute the position and color for each rectangle in the grid
         final grid = [
@@ -64,7 +60,7 @@ class Main extends hxd.App {
                     final top_position = normalized_y * s2d.height;
 
                     // map the normalized coord from [0, 1] to [0, TWO_PI]
-                    final hue =  normalized_x * TWO_PI;
+                    final hue =  normalized_x * (Math.PI*2);
 
                     // map the normalized coord from [0, 1] to [0, 1]
                     // But, select the value from the midpoint of the rectangle,
@@ -97,10 +93,10 @@ class Main extends hxd.App {
     private function colorFor(
         hue: Float,
         saturation: Float = 0.8,
-        lightness: Float = 0.5
+        brightness: Float = 0.5
     ) : Int {
         final vec = new h3d.Vector();
-        vec.makeColor(hue, saturation, lightness);
+        vec.makeColor(hue, saturation, brightness);
         return vec.toColor();
     }
 
