@@ -1,21 +1,20 @@
 # Hello Shape
 
-This demo introduces the concept of *shape* to our design toolbox. Exciting
-designs use more than just rectangles, and this is our first venture into
-arbitrary shape in design.
+![Demo Screenshot](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P2-Shape/1-1-hello-shape/Screenshot.png)
 
-## How To Run
-
-The program automatically starts when built.
+# Run The Demo
 
 ```
 > haxe ./build.hxml
 ```
 
-![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_2_0_hello_shape/Screenshot.png)
+**Usage**
 
-## What Is Happening?
+* The mouse's Y coordinate controls the radius of the circle 
+* The mouse's X coordinate controls the number of line segments used to approximate the circle
 
-The demo draws a circle in the center of the screen. The radius of the circle
-is controlled by the X coordinate of the mouse. The resolution of the circle
-is controlled by the Y coordinate of the mouse.
+# Overview
+
+Shape is fundamental to any design. This demo is a deconstruction of a circle,
+showing an approximation who's resolution varies as the mouse moves. Future demos
+will build on this idea with persistence for varying effects.
