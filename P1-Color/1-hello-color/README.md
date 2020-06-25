@@ -12,7 +12,7 @@ The program automatically starts when built.
 > haxe ./build.hxml
 ```
 
-![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_0_hello_color/Screenshot.png)
+![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/P1-Color/1-hello-color/Screenshot.png)
 
 ## What Is Happening?
 
