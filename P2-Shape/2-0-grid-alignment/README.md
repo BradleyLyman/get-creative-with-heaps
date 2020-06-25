@@ -1,5 +1,9 @@
 # Grid Alignment
 
+![Demo](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P2-Shape/2-0-grid-alignment/Screenshot1.png)
+![Demo](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P2-Shape/2-0-grid-alignment/Screenshot2.png)
+![Demo](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P2-Shape/2-0-grid-alignment/Screenshot3.png)
+
 # Run The Demo
 
 ```
