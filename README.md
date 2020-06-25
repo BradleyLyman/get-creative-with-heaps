@@ -1,8 +1,8 @@
 # Get Creative With Heaps
 
-This project is my exploration of the Heaps game engine through the lense
+This project is my exploration of the Heaps game engine through the perspective
 of creative coding and generative design. I love generative art and the
-persuit has long lead me towards interesting concepts in computer science,
+persuit has long led me towards interesting concepts in computer science,
 mathematics, and (of course) art!
 
 ## Getting Started
