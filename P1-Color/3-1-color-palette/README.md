@@ -1,21 +1,26 @@
 # Color Palette
 
-A color palette is a collection of colors used to build an image. One way to
-generate color palettes is via a gradient - interpolate between two colors.
+![Demo Screenshot](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P1-Color/3-1-color-palette/Screenshot1.png)
 
-## How To Run
+![Demo Screenshot](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P1-Color/3-1-color-palette/Screenshot2.png)
 
-The program automatically starts when built.
+## Run The Demo
 
 ```
 > haxe ./build.hxml
 ```
 
-![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_2_color_palette/Screenshot1.png)
+**Usage**
 
-![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_1_2_color_palette/Screenshot2.png)
+* Click the mouse anywhere on screen to change the colors used for interpolation
+* The mouse's X coordinate controls the number of divisions left to right
 
-## What Is Happening?
+# Overview
 
-Each time the mouse is clicked new colors are chosen for the left and right sides of the screen.
-The number of divisions between the left and right sides is controlled by the X coordinate of the mouse.
+One of the main strengths of the HSB color model is that colors look good when interpolated!
+This demo picks 10 random colors on the HSB color wheel and interpolates between them to 
+create palettes of colors.
+
+## Implementation Notes
+
+This demo uses window events to trigger rebuilding geometry, rather than rebuilding on every frame.
