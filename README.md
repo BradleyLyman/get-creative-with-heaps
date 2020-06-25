@@ -19,6 +19,8 @@ Each demo depends only on the Heaps game engine and it's own source. Demos are
 not organized by complexity *specifically* but as the concepts build from basic
 to complex, the Demos correspondingly become more complicated.
 
+## Demo Groups
+
 * [P1 Color: All Things Color!](https://github.com/BradLyman/learn_you_a_heaps/tree/master/P1-Color)
 * [P2 Shape: Basics of Shape in Design](https://github.com/BradLyman/learn_you_a_heaps/tree/master/P2-Shape)
 
