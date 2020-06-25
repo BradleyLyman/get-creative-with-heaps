@@ -1,16 +1,20 @@
 # Hello Shape - Persist
 
-Just like hello shape this is an exploration of creating polygons using lines.
-But this time with a twist. The graphics are not reset every frame! Instead,
-the graphics object is reset only when the mouse is clicked.
+![Demo Screenshot](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P2-Shape/1-2-persist-shape/Screenshot.png)
 
-## How To Run
-
-The program automatically starts when built.
+## Run The Demo
 
 ```
 > haxe ./build.hxml
 ```
 
-![Demo Screenshot](https://github.com/BradLyman/learn_you_a_heaps/blob/master/p_2_0_1_persist/Screenshot.png)
+**Usage**
 
+* The mouse's Y coordinate controls the radius of the circle
+* The mouse's X coordinate controls the number of line segments used to approximate the circle
+* Click the mouse to reset the screen to empty
+
+# Overview
+
+Continue our exploration of deconstructed circles by leaving old versions on screen.
+This creates a mesmerizing effect which is lots of fun to play with.
