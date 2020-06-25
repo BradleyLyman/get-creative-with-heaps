@@ -21,8 +21,8 @@ to complex, the Demos correspondingly become more complicated.
 
 ## Demo Groups
 
-* [P1 Color: All Things Color!](https://github.com/BradLyman/learn_you_a_heaps/tree/master/P1-Color)
-* [P2 Shape: Basics of Shape in Design](https://github.com/BradLyman/learn_you_a_heaps/tree/master/P2-Shape)
+* [P1 Color](https://github.com/BradLyman/learn_you_a_heaps/tree/master/P1-Color)
+* [P2 Shape](https://github.com/BradLyman/learn_you_a_heaps/tree/master/P2-Shape)
 
 # Additional Notes
 
