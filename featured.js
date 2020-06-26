@@ -72,6 +72,32 @@ Lambda.array = function(it) {
 	}
 	return a;
 };
+var Agent = function(x,y) {
+	this.x = x;
+	this.y = y;
+};
+Agent.__name__ = "Agent";
+Agent.prototype = {
+	step: function(size,bounds) {
+		var direction_index = Math.floor(Math.random() * Agent.directions.length);
+		this.x += Agent.directions[direction_index].x * size;
+		this.y += Agent.directions[direction_index].y * size;
+		if(this.x < 0) {
+			this.x = 0;
+		} else if(this.x > bounds.max_x) {
+			this.x = bounds.max_x;
+		}
+		if(this.y < 0) {
+			this.y = 0;
+		} else if(this.y > bounds.max_y) {
+			this.y = bounds.max_y;
+		}
+	}
+	,render: function(graphics) {
+		graphics.drawCircle(this.x,this.y,4,6);
+	}
+	,__class__: Agent
+};
 var h3d_IDrawable = function() { };
 h3d_IDrawable.__name__ = "h3d.IDrawable";
 h3d_IDrawable.__isInterface__ = true;
@@ -236,7 +262,9 @@ hxd_App.prototype = {
 	,__class__: hxd_App
 };
 var Main = function() {
-	this.gridSize = 20;
+	this.agents = [];
+	this.gridSize = 100;
+	this.current = 0;
 	hxd_App.call(this);
 };
 Main.__name__ = "Main";
@@ -246,60 +274,83 @@ Main.main = function() {
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
-		this.graphics = new h2d_Graphics(this.s2d);
-		hxd_Window.getInstance().addEventTarget($bind(this,this.onEvent));
-	}
-	,onEvent: function(event) {
-		if(event.kind._hx_index == 1) {
-			this.renderGrid(this.pickLRColors());
-		}
-	}
-	,pickLRColors: function() {
-		var normalized_x = this.s2d.get_mouseX() / this.s2d.width;
-		var normalized_y = this.s2d.get_mouseY() / this.s2d.height;
-		var hue = Math.random() * 2 * Math.PI;
-		return { left : { alpha : 0.5, color : this.colorFor(hue), weight : 1 + normalized_x * 19}, right : { alpha : 0.5, color : this.colorFor(hue + Math.PI), weight : 1 + normalized_y * 19}};
-	}
-	,renderGrid: function(styles) {
-		var rows = Math.ceil(this.s2d.height / this.gridSize);
-		var columns = Math.ceil(this.s2d.width / this.gridSize);
 		var _g = [];
 		var _g1 = 0;
-		var _g2 = columns;
+		while(_g1 < 300) {
+			var i = _g1++;
+			_g.push(new h2d_Graphics(this.s2d));
+		}
+		this.graphics = _g;
+		hxd_Window.getInstance().addEventTarget($bind(this,this.onEvent));
+		this.resetAgents();
+	}
+	,onEvent: function(event) {
+		switch(event.kind._hx_index) {
+		case 1:
+			var _g = 0;
+			var _g1 = this.graphics;
+			while(_g < _g1.length) {
+				var grahpic = _g1[_g];
+				++_g;
+				grahpic.clear();
+			}
+			break;
+		case 9:
+			if(event.keyCode == 32) {
+				this.resetAgents();
+			}
+			break;
+		default:
+		}
+	}
+	,onResize: function() {
+		this.resetAgents();
+		var _g = 0;
+		var _g1 = this.graphics;
+		while(_g < _g1.length) {
+			var grahpic = _g1[_g];
+			++_g;
+			grahpic.clear();
+		}
+	}
+	,update: function(dt) {
+		this.graphics[this.current].clear();
+		this.graphics[this.current].beginFill(this.colorFor(this.lerp(this.current / this.graphics.length,Math.PI / 2,3 * Math.PI / 2)),0.2);
+		var _g = 0;
+		var _g1 = this.agents;
+		while(_g < _g1.length) {
+			var agent = _g1[_g];
+			++_g;
+			agent.step(7,{ max_x : this.s2d.width, max_y : this.s2d.height});
+			agent.render(this.graphics[this.current]);
+		}
+		this.graphics[this.current].endFill();
+		this.current += 1;
+		if(this.current >= this.graphics.length) {
+			this.current = 0;
+		}
+	}
+	,resetAgents: function() {
+		var h = this.s2d.height;
+		var w = this.s2d.width;
+		var rows = Math.ceil(h / this.gridSize);
+		var cols = Math.ceil(w / this.gridSize);
+		var _g = [];
+		var _g1 = 0;
+		var _g2 = cols;
 		while(_g1 < _g2) {
-			var x_index = _g1++;
+			var x_ind = _g1++;
 			var _g3 = 0;
 			var _g4 = rows;
 			while(_g3 < _g4) {
-				var y_index = _g3++;
-				var left = x_index * this.gridSize;
-				var right = (x_index + 1) * this.gridSize;
-				var top = y_index * this.gridSize;
-				var bottom = (y_index + 1) * this.gridSize;
-				if(Math.random() >= 0.5) {
-					_g.push({ start : { x : left, y : top}, end : { x : right, y : bottom}, style : styles.left});
-				} else {
-					_g.push({ start : { x : right, y : top}, end : { x : left, y : bottom}, style : styles.right});
-				}
+				var y_ind = _g3++;
+				_g.push(new Agent((this.s2d.width - w) / 2 + x_ind * this.gridSize,(this.s2d.height - h) / 2 + y_ind * this.gridSize));
 			}
 		}
-		var diagonals = _g;
-		this.graphics.clear();
-		var _g = 0;
-		while(_g < diagonals.length) {
-			var line = diagonals[_g];
-			++_g;
-			this.graphics.lineStyle(line.style.weight,line.style.color,line.style.alpha);
-			var _this = this.graphics;
-			var x = line.start.x;
-			var y = line.start.y;
-			_this.flush();
-			_this.addVertex(x,y,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + y * _this.mc + _this.mx,x * _this.mb + y * _this.md + _this.my);
-			var _this1 = this.graphics;
-			var x1 = line.end.x;
-			var y1 = line.end.y;
-			_this1.addVertex(x1,y1,_this1.curR,_this1.curG,_this1.curB,_this1.curA,x1 * _this1.ma + y1 * _this1.mc + _this1.mx,x1 * _this1.mb + y1 * _this1.md + _this1.my);
-		}
+		this.agents = _g;
+	}
+	,lerp: function(x,start,end) {
+		return x * (end - start) + start;
 	}
 	,colorFor: function(hue,saturation,lightness) {
 		if(lightness == null) {
@@ -57838,6 +57889,7 @@ var Enum = { };
 haxe_ds_ObjectMap.count = 0;
 haxe_MainLoop.add(hxd_System.updateCursor,-1);
 js_Boot.__toStr = ({ }).toString;
+Agent.directions = [{ x : 0.0, y : -1.0},{ x : 0.0, y : 1.0},{ x : -1.0, y : 0.0},{ x : -0.5, y : 0.5},{ x : -0.5, y : -0.5},{ x : 1.0, y : 0.0},{ x : 0.5, y : 0.5},{ x : 0.5, y : -0.5}];
 format_gif_Tools.LN2 = Math.log(2);
 format_mp3_MPEG.V1 = 3;
 format_mp3_MPEG.V2 = 2;
