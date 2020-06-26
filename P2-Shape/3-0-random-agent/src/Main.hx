@@ -7,10 +7,16 @@ class Agent {
     private var y: Float;
 
     static var directions : Array<{x: Float, y: Float}> = [
-        { x: -1.0, y: 0.0 }, // left
-        { x: 1.0, y: 0.0 },  // right
         { x: 0.0, y: -1.0 }, // down
-        { x: 0.0, y: 1.0 } // up
+        { x: 0.0, y: 1.0 }, // up
+
+        { x: -1.0, y: 0.0 }, // left
+        { x: -0.5, y: 0.5 }, // up to the left
+        { x: -0.5, y: -0.5}, // down to the left
+
+        { x: 1.0, y: 0.0 },  // right
+        { x: 0.5, y: 0.5 }, // up to the left
+        { x: 0.5, y: -0.5}, // down to the left
     ];
 
     public function new(x: Float, y: Float) {
@@ -31,21 +37,22 @@ class Agent {
     }
 
     public function render(graphics: h2d.Graphics) {
-        graphics.drawCircle(x, y, 1, 6);
+        graphics.drawCircle(x, y, 4, 6);
     }
 }
 
 class Main extends hxd.App {
 
-    var graphics : h2d.Graphics;
+    var graphics : Array<h2d.Graphics>;
+    var current : Int = 0;
 
     /* The size, in pixels, for each grid cell. */
-    var gridSize : Int = 40;
+    var gridSize : Int = 100;
 
     var agents : Array<Agent> = [];
 
     override function init() {
-        graphics = new h2d.Graphics(s2d);
+        graphics = [for (i in 0...300) new h2d.Graphics(s2d)];
         hxd.Window.getInstance().addEventTarget(onEvent);
         resetAgents();
     }
@@ -53,10 +60,10 @@ class Main extends hxd.App {
     function onEvent(event: hxd.Event) {
         switch (event.kind) {
             case ERelease:
-                resetAgents();
+                for (grahpic in graphics) { grahpic.clear(); }
             case EKeyUp:
                 if (event.keyCode == Key.SPACE) {
-                    graphics.clear();
+                    resetAgents();
                 }
             default: // do nothing
         }
@@ -64,29 +71,39 @@ class Main extends hxd.App {
 
     override function onResize() {
         resetAgents();
-        graphics.clear();
+        for (grahpic in graphics) { grahpic.clear(); }
     }
 
     override function update(dt: Float) {
-        graphics.beginFill(colorFor(Math.PI), 0.4);
+        graphics[current].clear();
+        graphics[current].beginFill(colorFor(lerp(current/graphics.length, Math.PI/2, 3*Math.PI/2)), 0.2);
         for (agent in agents) {
-            agent.step(2, {max_x: s2d.width, max_y: s2d.height});
-            agent.render(graphics);
+            agent.step(7, {max_x: s2d.width, max_y: s2d.height});
+            agent.render(graphics[current]);
         }
-        graphics.endFill();
+        graphics[current].endFill();
+
+        current += 1;
+        if (current >= graphics.length) { current = 0; }
     }
 
     function resetAgents() {
-        final rows = Math.ceil(s2d.height / gridSize);
-        final cols = Math.ceil(s2d.width / gridSize);
+        final h = s2d.height;
+        final w = s2d.width;
+        final rows = Math.ceil(h / gridSize);
+        final cols = Math.ceil(w / gridSize);
 
         agents = [
             for (x_ind in 0...cols) {
                 for (y_ind in 0...rows) {
-                    new Agent(x_ind * gridSize, y_ind * gridSize);
+                    new Agent(((s2d.width - w)/2) + (x_ind * gridSize), ((s2d.height - h)/2) + (y_ind * gridSize));
                 }
             }
         ];
+    }
+
+    private function lerp(x: Float, start: Float, end: Float) : Float {
+        return x*(end - start) + start;
     }
 
     private function colorFor(
