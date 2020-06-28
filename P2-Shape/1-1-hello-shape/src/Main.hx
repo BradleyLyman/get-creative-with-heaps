@@ -27,6 +27,7 @@ class Main extends hxd.App {
     override function init() {
         graphics = new h2d.Graphics(s2d);
         window = hxd.Window.getInstance();
+        new FullscreenButton(s2d);
     }
 
     override function update(dt: Float) {

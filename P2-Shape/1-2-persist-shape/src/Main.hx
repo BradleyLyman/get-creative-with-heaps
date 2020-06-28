@@ -21,6 +21,7 @@ class Main extends hxd.App {
     override function init() {
         graphics = new h2d.Graphics(s2d);
         hxd.Window.getInstance().addEventTarget(onEvent);
+        new FullscreenButton(s2d);
     }
 
     /**

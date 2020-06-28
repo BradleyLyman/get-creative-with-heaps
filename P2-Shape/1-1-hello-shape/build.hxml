@@ -1,10 +1,18 @@
 -cp src
+-cp ../../tools
 --main Main
 --library heaps
---library hlsdl
 --each
 
+# Build the demo js
 --next
+--js bin/demo.js
+
+# Build the HashLink Executable
+--next
+--library hlsdl
 -D windowSize=1366x768
 --hl bin/app.hl
+
+# Run the HashLink Executable
 --cmd "hl ./bin/app.hl"
