@@ -1,0 +1,122 @@
+---
+---
+
+$base-color: #0B132B;
+$accent: #1C2541;
+$neutral: #3A506B;
+$light-accent: #5BC0BE;
+$light: #6FFFE9;
+
+$content-width: 74rem;
+
+html {
+  font-family: 'Rubik', sans-serif;
+}
+
+body {
+  display: block;
+  position: relative;
+
+  color: $light;
+  background-color: $base-color;
+
+  width: 100%;
+  max-width: 100%;
+
+  padding: 0rem;
+  margin: 0rem;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'Trirong', serif;
+  padding: 0;
+  margin: 0;
+  color: $light;
+}
+
+/* The main header */
+body > header, body > footer {
+  overflow: hidden;
+  background-color: $accent;
+  padding: 1rem;
+
+  nav {
+    max-width: 100%;
+    width: $content-width;
+    margin: auto;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  a {
+    text-decoration: none;
+    color: $light-accent;
+  }
+}
+
+/* The main footer */
+body > footer {
+  nav {
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  a > svg {
+    max-height: 6rem;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+/* content body */
+
+main {
+  max-width: 100%;
+  width: $content-width;
+  margin: auto;
+
+  background-color: $neutral;
+  overflow: hidden;
+
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+}
+
+article.content {
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  text-align: justify;
+  color: $light-accent;
+
+  h1,h2 {
+    border-bottom: 1px solid $light-accent;
+  }
+
+  pre {
+    font-family: 'Open Sans', sans-serif;
+    background-color: $light-accent;
+    color: $base-color;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+  }
+}
+
+canvas {
+  /*
+      A demo's canvas should be the most prominent thing on screen.
+      But you shouldn't have to scroll to see it.
+  */
+  --max: calc(100vh - 5rem);
+  min-height: min(30rem, var(--max));
+  max-height: var(--max);
+  height: 50vh;
+
+  // always as wide as the content area allows
+  max-width: 100%;
+  width: 100%;
+
+  background-color: black;
+}

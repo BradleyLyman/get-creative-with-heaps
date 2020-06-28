@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{ page.title }}</title>
+  <meta name="description" content="{{ site.description }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+  <meta property="og:image" content="/assets/preview-{{ page.title }}.png">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="assets/haxe.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Rubik&family=Trirong:wght@600&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="/css/normalize.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#"><h1>{{ page.title }}</h1></a>
+      <a href="/"><h2>Contents</h2></a>
+    </nav>
+  </header>
+
+  <main>
+    {{content}}
+  </main>
+
+  <footer>
+    <nav>
+      <a href="https://github.com/BradLyman/get-creative-with-heaps">
+        {% include github.html %}
+      </a>
+
+      <a href="https://haxe.org/">
+        {% include haxe.html %}
+      </a>
+
+      <a href="https://haxe.org/">
+        {% include heaps.html %}
+      </a>
+    </nav>
+  </footer>
+</body>
+</html>
