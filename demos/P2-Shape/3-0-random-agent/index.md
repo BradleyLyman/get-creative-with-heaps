@@ -1,6 +1,6 @@
 ---
 layout: demo
-title: "P2 Shape: 3.0 Random Agent"
+title: "P2.3.0 Random Agent"
 ---
 
 # Usage
