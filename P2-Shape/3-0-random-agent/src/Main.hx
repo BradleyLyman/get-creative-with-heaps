@@ -1,3 +1,5 @@
+import hxd.Window.DisplayMode;
+import h2d.Interactive;
 import hxd.Key;
 import h2d.Scene.ScaleMode;
 import h2d.Scene.ScaleModeAlign;
@@ -52,6 +54,7 @@ class Main extends hxd.App {
     var agents : Array<Agent> = [];
 
     override function init() {
+        new FullscreenButton(s2d);
         graphics = [for (i in 0...300) new h2d.Graphics(s2d)];
         hxd.Window.getInstance().addEventTarget(onEvent);
         resetAgents();
