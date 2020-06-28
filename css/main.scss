@@ -87,6 +87,7 @@ main {
 }
 
 article.content {
+  display: block;
   padding: 0.5rem 1rem 0.5rem 1rem;
   text-align: justify;
   color: $light-accent;
@@ -102,6 +103,15 @@ article.content {
     padding: 0.5rem 1rem 0.5rem 1rem;
     border-radius: 0.5rem;
   }
+
+  a {
+    text-decoration: none;
+    color: $light;
+  }
+}
+
+:fullscreen article.content {
+  display: none !important;
 }
 
 canvas {
@@ -119,4 +129,18 @@ canvas {
   width: 100%;
 
   background-color: black;
+  position: relative;
+}
+
+:fullscreen canvas {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  max-width: 100vw !important;
+  width: 100vw !important;
+
+  max-height: 100vh !important;
+  height: 100vh !important;
 }
