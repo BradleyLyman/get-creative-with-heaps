@@ -380,8 +380,8 @@ Main.main = function() {
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
-		new FullscreenButton(this.s2d);
 		this.graphics = new h2d_Graphics(this.s2d);
+		new FullscreenButton(this.s2d);
 		hxd_Window.getInstance().addEventTarget($bind(this,this.onEvent));
 		this.pickColors();
 	}
