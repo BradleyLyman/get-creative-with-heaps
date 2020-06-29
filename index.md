@@ -15,4 +15,5 @@ layout: article
 * [1.1 Hello Shape]({{site.url}}/{{site.baseurl}}/P2-Shape/1-1-hello-shape)
 * [1.2 Persist Shape]({{site.url}}/{{site.baseurl}}/P2-Shape/1-2-persist-shape)
 * [2 Grid Alignment]({{site.url}}/{{site.baseurl}}/P2-Shape/2-0-grid-alignment)
-* [3 Random Agents]({{site.url}}/{{site.baseurl}}/P2-Shape/3-0-random-agent)
+* [3.0 Random Agents]({{site.url}}/{{site.baseurl}}/P2-Shape/3-0-random-agent)
+* [3.1 Intelligent Agents]({{site.url}}/{{site.baseurl}}/P2-Shape/3-1-intelligent-agent)
