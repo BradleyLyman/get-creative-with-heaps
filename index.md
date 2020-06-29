@@ -3,6 +3,28 @@ title: Get Creative With Heaps.io
 layout: article
 ---
 
+## Cards
+
+<section class="demos">
+  <article class="demoCard">
+    <a href="{{site.url}}/{{site.baseurl}}/P1-Color/1-hello-color/">
+      <img src="{{site.url}}/{{site.baseurl}}/P1-Color/1-hello-color/Screenshot.png"/>
+      <footer>
+        <h4>P1.1 Hello Color</h4>
+      </footer>
+    </a>
+  </article>
+
+  <article class="demoCard">
+    <a href="{{site.url}}/{{site.baseurl}}/P1-Color/2-grid-spectrum/">
+      <img src="{{site.url}}/{{site.baseurl}}/P1-Color/2-grid-spectrum/Screenshot.png"/>
+      <footer>
+        <h4>P1.2 Grid Spectrum</h4>
+      </footer>
+    </a>
+  </article>
+</section>
+
 ## P1 Color
 
 * [1 Hello Color]({{site.url}}/{{site.baseurl}}/P1-Color/1-hello-color)
