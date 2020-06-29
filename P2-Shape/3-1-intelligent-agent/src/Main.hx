@@ -33,8 +33,8 @@ class Main extends hxd.App {
   function onEvent(event: hxd.Event) {
     switch (event.kind) {
       case ERelease:
+        onResize();
       case EKeyUp:
-        trace("PRESSED");
       default: // do nothing
     }
   }
