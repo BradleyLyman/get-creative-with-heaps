@@ -1,6 +1,8 @@
 ---
 layout: demo
-title: P2.1.2 Persist Shape
+section: P2 Shape
+order: 1.2
+title: Persist Shape
 ---
 
 # Usage

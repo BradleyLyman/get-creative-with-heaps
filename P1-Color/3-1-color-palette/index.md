@@ -1,6 +1,8 @@
 ---
 layout: demo
-title: P1.3.1 Color Palette
+section: "P1 Color"
+order: 3.1
+title: Color Palette
 ---
 
 # Usage

@@ -1,6 +1,8 @@
 ---
 layout: demo
-title: "P2.3.0 Random Agent"
+section: P2 Shape
+order: 3.0
+title: Random Agent
 ---
 
 # Usage

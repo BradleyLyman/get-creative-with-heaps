@@ -1,6 +1,8 @@
 ---
 layout: demo
-title: P1.3.2 Image Palette
+section: P1 Color
+order: 3.2
+title: Image Palette
 ---
 
 # Usage

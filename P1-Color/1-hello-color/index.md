@@ -1,6 +1,8 @@
 ---
 layout: demo
-title: "P1.1 Hello Color"
+section: "P1 Color"
+order: 1
+title: "Hello Color"
 ---
 
 # Usage

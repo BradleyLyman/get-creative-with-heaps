@@ -1,6 +1,8 @@
 ---
 layout: demo
-title: P2.2 Grid Alignment
+section: P2 Shape
+order: 2
+title: Grid Alignment
 ---
 
 # Usage

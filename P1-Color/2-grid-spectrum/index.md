@@ -1,5 +1,7 @@
 ---
-title: "P1.2 Grid Spectrum"
+title: "Grid Spectrum"
+order: 2
+section: "P1 Color"
 layout: demo
 ---
 

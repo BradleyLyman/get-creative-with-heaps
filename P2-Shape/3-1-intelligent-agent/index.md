@@ -1,6 +1,8 @@
 ---
 layout: demo
-title: P2.3.1 Intelligent Agent
+section: P2 Shape
+order: 3.1
+title: Intelligent Agent
 ---
 
 # Usage

@@ -36,9 +36,11 @@ h1,h2,h3,h4,h5,h6 {
 
 /* The main header */
 body > header, body > footer {
+  position: relative;
   overflow: hidden;
   background-color: $neutral;
   padding: 1rem;
+  z-index: 200;
 
   nav {
     max-width: 100%;
@@ -54,6 +56,10 @@ body > header, body > footer {
     text-decoration: none;
     color: $light-accent;
   }
+}
+
+body > header {
+  box-shadow: 0 0.25rem 0.5rem 0 rgba(0,0,0,0.3);
 }
 
 /* The main footer */

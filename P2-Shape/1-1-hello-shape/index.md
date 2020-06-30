@@ -1,6 +1,8 @@
 ---
 layout: demo
-title: P2.1.1 Hello Shape
+section: P2 Shape
+order: 1
+title: Hello Shape
 ---
 
 # Usage
