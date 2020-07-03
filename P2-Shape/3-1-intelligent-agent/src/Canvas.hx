@@ -18,6 +18,7 @@ class Canvas {
   private var texture : Texture;
   private var bmp : Bitmap;
   private var window : Window;
+  private var pixels : Pixels;
 
   /**
       Create a new fullscreen canvas which renders itself to the parent scene.
@@ -28,14 +29,14 @@ class Canvas {
 
     texture = new Texture(window.width, window.height, [Target], RGBA);
     bmp = new Bitmap(Tile.fromTexture(texture), parent);
+    pixels = texture.capturePixels();
 
     s2d = new Scene();
     graphics = new Graphics(s2d);
   }
 
-  public function capturePixels() : Pixels {
-    return texture.capturePixels();
-  }
+  /* The last frame's pixel data. */
+  public function currentPixels() : Pixels { return pixels; }
 
   /**
       Reszie the texture and update the bitmap's tile when the window changes
@@ -54,5 +55,8 @@ class Canvas {
   public function update() {
     s2d.drawTo(texture);
     graphics.clear();
+
+    pixels.dispose();
+    pixels = texture.capturePixels();
   }
 }

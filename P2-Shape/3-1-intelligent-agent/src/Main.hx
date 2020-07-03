@@ -34,11 +34,9 @@ class Main extends hxd.App {
   }
 
   override function update(dt: Float) {
-    final lastFrame = canvas.capturePixels();
-
     preview.clear();
     for (agent in agents) {
-      agent.step(300 * dt, canvas.graphics, lastFrame);
+      agent.step(300 * dt, canvas.graphics, canvas.currentPixels());
       agent.render(preview);
     }
 
