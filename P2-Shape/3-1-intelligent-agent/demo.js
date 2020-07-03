@@ -7,169 +7,151 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
-var Cardinal = $hxEnums["Cardinal"] = { __ename__ : true, __constructs__ : ["North","South","East","West"]
-	,North: {_hx_index:0,__enum__:"Cardinal",toString:$estr}
-	,South: {_hx_index:1,__enum__:"Cardinal",toString:$estr}
-	,East: {_hx_index:2,__enum__:"Cardinal",toString:$estr}
-	,West: {_hx_index:3,__enum__:"Cardinal",toString:$estr}
-};
-Cardinal.__empty_constructs__ = [Cardinal.North,Cardinal.South,Cardinal.East,Cardinal.West];
-var Agent = function(x,y,screenWidth,screenHeight) {
-	this.intersections = [];
-	this.cardinal = Cardinal.North;
-	this.position = [x,y];
-	this.lastBounce = this.position;
-	this.bounds = { width : screenWidth, height : screenHeight};
+var Agent = function(color) {
+	this.MIN_LENGTH = 20;
+	this.color = color;
+	var $window = hxd_Window.getInstance();
+	this.angle = Math.random() * Math.PI / 2;
+	this.position = this.lastPosition = this.lastBounce = [$window.get_width() * Math.random(),$window.get_height() * Math.random()];
 	this.randomDirection();
 };
 Agent.__name__ = "Agent";
-Agent.renderLines = function(graphics,maxLen) {
-	var _g = 0;
-	var _g1 = Agent.lines;
-	while(_g < _g1.length) {
-		var line = _g1[_g];
-		++_g;
-		var this1 = Vector.sub(line.start,line.end);
+Agent.prototype = {
+	step: function(size,graphics,lastFrame) {
+		this.lastPosition = this.position;
+		this.position = Vector.add(this.position,Vector.scale(this.direction,size));
+		if(this.enforceBounds() || this.crossedAnyLines(lastFrame)) {
+			this.emitLine(graphics);
+			this.randomDirection();
+			this.position = Vector.add(this.position,Vector.scale(this.direction,size));
+			this.lastPosition = this.position;
+			this.lastBounce = this.position;
+		}
+	}
+	,emitLine: function(graphics) {
+		var this1 = Vector.sub(this.lastBounce,this.position);
 		var sum = 0.0;
-		var _g2 = 0;
-		while(_g2 < this1.length) {
-			var val = this1[_g2];
-			++_g2;
+		var _g = 0;
+		while(_g < this1.length) {
+			var val = this1[_g];
+			++_g;
 			sum += val * val;
 		}
-		var length = Math.sqrt(sum);
-		var normed = length / maxLen;
-		var lineWidth = 20 * normed;
-		graphics.lineStyle(lineWidth,16777215,0.75);
-		var x = line.start[0];
-		var y = line.start[1];
+		var len = Math.sqrt(sum);
+		if(len < this.MIN_LENGTH) {
+			return;
+		}
+		var normLen = len / 500;
+		var lineWidth = 1 + normLen * 4;
+		var lineTrans = 0.6 + normLen * 2 * 0.4;
+		graphics.beginFill(this.color,lineTrans);
+		graphics.lineStyle(lineWidth,this.color,lineTrans);
+		var x = this.lastBounce[0];
+		var y = this.lastBounce[1];
 		graphics.flush();
 		graphics.addVertex(x,y,graphics.curR,graphics.curG,graphics.curB,graphics.curA,x * graphics.ma + y * graphics.mc + graphics.mx,x * graphics.mb + y * graphics.md + graphics.my);
-		var x1 = line.end[0];
-		var y1 = line.end[1];
-		graphics.addVertex(x1,y1,graphics.curR,graphics.curG,graphics.curB,graphics.curA,x1 * graphics.ma + y1 * graphics.mc + graphics.mx,x1 * graphics.mb + y1 * graphics.md + graphics.my);
-	}
-};
-Agent.prototype = {
-	onResize: function(screenWidth,screenHeight) {
-		this.bounds = { width : screenWidth, height : screenHeight};
-		Agent.lines = [];
-	}
-	,step: function(size) {
-		this.position = Vector.add(this.position,Vector.scale(this.direction,size));
-		if(this.enforceBounds() || this.anyCross()) {
-			var this1 = Vector.sub(this.lastBounce,this.position);
-			var sum = 0.0;
-			var _g = 0;
-			while(_g < this1.length) {
-				var val = this1[_g];
-				++_g;
-				sum += val * val;
-			}
-			if(Math.sqrt(sum) > 20) {
-				Agent.lines.push({ start : this.lastBounce, end : this.position});
-			}
-			this.randomDirection();
-			this.lastBounce = Vector.add(this.position,Vector.scale(this.direction,size));
-		}
-		var tmp = Agent.lines.length > 10000;
+		var x = this.position[0];
+		var y = this.position[1];
+		graphics.addVertex(x,y,graphics.curR,graphics.curG,graphics.curB,graphics.curA,x * graphics.ma + y * graphics.mc + graphics.mx,x * graphics.mb + y * graphics.md + graphics.my);
+		graphics.endFill();
 	}
 	,enforceBounds: function() {
-		var enforced = false;
-		if(this.position[0] <= 0) {
-			enforced = true;
-			this.position[0] = 0;
-		} else if(this.position[0] >= this.bounds.width) {
-			enforced = true;
-			var val = this.bounds.width;
-			this.position[0] = val;
-		}
-		if(this.position[1] <= 0) {
-			enforced = true;
-			this.position[1] = 0;
-		} else if(this.position[1] >= this.bounds.height) {
-			enforced = true;
-			var val = this.bounds.height;
-			this.position[1] = val;
-		}
-		return enforced;
+		var $window = hxd_Window.getInstance();
+		var clampedX = this.clamp(this.position[0],0,$window.get_width());
+		var clampedY = this.clamp(this.position[1],0,$window.get_height());
+		var val = clampedX.at;
+		this.position[0] = val;
+		var val = clampedY.at;
+		this.position[1] = val;
+		return !(clampedX.inRange && clampedY.inRange);
 	}
-	,anyCross: function() {
-		var current = { start : this.lastBounce, end : this.position};
+	,clamp: function(a,start,end) {
+		if(a <= start) {
+			return { at : start, inRange : false};
+		} else if(a >= end) {
+			return { at : end, inRange : false};
+		} else {
+			return { at : a, inRange : true};
+		}
+	}
+	,crossedAnyLines: function(pixels) {
+		if(this.pixelAt(this.position,pixels) != 0) {
+			return true;
+		}
+		var line = Vector.sub(this.position,this.lastPosition);
+		var sum = 0.0;
 		var _g = 0;
-		var _g1 = Agent.lines;
-		while(_g < _g1.length) {
-			var line = _g1[_g];
+		while(_g < line.length) {
+			var val = line[_g];
 			++_g;
-			if(this.intersect(current,line)) {
+			sum += val * val;
+		}
+		var len = Math.sqrt(sum);
+		var dir = Vector.scale(line,1 / len);
+		var _g = 1;
+		var _g1 = Math.floor(len);
+		while(_g < _g1) {
+			var i = _g++;
+			var p = Vector.add(this.lastPosition,Vector.scale(dir,i));
+			if(this.pixelAt(p,pixels) != 0) {
 				return true;
 			}
 		}
 		return false;
 	}
-	,intersect: function(A,B) {
-		var Abar = Vector.sub(A.end,A.start);
-		var Bbar = Vector.sub(B.end,B.start);
-		var div = Abar[0] * Bbar[1] - Abar[1] * Bbar[0];
-		if(Math.abs(div) <= 0.05) {
-			return false;
-		}
-		var u_top = (B.start[0] - A.start[0]) * Abar[1] - (B.start[1] - A.start[1]) * Abar[0];
-		var u = u_top / div;
-		var t_top = (B.start[0] - A.start[0]) * Bbar[1] - (B.start[1] - A.start[1]) * Bbar[0];
-		var t = t_top / div;
-		if(u > 0 && u < 1 && (t > 0 && t < 1)) {
-			this.intersections.push(Vector.add(B.start,Vector.scale(Vector.sub(B.end,B.start),u)));
-			return true;
-		}
-		return false;
+	,pixelAt: function(v,pixels) {
+		return pixels.getPixel(Math.round(v[0]),Math.round(v[1]));
 	}
 	,render: function(graphics) {
-		graphics.beginFill(4474111,1.0);
-		graphics.lineStyle(1,4474111);
-		graphics.drawRect(this.position[0] - 4,this.position[1] - 4,8,8);
+		graphics.beginFill(this.color);
+		graphics.drawCircle(this.position[0],this.position[1],2,8);
 		graphics.endFill();
+		graphics.lineStyle(1,16777215,1.0);
+		var x = this.lastBounce[0];
+		var y = this.lastBounce[1];
+		graphics.flush();
+		graphics.addVertex(x,y,graphics.curR,graphics.curG,graphics.curB,graphics.curA,x * graphics.ma + y * graphics.mc + graphics.mx,x * graphics.mb + y * graphics.md + graphics.my);
+		var x = this.position[0];
+		var y = this.position[1];
+		graphics.addVertex(x,y,graphics.curR,graphics.curG,graphics.curB,graphics.curA,x * graphics.ma + y * graphics.mc + graphics.mx,x * graphics.mb + y * graphics.md + graphics.my);
 	}
 	,randomDirection: function() {
-		var tmp;
-		switch(this.cardinal._hx_index) {
-		case 0:
-			tmp = Cardinal.South;
-			break;
-		case 1:
-			tmp = Cardinal.North;
-			break;
-		case 2:
-			tmp = Cardinal.West;
-			break;
-		case 3:
-			tmp = Cardinal.East;
-			break;
-		}
-		this.cardinal = tmp;
-		var root;
-		switch(this.cardinal._hx_index) {
-		case 0:
-			root = Math.PI / 2;
-			break;
-		case 1:
-			root = 3.0 * Math.PI / 2;
-			break;
-		case 2:
-			root = Math.PI;
-			break;
-		case 3:
-			root = 0;
-			break;
-		}
-		var segments = 5;
-		var increment = Math.PI / 2 / (segments + 1);
-		var randNorm = -1 + Math.random() * 2.0;
-		var rootOffset = 1 + Math.round(randNorm * (segments - 1));
-		var angle = root + rootOffset * increment;
-		this.direction = [Math.cos(angle),Math.sin(angle)];
+		var norm = Math.random() * 2 - 1.0;
+		var sign = norm / Math.abs(norm);
+		var offset = sign * (Math.PI / 8) + norm * (Math.PI / 4);
+		this.angle += Math.PI;
+		this.angle += offset;
+		this.direction = [Math.cos(this.angle),Math.sin(this.angle)];
 	}
 	,__class__: Agent
+};
+var Canvas = function(parent) {
+	this.window = hxd_Window.getInstance();
+	this.window.addResizeEvent($bind(this,this.onResize));
+	this.texture = new h3d_mat_Texture(this.window.get_width(),this.window.get_height(),[h3d_mat_TextureFlags.Target],hxd_PixelFormat.RGBA);
+	this.bmp = new h2d_Bitmap(h2d_Tile.fromTexture(this.texture),parent);
+	this.pixels = this.texture.capturePixels();
+	this.s2d = new h2d_Scene();
+	this.graphics = new h2d_Graphics(this.s2d);
+};
+Canvas.__name__ = "Canvas";
+Canvas.prototype = {
+	currentPixels: function() {
+		return this.pixels;
+	}
+	,onResize: function() {
+		this.texture.resize(this.window.get_width(),this.window.get_height());
+		this.bmp.set_tile(h2d_Tile.fromTexture(this.texture));
+		this.pixels.dispose();
+		this.pixels = this.texture.capturePixels();
+	}
+	,update: function() {
+		this.s2d.drawTo(this.texture);
+		this.graphics.clear();
+		this.pixels.dispose();
+		this.pixels = this.texture.capturePixels();
+	}
+	,__class__: Canvas
 };
 var EReg = function(r,opt) {
 	this.r = new RegExp(r,opt.split("u").join(""));
@@ -534,7 +516,6 @@ hxd_App.prototype = {
 };
 var Main = function() {
 	this.agents = [];
-	this.gridSize = 100;
 	hxd_App.call(this);
 };
 Main.__name__ = "Main";
@@ -544,52 +525,46 @@ Main.main = function() {
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
+		this.canvas = new Canvas(this.s2d);
+		this.preview = new h2d_Graphics(this.s2d);
 		new FullscreenButton(this.s2d);
-		this.graphics = new h2d_Graphics(this.s2d);
+		this.resetAgents();
 		hxd_Window.getInstance().addEventTarget($bind(this,this.onEvent));
-		var _g = [];
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		_g.push(new Agent(Math.random() * this.s2d.width,Math.random() * this.s2d.height,this.s2d.width,this.s2d.height));
-		this.agents = _g;
 	}
-	,onEvent: function(event) {
-		switch(event.kind._hx_index) {
+	,onResize: function() {
+		this.resetAgents();
+	}
+	,onEvent: function(e) {
+		switch(e.kind._hx_index) {
 		case 1:
-			this.onResize();
+			this.resetAgents();
 			break;
 		case 9:
+			this.preview.set_visible(!this.preview.visible);
 			break;
 		default:
 		}
 	}
-	,onResize: function() {
-		var _g = 0;
-		var _g1 = this.agents;
-		while(_g < _g1.length) {
-			var agent = _g1[_g];
-			++_g;
-			agent.onResize(this.s2d.width,this.s2d.height);
+	,resetAgents: function() {
+		var _g = [];
+		var _g1 = 0;
+		while(_g1 < 60) {
+			var i = _g1++;
+			_g.push(new Agent(this.colorFor(Math.PI * 2 * Math.random(),0.5)));
 		}
+		this.agents = _g;
 	}
 	,update: function(dt) {
-		this.graphics.clear();
-		Agent.renderLines(this.graphics,this.s2d.width);
+		this.preview.clear();
 		var _g = 0;
 		var _g1 = this.agents;
 		while(_g < _g1.length) {
 			var agent = _g1[_g];
 			++_g;
-			agent.step(300 * dt);
-			agent.render(this.graphics);
+			agent.step(300 * dt,this.canvas.graphics,this.canvas.currentPixels());
+			agent.render(this.preview);
 		}
+		this.canvas.update();
 	}
 	,lerp: function(x,start,end) {
 		return x * (end - start) + start;
@@ -58203,7 +58178,6 @@ var Enum = { };
 haxe_ds_ObjectMap.count = 0;
 haxe_MainLoop.add(hxd_System.updateCursor,-1);
 js_Boot.__toStr = ({ }).toString;
-Agent.lines = [];
 format_gif_Tools.LN2 = Math.log(2);
 format_mp3_MPEG.V1 = 3;
 format_mp3_MPEG.V2 = 2;
