@@ -1,59 +1,48 @@
-import hxd.Window.DisplayMode;
-import h2d.Interactive;
-import hxd.Key;
-import h2d.Scene.ScaleMode;
-import h2d.Scene.ScaleModeAlign;
 
 class Main extends hxd.App {
 
-  var graphics : h2d.Graphics;
-
-  /* The size, in pixels, for each grid cell. */
-  var gridSize : Int = 100;
-
   var agents : Array<Agent> = [];
+  var preview : h2d.Graphics;
+  var canvas : Canvas;
 
   override function init() {
+    canvas = new Canvas(s2d);
+    preview = new h2d.Graphics(s2d);
     new FullscreenButton(s2d);
-    graphics = new h2d.Graphics(s2d);
+    resetAgents();
     hxd.Window.getInstance().addEventTarget(onEvent);
+  }
 
+  override function onResize() {
+    resetAgents();
+  }
+
+  function onEvent(e: hxd.Event) {
+    switch (e.kind) {
+      case ERelease: resetAgents();
+      case EKeyUp: preview.visible = !preview.visible;
+      default: //
+    }
+  }
+
+  function resetAgents() {
     agents = [
-      for (i in 0...10) {
-        new Agent(
-          Math.random() * s2d.width,
-          Math.random() * s2d.height,
-          s2d.width,
-          s2d.height
-        );
+      for (i in 0...60) {
+        new Agent(colorFor(Math.PI*2*Math.random(), 0.5));
       }
     ];
   }
 
-  function onEvent(event: hxd.Event) {
-    switch (event.kind) {
-      case ERelease:
-        onResize();
-      case EKeyUp:
-      default: // do nothing
-    }
-  }
-
-  override function onResize() {
-    for (agent in agents) {
-      agent.onResize(s2d.width, s2d.height);
-    }
-  }
-
   override function update(dt: Float) {
-    graphics.clear();
+    final lastFrame = canvas.capturePixels();
 
-    Agent.renderLines(graphics, s2d.width);
-
+    preview.clear();
     for (agent in agents) {
-      agent.step(300 * dt);
-      agent.render(graphics);
+      agent.step(300 * dt, canvas.graphics, lastFrame);
+      agent.render(preview);
     }
+
+    canvas.update();
   }
 
   private function lerp(x: Float, start: Float, end: Float) : Float {
