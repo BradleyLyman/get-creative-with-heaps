@@ -1,31 +1,26 @@
+import h3d.mat.Texture;
+import h3d.mat.Data.TextureFormat;
+import h2d.Tile;
+import h2d.Bitmap;
+
 class Main extends hxd.App {
+  var time = 0.0;
 
   /* Used for drawing 2d shapes on screen. */
   var graphics : h2d.Graphics;
-
-  var time : Float = 0;
-
-  var pressed : Bool = false;
-  var lastPos : Array<Float> = [0, 0];
-  var currentPos: Array<Float> = [0, 0];
+  var canvas : Canvas;
 
   /**
       Initialize the demo. This is automatically called by Heaps when
       the window is ready.
   **/
   override function init() {
-      graphics = new h2d.Graphics(s2d);
-      hxd.Window.getInstance().addEventTarget(onEvent);
-      new FullscreenButton(s2d);
-  }
+    canvas = new Canvas(s2d);
+    new FullscreenButton(s2d);
 
-  function onEvent(e: hxd.Event) {
-    switch (e.kind) {
-      case EPush: pressed = true;
-      case ERelease: pressed = false;
-      case EMove:
-      default: // nothing
-    }
+    // attach the graphics to the *canvas* scene instead of the application
+    // scene
+    graphics = new h2d.Graphics(canvas.s2d);
   }
 
   /**
@@ -34,17 +29,16 @@ class Main extends hxd.App {
   **/
   override function update(dt: Float) {
     time += dt;
-    if (pressed) {
-      graphics.lineStyle(8, colorFor(time), 1.0);
-      graphics.moveTo(lastPos[0], lastPos[1]);
-      graphics.lineTo(currentPos[0], currentPos[1]);
-      lastPos = currentPos;
-      currentPos = [s2d.mouseX, s2d.mouseY];
-    }
-    else {
-      lastPos = [s2d.mouseX, s2d.mouseY];
-      currentPos = [s2d.mouseX, s2d.mouseY];
-    }
+
+    graphics.clear();
+    graphics.beginFill(colorFor(time), 0.5);
+    graphics.drawCircle(
+      s2d.mouseX, s2d.mouseY, 10 + (s2d.mouseX / s2d.width) * 90, 80
+    );
+    graphics.endFill();
+
+    // update the canvas's contents
+    canvas.update();
   }
 
   /**
