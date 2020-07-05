@@ -1,34 +1,18 @@
-# Get Creative With Heaps
+# [Get Creative With Heaps](https://bradlyman.github.io/get-creative-with-heaps/)
 
-This project is my exploration of the Heaps game engine through the perspective
-of creative coding and generative design. I love generative art and the
-persuit has long led me towards interesting concepts in computer science,
-mathematics, and (of course) art!
+This project is my exploration of the Heaps.io game engine with the goal of using
+it for creative coding. I love generative art and the persuit has long led me 
+towards interesting concepts in computer science, mathematics, and (of course) art!
 
-## Getting Started
+# Getting Started
 
 Install Haxe and HashLink for compiling and running the demos.
 
 * https://haxe.org
 * https://hashlink.haxe.org
+* https://heaps.io
 
-# Demos
+# Additional Reading
 
-The repository is organized into standalone applications which I call "Demos".
-Each demo depends only on the Heaps game engine and it's own source. Demos are
-not organized by complexity *specifically* but as the concepts build from basic
-to complex, the Demos correspondingly become more complicated.
-
-## Demo Groups
-
-* [P1 Color](https://github.com/BradLyman/learn_you_a_heaps/tree/master/P1-Color)
-* [P2 Shape](https://github.com/BradLyman/learn_you_a_heaps/tree/master/P2-Shape)
-
-# Additional Notes
-
-The demos closely follow along with the Generative Design book (ISBN-13: 978-1616890773) 
-which covers similar ground but for the Proccessing framework in Java. The demos
-here necessarily require changes because the language and framework differ. Moreover,
-I'm just chasing ideas when they strike me as interesting. So, if you like this repo,
-go pick up copy of that book. It's excellent inspiration and a fun/different angle on 
-the same subject.
+* Generative Design (ISBN-13: 978-1616890773)
+  * Is a delightful book which covers the subject using the Processing framework for creative coding.
