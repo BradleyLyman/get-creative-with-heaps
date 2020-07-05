@@ -38,7 +38,7 @@ class QuadsPrimitive extends h3d.prim.Primitive {
       Resize the vertex buffer and dispose the GPU buffer.
   **/
   public function reset() {
-    vertices.resize(0);
+    vertices = new hxd.FloatBuffer();
     disposeGPUBuffer();
   }
 
