@@ -1,0 +1,13 @@
+-cp src
+-cp tst
+--main TestAll
+--library utest
+--library heaps
+--each
+
+# Build the HashLink Executable
+--next
+--hl bin/app.hl
+
+# Run the HashLink Executable
+--cmd "hl ./bin/app.hl"
