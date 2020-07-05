@@ -21,12 +21,12 @@ class QuadsPrimitive extends h3d.prim.Primitive {
   }
 
   /**
-   * Add a quad to the primitive.
-   *
-   * Each vertex is pushed into internal buffers in the correct order and
-   * layout. The GPU buffer is marked for an update on the next frame.
-   * @param quad the Quad object to actually render
-   */
+      Add a quad to the primitive.
+
+      Each vertex is pushed into internal buffers in the correct order and
+      layout. The GPU buffer is marked for an update on the next frame.
+      @param quad the Quad object to actually render
+  **/
   public function push(quad: Quad) {
     pushVertex(quad.bottomLeft, 0, 0);
     pushVertex(quad.topLeft, 0, 1);
