@@ -1,54 +1,136 @@
-import h2d.Object;
-import support.h2d.FastLines;
-import support.Turtle;
+import hxd.Key;
+import h2d.Flow;
 
 class Main extends hxd.App {
 
-  var root : Object;
-  var fastLines : FastLines;
-  var space: Space = new Space();
-  var xAxis : Range;
-  var yAxis : Range;
+  /**
+      Flows are useful for automatically organizing and aligning elements on the
+      screen.
+  **/
+  var flow: Flow;
+
+  /* A plot to show the total sum of all signals in the harmonic plots */
+  var total: Plot;
 
   /**
-      Initialize the demo. This is automatically called by Heaps when
-      the window is ready.
+      A collection of signals and their plots, used to generate the total and
+      show how a complex signal can be built from simple components.
+  **/
+  var harmonics: Array<{plot: Plot, signal: Signal}> = [];
+
+  /**
+      Create the flow and plots.
   **/
   override function init() {
-    root = new Object(s2d);
-    fastLines = new FastLines(root);
-    new support.h2d.FullscreenButton(s2d);
+    flow = new Flow(s2d);
+    flow.horizontalAlign = Middle;
+    flow.verticalAlign = Top;
+    flow.layout = Vertical;
+    flow.verticalSpacing = 4;
 
-    space.xIn = new Interval(-1, 1);
-    space.yIn = new Interval(-1, 1);
+    flow.addSpacing(25);
+
+    total = new Plot(flow);
+    total.xAxis = new Interval(0, Math.PI*4);
+    total.lineWidth = 2;
+
+    addHarmonic();
+
+    new support.h2d.FullscreenButton(s2d);
+    hxd.Window.getInstance().addEventTarget(onKeyUp);
 
     onResize();
   }
 
-  function draw() {
-    fastLines.clear();
-    final t = new SpaceTurtle(fastLines, space);
-    t.lineWidth = 1.0;
-    t.moveTo(-1, 0).lineTo(1, 0);
-    t.moveTo(0, -1).lineTo(0, 1);
+  function onKeyUp(e: hxd.Event) {
+    if (e.kind != EKeyUp) { return; }
+    switch (e.keyCode) {
+      case Key.UP: addHarmonic();
+      case Key.DOWN: removeHarmonic();
+      default: //
+    }
   }
 
-  override function onResize() {
-    root.x = s2d.width / 4;
-    root.y = s2d.height / 4;
-    space.yOut = new Interval(s2d.height / 2, 0);
-    space.xOut = new Interval(0, s2d.width / 2);
-    draw();
+  function addHarmonic() {
+    if (harmonics.length > 10) { return; }
+
+    final plot = new Plot(flow);
+    plot.xAxis = new Interval(0, Math.PI*4);
+    plot.yAxis = new Interval(-1, 1);
+    plot.lineWidth = 2;
+
+    final signal = new Signal(
+      Math.random()*Math.PI*2,
+      1 + Math.random()*(harmonics.length + 1)
+    );
+
+    harmonics.push({plot: plot, signal: signal});
+    onResize();
+    rescaleTotal();
+  }
+
+  function removeHarmonic() {
+    if (harmonics.length == 0) { return; }
+
+    final harmonic = harmonics.pop();
+    flow.removeChild(harmonic.plot);
+    flow.needReflow = true;
+
+    onResize();
+    rescaleTotal();
+  }
+
+  function rescaleTotal() {
+    final maxTotal = Math.max(1, harmonics.length);
+    total.yAxis.min = -maxTotal;
+    total.yAxis.max = maxTotal;
   }
 
   /**
-      Update the contents of the screen.
-      This is automatically called by Heaps before each frame.
+      Update flow bounds and flag the contents to be reflowed, resize each
+      plot so there's enough space for each of them on screen.
   **/
-  override function update(dt: Float) {
+  override function onResize() {
+    flow.maxWidth = flow.minWidth = s2d.width;
+    flow.maxHeight = flow.minHeight = s2d.height;
+    flow.needReflow = true;
+
+    final plotWidth = s2d.width * 0.9;
+    final totalHeight = s2d.height / 4;
+    total.resize(plotWidth, totalHeight );
+
+    final count = (harmonics.length + 2);
+    final harmonicHeight = (s2d.height - totalHeight) / count;
+    for (harmonic in harmonics) {
+      harmonic.plot.resize(plotWidth, harmonicHeight);
+    }
   }
 
-  static function main() {
-    new Main();
+  /**
+      Plot each signal. Each plot's xAxis advances with time to give a view
+      of how each signal changes with time.
+  **/
+  override function update(dt: Float) {
+    for (harmonic in harmonics) {
+      harmonic.plot.xAxis.min += dt;
+      harmonic.plot.xAxis.max += dt;
+      harmonic.plot.plot(harmonic.signal.eval);
+    }
+
+    total.xAxis.min += dt;
+    total.xAxis.max += dt;
+    total.plot(composedSignal);
   }
+
+  /**
+      The composed signal is just the sum of all contributing signals at each
+      point.
+  **/
+  function composedSignal(x: Float): Float {
+    var sum = 0.0;
+    for (harmonic in harmonics) sum += harmonic.signal.eval(x);
+    return sum;
+  }
+
+  static function main() { new Main(); }
 }

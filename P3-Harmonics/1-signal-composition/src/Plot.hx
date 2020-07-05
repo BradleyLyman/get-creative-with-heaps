@@ -3,98 +3,74 @@ import hxd.fmt.hmd.Data.Position;
 import h2d.Object;
 import h2d.Graphics;
 import h2d.Text;
+import h2d.Bitmap;
+import h2d.Tile;
 import support.h2d.FastLines;
 import support.Turtle;
 
 /**
     Objects of this class represent an onscreen cartesian plot.
 **/
-class Plot {
-  /**
-      The amount of space this plot occupies on screen. Coordinates are relative
-      to the parent.
-  **/
-  private var screenSize: { width: Float, height: Float};
-
-  /**
-      The span for the plot's x and y axis.
-  **/
-  @:isVar public var axis(default, null): {x: Range, y: Range};
-
-  private var root: Object;
-  private var grid: Graphics;
+class Plot extends Object {
   private var fastLines: FastLines;
+  private var background: Bitmap;
 
-  public var x(get, set) : Float;
-  public var y(get, set) : Float;
+  private var turtle: SpaceTurtle;
+  private var space: Space = new Space();
+  private var margin: Float = 1/100;
 
-  public var data: {
-    x: haxe.ds.Vector<Float>,
-    y: haxe.ds.Vector<Float>
-  };
+  public var xAxis(get, set): Interval;
+  public var yAxis(get, set): Interval;
+  public var lineWidth(get, set): Float;
 
-  static private final INSET = 0.98;
-  static private final HALF_INSET = 0.99;
+  /* The plot's width on screen. Call resize() to change */
+  @:isVar public var width(default, null): Float;
+
+  /* The plot's height on screen. Call resize() to change */
+  @:isVar public var height(default, null): Float;
 
   /**
       Create a new Plot object which can be used to present data on screen.
   **/
-  public function new(
-    xAxis: Range,
-    yAxis: Range,
-    parent: h2d.Object
-  ) {
-    this.screenSize = {width: 100, height: 100};
-    this.axis = {x: xAxis, y: yAxis};
-    this.root = new Object(parent);
-    this.grid = new Graphics(this.root);
-    this.fastLines = new FastLines(this.root);
-    this.data = {x: new haxe.ds.Vector(0), y: new haxe.ds.Vector(0)};
+  public function new(parent: h2d.Object) {
+    super(parent);
+    this.background = new Bitmap(Tile.fromColor(0xFFFFFF, 1, 1, 0.1), this);
+    this.fastLines = new FastLines(this);
+    this.turtle = new SpaceTurtle(this.fastLines, this.space);
   }
 
-  public function dispose() {
-    this.root.parent.removeChild(this.root);
-  }
-
+  /**
+      Resize the plot. Forces the contents to be cleared.
+      @param width
+      @param height
+  **/
   public function resize(width: Float, height: Float) {
-    this.screenSize = {width: width, height: height};
-  }
+    this.width = width;
+    this.height = height;
+    background.scaleX = width;
+    background.scaleY = height;
 
-  public function render() {
-    grid.clear();
+    final xMargin = width * margin;
+    final yMargin = height * margin;
+    final pxMargin = Math.max(xMargin, yMargin);
+    space.xOut = new Interval(pxMargin, width-pxMargin);
+    space.yOut = new Interval(height - pxMargin, pxMargin);
+
     fastLines.clear();
-    renderBackground();
-    renderData();
   }
 
-  private function renderBackground() {
-    grid.beginFill(0xFFFFFF, 0.1);
-    grid.drawRect(0, 0, screenSize.width, screenSize.height);
-    grid.endFill();
-  }
-
-  private function renderData() {
-    if (data.x.length == 0 || data.x.length != data.y.length) { return; }
-
-    final xMap = axis.x.clampMapTo(Range.of(
-      screenSize.width * (1.0-INSET), screenSize.width * INSET
-    ));
-    final yMap = axis.y.clampMapTo(Range.of(
-      screenSize.height * INSET, screenSize.height * (1.0-INSET)
-    ));
-
-    final turtle = new Turtle(fastLines);
-    turtle.lineWidth = 2;
-    turtle.moveTo(xMap(data.x[0]), yMap(data.y[0]));
-    for (i in 0...data.x.length) {
-      turtle.lineTo(
-        xMap(data.x[i]), yMap(data.y[i])
-      );
+  public function plot(f: (Float) -> Float, subdivisions: Int = 500) {
+    fastLines.clear();
+    turtle.moveTo(space.xIn.min, f(space.xIn.min));
+    for (x in space.xIn.subdivide(subdivisions)) {
+      turtle.lineTo(x, f(x));
     }
   }
 
-  public function get_x() { return root.x; }
-  public function set_x(v) { return root.x = v; }
-  public function get_y() { return root.y; }
-  public function set_y(v) { return root.y = v; }
+  private function get_lineWidth() { return this.turtle.lineWidth; }
+  private function set_lineWidth(s) { return this.turtle.lineWidth = s; }
+  private function get_xAxis() { return this.space.xIn; }
+  private function set_xAxis(axis) { return this.space.xIn = axis; }
+  private function get_yAxis() { return this.space.yIn; }
+  private function set_yAxis(axis) { return this.space.yIn = axis; }
 }

@@ -8,7 +8,7 @@ class SpaceTurtle {
   private var turtle: Turtle;
   private var space: Space;
 
-  public var lineWidth(default, default): Float;
+  public var lineWidth(get, set): Float;
 
   /* Create new turtle */
   public inline function new(view: View, space: Space) {
@@ -28,6 +28,6 @@ class SpaceTurtle {
     return this;
   }
 
-  function get_lineWidth() { return turtle.lineWidth; }
-  function set_lineWidth(v) { return turtle.lineWidth = v; }
+  private function get_lineWidth() { return turtle.lineWidth; }
+  private function set_lineWidth(v) { return turtle.lineWidth = v; }
 }
