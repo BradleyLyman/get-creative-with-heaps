@@ -1,97 +1,84 @@
-import Signal.SignalSum;
+import h3d.impl.Benchmark;
+import h2d.Console.ConsoleArg;
+import h2d.Font;
+import h2d.Object;
 import h2d.Slider;
 import h2d.Text;
+import h2d.Flow;
 
 class Main extends hxd.App {
-
   var time = 0.0;
 
-  /* The raw signal plots + sliders to change frequency. */
-  var displays: Array<{
-    plot: Plot,
-    slider: Slider,
-    signal: Signal
-  }>;
+  var flow : Flow;
 
-  var total: {
-    plot: Plot,
-    signal: SignalSum
-  }
+  var graphs : Array<{signal: Signal, plot: Plot}> = [];
+  var total : Plot;
+  var benchNext = false;
 
   /**
       Initialize the demo. This is automatically called by Heaps when
       the window is ready.
   **/
   override function init() {
+    flow = new Flow(s2d);
+    flow.horizontalAlign = Middle;
+    flow.verticalAlign = Middle;
+    flow.layout = Vertical;
+
+    total = new Plot([0, Math.PI*4], [-1.1, 1.1], flow);
+    final range = total.axis.x.subdivide(1000);
+    total.data = { x: range, y: range.map((x) -> 0.0) };
+    onResize();
+
     new FullscreenButton(s2d);
 
-    displays = [
-      for (freq in 0...3) {
-        {
-          plot: new Plot(10, 10, [0, Math.PI*4], [-1.1, 1.1], s2d),
-          slider: new Slider(10, 10, s2d),
-          signal: new Signal(0.0, freq)
-        };
-      }
-    ];
-    total = {
-      plot: new Plot(10, 10, [0, Math.PI*4], [-3.1, 3.1], s2d),
-      signal: [ for (display in displays) display.signal ]
-    };
+    hxd.Window.getInstance().addEventTarget((e) -> {
+      if (e.kind == EPush) { onClick(e); }
+    });
 
-    for (display in displays) {
-      display.slider.rotate(Math.PI/2);
-      display.slider.minValue = 0.25;
-      display.slider.maxValue = 10.0;
-      display.slider.value = display.signal.frequency;
+  }
 
-      display.slider.onChange = () -> {
-        display.signal.frequency = display.slider.value;
-        display.plot.data =
-          display.signal.valuesFor(display.plot.axis.x.steps(500));
-        display.plot.render();
-
-        total.plot.data = total.signal.valuesFor(total.plot.axis.x.steps(500));
-        total.plot.render();
-      };
-      display.slider.onChange();
-    }
-
+  function onClick(e: hxd.Event) {
+    if (e.button == 0) { addGraph(); }
+    else { removeGraph(); }
     onResize();
+    benchNext = true;
   }
 
   override function onResize() {
-    var count = 0;
-    var offset: Vector = [0.0, s2d.height/5];
-    for (display in displays) {
-      place(display.plot, display.slider, offset * count++);
+    final height = 100 / (graphs.length + 3);
+    for (graph in graphs) {
+      graph.plot.resize(90*vw(), height*vh());
+      graph.plot.render();
     }
-    placeTotal(offset*count);
+    total.resize(90*vw(), height*2*vh());
+    total.render();
+
+    flow.minWidth = flow.maxWidth = s2d.width;
+    flow.minHeight = flow.maxHeight = s2d.height;
+    flow.reflow();
   }
 
-  private function placeTotal(offset: Vector) {
-    final margin: Vector = [0.1, 0.1];
-    final plotPos = offset + [margin.x * s2d.width, margin.y * s2d.height];
-    final plotDim: Vector = [s2d.width * (1.0-margin.x*2), s2d.height * (1/6)];
-    total.plot.resize(plotDim.x, plotDim.y);
-    total.plot.x = plotPos.x;
-    total.plot.y = plotPos.y;
-    total.plot.render();
+  function addGraph() {
+    if (graphs.length >= 5) { return; }
+
+    final plot = new Plot([0, Math.PI*4], [-1.1, 1.1], flow);
+    plot.data = { x: total.data.x, y: total.data.x.map((x) -> 0.0) };
+
+    final minSignal = 0.5;
+    final max = 15 * Math.random();
+    graphs.push({
+      signal: new Signal(0.0, max),
+      plot: plot
+    });
+    total.axis.y = [-graphs.length-0.1, graphs.length+0.1];
   }
 
-  private function place(plot: Plot, slider: Slider, offset: Vector) {
-    final margin: Vector = [0.1, 0.1];
-    final plotPos = offset + [margin.x * s2d.width, margin.y * s2d.height];
-    final plotDim: Vector = [s2d.width * (1.0-margin.x*2), s2d.height * (1/6)];
-    plot.resize(plotDim.x, plotDim.y);
-    plot.x = plotPos.x;
-    plot.y = plotPos.y;
-    plot.render();
-
-    slider.width = plotDim.y;
-    slider.height = plotDim.y / 6;
-    slider.x = plotPos.x - slider.height*0.1;
-    slider.y = plotPos.y;
+  function removeGraph() {
+    if (graphs.length == 0) return;
+    final graph = graphs.pop();
+    graph.plot.dispose();
+    total.axis.y = [-graphs.length-0.1, graphs.length+0.1];
   }
 
   /**
@@ -99,16 +86,23 @@ class Main extends hxd.App {
       This is automatically called by Heaps before each frame.
   **/
   override function update(dt: Float) {
-    time += dt*2;
-    for (display in displays) {
-      display.signal.offset = time;
-      display.plot.data =
-        display.signal.valuesFor(display.plot.axis.x.steps(500));
-      display.plot.render();
+    for (j in 0...total.data.x.length) { total.data.y[j] = 0; }
+    for (graph in graphs) {
+      graph.signal.offset += dt*2;
+      for (j in 0...total.data.x.length) {
+        final y = graph.signal.eval(total.data.x[j]);
+        graph.plot.data.y[j] = y;
+        total.data.y[j] += y;
+      }
     }
-    total.plot.data = total.signal.valuesFor(total.plot.axis.x.steps(500));
-    total.plot.render();
+
+    for (graph in graphs) { graph.plot.render(); }
+    total.render();
   }
+
+  function vw() : Int { return Math.round(s2d.width / 100.0); }
+  function vh() : Int { return Math.round(s2d.height / 100.0); }
+  function vm() : Int { return Math.round(Math.min(vw(), vh())); }
 
   static function main() {
     new Main();

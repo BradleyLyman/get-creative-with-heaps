@@ -1,3 +1,4 @@
+import hxd.fmt.hmd.Data.Position;
 import h2d.Object;
 import h2d.Graphics;
 import h2d.Text;
@@ -23,7 +24,10 @@ class Plot {
   public var x(get, set) : Float;
   public var y(get, set) : Float;
 
-  public var data : Array<Vector>;
+  public var data: {
+    x: haxe.ds.Vector<Float>,
+    y: haxe.ds.Vector<Float>
+  };
 
   public var hideAxis : Bool = true;
 
@@ -34,16 +38,19 @@ class Plot {
       Create a new Plot object which can be used to present data on screen.
   **/
   public function new(
-    width: Float, height: Float,
     xAxis: Range,
     yAxis: Range,
     parent: h2d.Object
   ) {
-    this.screenSize = {width: width, height: height};
+    this.screenSize = {width: 100, height: 100};
     this.axis = {x: xAxis, y: yAxis};
     this.root = new Object(parent);
     this.grid = new Graphics(this.root);
-    this.data = [];
+    this.data = {x: new haxe.ds.Vector(0), y: new haxe.ds.Vector(0)};
+  }
+
+  public function dispose() {
+    this.root.parent.removeChild(this.root);
   }
 
   public function resize(width: Float, height: Float) {
@@ -90,20 +97,27 @@ class Plot {
   }
 
   private function renderData() {
-    if (data.length == 0) { return; }
+    if (data.x.length == 0 || data.x.length != data.y.length) { return; }
 
-    final xMap = axis.x.clampMapTo([
+    final widthRange: Range = [
       screenSize.width * (1.0-INSET), screenSize.width * INSET
-    ]);
-    final yMap = axis.y.clampMapTo([
+    ];
+    final heightRange: Range = [
       screenSize.height * INSET, screenSize.height * (1.0-INSET)
-    ]);
+    ];
+
+    final xAxis = axis.x;
+    final yAxis = axis.y;
 
     grid.lineStyle(2, 0xFFFFFF, 1.0);
-    grid.moveTo(xMap(data[0].x), yMap(data[0].y));
+    final x = widthRange.lerp(xAxis.normalize(xAxis.clamp(data.x[0])));
+    final y = heightRange.lerp(yAxis.normalize(yAxis.clamp(data.y[0])));
+    grid.moveTo(x, y);
     grid.beginFill(0, 0);
-    for (point in data) {
-      grid.lineTo(xMap(point.x), yMap(point.y));
+    for (i in 0...data.x.length) {
+      final x = widthRange.lerp(xAxis.normalize(xAxis.clamp(data.x[i])));
+      final y = heightRange.lerp(yAxis.normalize(yAxis.clamp(data.y[i])));
+      grid.lineTo(x, y);
     }
     grid.endFill();
   }
