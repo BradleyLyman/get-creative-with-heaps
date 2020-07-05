@@ -5,15 +5,24 @@
     (the larger values ignored), and smaller arrays will result in runtime
     errors.
 **/
-abstract Range(Array<Float>) from Array<Float> to Array<Float> {
-  public var min(get, set): Float;
-  public var max(get, set): Float;
+class Range {
+  public final min: Float;
+  public final max: Float;
 
-  static public final UNIT : Range = [0, 1];
+  static public final UNIT : Range = Range.of(0, 1);
+
+  static public inline function of(min: Float, max: Float) : Range {
+    return new Range(min, max);
+  }
+
+  public inline function new(min: Float, max: Float) {
+    this.min = min;
+    this.max = max;
+  }
 
   public inline function clamp(x: Float) : Float {
-    if (x <= this[0]) { return this[0]; }
-    else if (x >= this[1]) { return this[1]; }
+    if (x <= min) { return min; }
+    else if (x >= max) { return max; }
     else { return x; }
   }
 
@@ -45,9 +54,4 @@ abstract Range(Array<Float>) from Array<Float> to Array<Float> {
     }
     return endpoints;
   }
-
-  public inline function get_min() { return this[0]; }
-  public inline function set_min(v) { return this[0] = v; }
-  public inline function get_max() { return this[1]; }
-  public inline function set_max(v) { return this[1] = v; }
 }

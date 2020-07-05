@@ -1,7 +1,10 @@
+import support.Turtle;
 import hxd.fmt.hmd.Data.Position;
 import h2d.Object;
 import h2d.Graphics;
 import h2d.Text;
+import support.h2d.FastLines;
+import support.Turtle;
 
 /**
     Objects of this class represent an onscreen cartesian plot.
@@ -20,6 +23,7 @@ class Plot {
 
   private var root: Object;
   private var grid: Graphics;
+  private var fastLines: FastLines;
 
   public var x(get, set) : Float;
   public var y(get, set) : Float;
@@ -28,8 +32,6 @@ class Plot {
     x: haxe.ds.Vector<Float>,
     y: haxe.ds.Vector<Float>
   };
-
-  public var hideAxis : Bool = true;
 
   static private final INSET = 0.98;
   static private final HALF_INSET = 0.99;
@@ -46,6 +48,7 @@ class Plot {
     this.axis = {x: xAxis, y: yAxis};
     this.root = new Object(parent);
     this.grid = new Graphics(this.root);
+    this.fastLines = new FastLines(this.root);
     this.data = {x: new haxe.ds.Vector(0), y: new haxe.ds.Vector(0)};
   }
 
@@ -59,8 +62,8 @@ class Plot {
 
   public function render() {
     grid.clear();
+    fastLines.clear();
     renderBackground();
-    if (!hideAxis) { renderAxis(); }
     renderData();
   }
 
@@ -70,56 +73,24 @@ class Plot {
     grid.endFill();
   }
 
-  private function renderAxis() {
-    // baseline position
-    // maps for the axis coords
-    final xMap = axis.x.mapTo([
-      screenSize.width * (1.0-INSET), screenSize.width * INSET
-    ]);
-    final yMap = axis.y.mapTo([
-      screenSize.height * INSET, screenSize.height * (1.0-INSET)
-    ]);
-
-    grid.lineStyle(2, 0xFFFFFF, 1.0);
-    grid.moveTo(
-      xMap(axis.x.min - axis.x.size()*(1.0-HALF_INSET)), yMap(axis.y.min)
-    );
-    grid.lineTo(
-      xMap(axis.x.max + axis.x.size()*(1.0-HALF_INSET)), yMap(axis.y.min)
-    );
-
-    grid.moveTo(
-      xMap(axis.x.min), yMap(axis.y.min - axis.y.size()*(1.0-HALF_INSET))
-    );
-    grid.lineTo(
-      xMap(axis.x.min), yMap(axis.y.max + axis.y.size()*(1.0-HALF_INSET))
-    );
-  }
-
   private function renderData() {
     if (data.x.length == 0 || data.x.length != data.y.length) { return; }
 
-    final widthRange: Range = [
+    final xMap = axis.x.clampMapTo(Range.of(
       screenSize.width * (1.0-INSET), screenSize.width * INSET
-    ];
-    final heightRange: Range = [
+    ));
+    final yMap = axis.y.clampMapTo(Range.of(
       screenSize.height * INSET, screenSize.height * (1.0-INSET)
-    ];
+    ));
 
-    final xAxis = axis.x;
-    final yAxis = axis.y;
-
-    grid.lineStyle(2, 0xFFFFFF, 1.0);
-    final x = widthRange.lerp(xAxis.normalize(xAxis.clamp(data.x[0])));
-    final y = heightRange.lerp(yAxis.normalize(yAxis.clamp(data.y[0])));
-    grid.moveTo(x, y);
-    grid.beginFill(0, 0);
+    final turtle = new Turtle(fastLines);
+    turtle.lineWidth = 2;
+    turtle.moveTo(xMap(data.x[0]), yMap(data.y[0]));
     for (i in 0...data.x.length) {
-      final x = widthRange.lerp(xAxis.normalize(xAxis.clamp(data.x[i])));
-      final y = heightRange.lerp(yAxis.normalize(yAxis.clamp(data.y[i])));
-      grid.lineTo(x, y);
+      turtle.lineTo(
+        xMap(data.x[i]), yMap(data.y[i])
+      );
     }
-    grid.endFill();
   }
 
   public function get_x() { return root.x; }

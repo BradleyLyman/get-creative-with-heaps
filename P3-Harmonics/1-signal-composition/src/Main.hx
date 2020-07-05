@@ -25,8 +25,8 @@ class Main extends hxd.App {
     flow.verticalAlign = Middle;
     flow.layout = Vertical;
 
-    total = new Plot([0, Math.PI*4], [-1.1, 1.1], flow);
-    final range = total.axis.x.subdivide(1000);
+    total = new Plot(Range.of(0, Math.PI*4), Range.of(-1.1, 1.1), flow);
+    final range = total.axis.x.subdivide(500);
     total.data = { x: range, y: range.map((x) -> 0.0) };
     onResize();
 
@@ -35,7 +35,6 @@ class Main extends hxd.App {
     hxd.Window.getInstance().addEventTarget((e) -> {
       if (e.kind == EPush) { onClick(e); }
     });
-
   }
 
   function onClick(e: hxd.Event) {
@@ -60,9 +59,9 @@ class Main extends hxd.App {
   }
 
   function addGraph() {
-    if (graphs.length >= 5) { return; }
+    if (graphs.length >= 10) { return; }
 
-    final plot = new Plot([0, Math.PI*4], [-1.1, 1.1], flow);
+    final plot = new Plot(Range.of(0, Math.PI*4), Range.of(-1.1, 1.1), flow);
     plot.data = { x: total.data.x, y: total.data.x.map((x) -> 0.0) };
 
     final minSignal = 0.5;
@@ -71,14 +70,14 @@ class Main extends hxd.App {
       signal: new Signal(0.0, max),
       plot: plot
     });
-    total.axis.y = [-graphs.length-0.1, graphs.length+0.1];
+    total.axis.y = Range.of(-graphs.length-0.1, graphs.length+0.1);
   }
 
   function removeGraph() {
     if (graphs.length == 0) return;
     final graph = graphs.pop();
     graph.plot.dispose();
-    total.axis.y = [-graphs.length-0.1, graphs.length+0.1];
+    total.axis.y = Range.of(-graphs.length-0.1, graphs.length+0.1);
   }
 
   /**
