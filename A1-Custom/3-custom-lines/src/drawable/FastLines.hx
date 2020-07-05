@@ -1,5 +1,6 @@
 package drawable;
 
+import math2d.Line;
 import h3d.mat.Texture;
 
 /**

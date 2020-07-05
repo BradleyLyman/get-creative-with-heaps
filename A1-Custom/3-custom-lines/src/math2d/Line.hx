@@ -1,3 +1,5 @@
+package math2d;
+
 /**
     Objects of this type represent a line in 2 dimensions.
 
@@ -5,11 +7,11 @@
     as 2 vecs.
 **/
 class Line {
-  public var start: Vec2;
-  public var end: Vec2;
+  public var start: Vec;
+  public var end: Vec;
 
   /* Create a new line with start and end points. */
-  public inline function new(start: Vec2, end: Vec2) {
+  public inline function new(start: Vec, end: Vec) {
     this.start = start;
     this.end = end;
   }

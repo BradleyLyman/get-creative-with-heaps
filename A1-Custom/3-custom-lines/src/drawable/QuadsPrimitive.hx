@@ -1,5 +1,8 @@
 package drawable;
 
+import math2d.Quad;
+import math2d.Vec;
+
 /**
     Objects of this type represent a collection of quads which can all be
     rendered with the exact same texture/material.
@@ -77,7 +80,7 @@ class QuadsPrimitive extends h3d.prim.Primitive {
       Marks the vertices as dirty so the next render call will update the
       h3d.Buffer with the new data.
   **/
-  private function pushVertex(p: Vec2, u: Float, v: Float) {
+  private function pushVertex(p: Vec, u: Float, v: Float) {
     dirty = true;
 
 		vertices.push( p.x );  // xy

@@ -1,15 +1,20 @@
+package math2d;
+
 /**
     Objects of this type represent a quadrilateral.
 **/
 class Quad {
-  public var topLeft: Vec2;
-  public var topRight: Vec2;
-  public var bottomLeft: Vec2;
-  public var bottomRight: Vec2;
+  public var topLeft: Vec;
+  public var topRight: Vec;
+  public var bottomLeft: Vec;
+  public var bottomRight: Vec;
 
   /* Create a new quad given the provided coordinates */
   public inline function new(
-    topLeft: Vec2, topRight: Vec2, bottomLeft: Vec2, bottomRight: Vec2
+    topLeft: Vec,
+    topRight: Vec,
+    bottomLeft: Vec,
+    bottomRight: Vec
   ) {
     this.topLeft = topLeft;
     this.topRight = topRight;

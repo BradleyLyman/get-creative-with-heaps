@@ -1,38 +1,4 @@
-import h2d.Interactive;
-import format.abc.Data.ABCData;
-import h2d.col.Point;
-import h2d.Graphics;
-import hxsl.ShaderList;
-import h3d.mat.MaterialSetup;
-import h3d.scene.Mesh;
-import h3d.prim.Cube;
-import h3d.mat.Texture;
-
 import drawable.FastLines;
-
-class Turtle {
-  public final lines : FastLines;
-
-  public var lineWidth : Float = 1;
-  public var position : Vec2 = new Vec2(0, 0);
-
-  public inline function new(lines: FastLines) {
-    this.lines = lines;
-  }
-
-  public inline function moveTo(x: Float, y: Float): Turtle {
-    position.x = x;
-    position.y = y;
-    return this;
-  }
-
-  public inline function lineTo(x: Float, y: Float): Turtle {
-    final to = new Vec2(x, y);
-    lines.addLine(new Line(position, to), lineWidth);
-    this.position = to;
-    return this;
-  }
-}
 
 class Main extends hxd.App {
   var turtle : Turtle;
