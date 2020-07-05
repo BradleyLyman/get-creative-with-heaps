@@ -1,7 +1,7 @@
 ---
 section: P1 Color
 layout: demo
-title: painting
+title: Painting
 order: 4
 ---
 
