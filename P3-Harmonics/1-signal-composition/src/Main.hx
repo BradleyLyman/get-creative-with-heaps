@@ -1,3 +1,6 @@
+import support.h2d.Plot;
+import support.linAlg2d.Interval;
+
 import hxd.Key;
 import h2d.Flow;
 
@@ -31,6 +34,7 @@ class Main extends hxd.App {
     flow.addSpacing(25);
 
     total = new Plot(flow);
+    total.yAxis = new Interval(-1, 1);
     total.xAxis = new Interval(0, Math.PI*4);
     total.lineWidth = 2;
 
@@ -42,6 +46,7 @@ class Main extends hxd.App {
     onResize();
   }
 
+  /* handle a window event, add and remove plots on key release */
   function onKeyUp(e: hxd.Event) {
     if (e.kind != EKeyUp) { return; }
     switch (e.keyCode) {
@@ -51,14 +56,17 @@ class Main extends hxd.App {
     }
   }
 
+  /* Add a new harmonic component to the total. */
   function addHarmonic() {
-    if (harmonics.length > 10) { return; }
+    if (harmonics.length > 10) { return; } // skip if we already have 10
 
+    // create the plot, set the scale and visual properties
     final plot = new Plot(flow);
     plot.xAxis = new Interval(0, Math.PI*4);
     plot.yAxis = new Interval(-1, 1);
     plot.lineWidth = 2;
 
+    // create a new signal with some randomized fields
     final signal = new Signal(
       Math.random()*Math.PI*2,
       1 + Math.random()*(harmonics.length + 1)
@@ -66,24 +74,18 @@ class Main extends hxd.App {
 
     harmonics.push({plot: plot, signal: signal});
     onResize();
-    rescaleTotal();
   }
 
+  /* Remove the last harmonic component from the total */
   function removeHarmonic() {
-    if (harmonics.length == 0) { return; }
+    if (harmonics.length == 0) { return; } // skip if there's nothing to remove
 
+    // Remove the visual plot from the flow
     final harmonic = harmonics.pop();
     flow.removeChild(harmonic.plot);
     flow.needReflow = true;
 
     onResize();
-    rescaleTotal();
-  }
-
-  function rescaleTotal() {
-    final maxTotal = Math.max(1, harmonics.length);
-    total.yAxis.min = -maxTotal;
-    total.yAxis.max = maxTotal;
   }
 
   /**
@@ -111,15 +113,16 @@ class Main extends hxd.App {
       of how each signal changes with time.
   **/
   override function update(dt: Float) {
+    final rdt = dt * Math.PI/2; // advance 1/4 of cycle per second
     for (harmonic in harmonics) {
-      harmonic.plot.xAxis.min += dt;
-      harmonic.plot.xAxis.max += dt;
-      harmonic.plot.plot(harmonic.signal.eval);
+      harmonic.plot.xAxis.min += rdt;
+      harmonic.plot.xAxis.max += rdt;
+      harmonic.plot.plotFunction(harmonic.signal.eval);
     }
 
-    total.xAxis.min += dt;
-    total.xAxis.max += dt;
-    total.plot(composedSignal);
+    total.xAxis.min += rdt;
+    total.xAxis.max += rdt;
+    total.plotFunction(composedSignal);
   }
 
   /**
@@ -127,8 +130,12 @@ class Main extends hxd.App {
       point.
   **/
   function composedSignal(x: Float): Float {
+    final len = harmonics.length;
     var sum = 0.0;
-    for (harmonic in harmonics) sum += harmonic.signal.eval(x);
+    for (harmonic in harmonics) {
+      // scale each signal to the sum still has max in the range [-1, 1]
+      sum += (1.0/len) * harmonic.signal.eval(x);
+    }
     return sum;
   }
 

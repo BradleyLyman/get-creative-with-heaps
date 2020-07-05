@@ -1,5 +1,6 @@
-import support.Turtle;
-import support.Turtle.View;
+package support;
+
+import support.linAlg2d.Space;
 
 /**
     A Turtle which automatically transforms inputs using a space.
@@ -11,7 +12,7 @@ class SpaceTurtle {
   public var lineWidth(get, set): Float;
 
   /* Create new turtle */
-  public inline function new(view: View, space: Space) {
+  public inline function new(view: Turtle.View, space: Space) {
     this.turtle = new Turtle(view);
     this.space = space;
   }

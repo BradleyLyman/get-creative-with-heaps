@@ -1,3 +1,5 @@
+package support.linAlg2d;
+
 /**
     An interval represents a segment of the real numberline fom min to max.
 **/

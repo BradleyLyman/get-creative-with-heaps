@@ -1,4 +1,4 @@
-import support.linAlg2d.Vec;
+package support.linAlg2d;
 
 /**
     A space is a mapping from one interval pair to a second interval pair.

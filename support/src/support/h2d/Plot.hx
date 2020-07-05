@@ -1,12 +1,15 @@
+package support.h2d;
+
 import support.Turtle;
+import support.linAlg2d.Space;
+import support.linAlg2d.Interval;
+
 import hxd.fmt.hmd.Data.Position;
 import h2d.Object;
 import h2d.Graphics;
 import h2d.Text;
 import h2d.Bitmap;
 import h2d.Tile;
-import support.h2d.FastLines;
-import support.Turtle;
 
 /**
     Objects of this class represent an onscreen cartesian plot.
@@ -59,7 +62,12 @@ class Plot extends Object {
     fastLines.clear();
   }
 
-  public function plot(f: (Float) -> Float, subdivisions: Int = 500) {
+  /**
+      Plot f(x) for a sequence of connected points along the x axis.
+      @param f - the function to plot
+      @param subdivisions - the number of points to sample along teh x axis
+  **/
+  public function plotFunction(f: (Float) -> Float, subdivisions: Int = 500) {
     fastLines.clear();
     turtle.moveTo(space.xIn.min, f(space.xIn.min));
     for (x in space.xIn.subdivide(subdivisions)) {
