@@ -6,7 +6,7 @@ class Main extends hxd.App {
 
   override function init() {
     canvas = new Canvas(s2d);
-    new FullscreenButton(s2d);
+    new support.h2d.FullscreenButton(s2d);
     resetAgent();
   }
 

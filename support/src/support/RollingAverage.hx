@@ -2,14 +2,16 @@
     Compute the rolling average of a list of numbers.;
 **/
 class RollingAverage {
-  private final MAX_FRAMES = 60;
+  private final max;
   private var times : Array<Float> = [];
   private var current : Int = 0;
 
-  public function new() {}
+  public function new(max: Int = 60) {
+    this.max = max;
+  }
 
   public function push(time: Float) {
-    if (times.length < MAX_FRAMES) {
+    if (times.length < max) {
       times.push(time);
     }
     else {
@@ -20,7 +22,7 @@ class RollingAverage {
 
   private function next() {
     current++;
-    if (current >= MAX_FRAMES) {
+    if (current >= max) {
       current = 0;
       trace("avg: " + Math.ceil(average() * 1000) + "ms");
     }

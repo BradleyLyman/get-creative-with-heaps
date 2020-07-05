@@ -1,3 +1,4 @@
+package support.h2d;
 
 import hxd.Window.DisplayMode;
 

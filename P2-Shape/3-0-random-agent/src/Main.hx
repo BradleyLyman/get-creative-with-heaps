@@ -54,8 +54,8 @@ class Main extends hxd.App {
     var agents : Array<Agent> = [];
 
     override function init() {
-        new FullscreenButton(s2d);
         graphics = [for (i in 0...300) new h2d.Graphics(s2d)];
+        new support.h2d.FullscreenButton(s2d);
         hxd.Window.getInstance().addEventTarget(onEvent);
         resetAgents();
     }

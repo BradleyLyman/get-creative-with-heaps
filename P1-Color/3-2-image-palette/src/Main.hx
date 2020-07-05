@@ -28,7 +28,7 @@ class Main extends hxd.App {
         hxd.Window.getInstance().addEventTarget(onEvent);
         onResize();
 
-        new FullscreenButton(s2d);
+        new support.h2d.FullscreenButton(s2d);
     }
 
     /**

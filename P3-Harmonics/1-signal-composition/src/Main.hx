@@ -30,7 +30,7 @@ class Main extends hxd.App {
     total.data = { x: range, y: range.map((x) -> 0.0) };
     onResize();
 
-    new FullscreenButton(s2d);
+    new support.h2d.FullscreenButton(s2d);
 
     hxd.Window.getInstance().addEventTarget((e) -> {
       if (e.kind == EPush) { onClick(e); }

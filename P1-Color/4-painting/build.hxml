@@ -1,12 +1,8 @@
 -cp src
--cp ../../tools
+-cp ../../support/src/
 --main Main
 --library heaps
 --each
-
-# Build the demo js
---next
---js bin/demo.js
 
 # Build the HashLink Executable
 --next

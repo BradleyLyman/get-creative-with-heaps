@@ -1,4 +1,4 @@
-package support.drawable;
+package support.h2d;
 
 import support.linAlg2d.Quad;
 import support.linAlg2d.Vec;

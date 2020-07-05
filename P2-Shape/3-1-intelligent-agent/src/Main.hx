@@ -8,7 +8,7 @@ class Main extends hxd.App {
   override function init() {
     canvas = new Canvas(s2d);
     preview = new h2d.Graphics(s2d);
-    new FullscreenButton(s2d);
+    new support.h2d.FullscreenButton(s2d);
     resetAgents();
     hxd.Window.getInstance().addEventTarget(onEvent);
   }
