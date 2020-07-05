@@ -26,7 +26,18 @@
 <body>
   <header>
     <nav>
-      <h1>{{ page.title }}</h1>
+      {% if page.layout == "article" %}
+      <a href="https://github.com/BradLyman/get-creative-with-heaps">
+        <h1>{{ page.title }}</h1>
+      </a>
+      {% endif %}
+
+      {% if page.layout == "demo" %}
+      <a href="https://github.com/BradLyman/get-creative-with-heaps/tree/master{{page.url}}">
+        <h1>{{ page.title }}</h1>
+      </a>
+      {% endif %}
+
       <a href="{{site.baseurl}}/"><h2>All Demos</h2></a>
     </nav>
   </header>
@@ -37,9 +48,17 @@
 
   <footer>
     <nav>
+      {% if page.layout == "article" %}
       <a href="https://github.com/BradLyman/get-creative-with-heaps">
         {% include github.html %}
       </a>
+      {% endif %}
+
+      {% if page.layout == "demo" %}
+      <a href="https://github.com/BradLyman/get-creative-with-heaps/tree/master{{page.url}}">
+        {% include github.html %}
+      </a>
+      {% endif %}
 
       <a href="https://haxe.org/">
         {% include haxe.html %}
