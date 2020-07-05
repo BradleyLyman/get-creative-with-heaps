@@ -4,9 +4,8 @@ package drawable;
     Objects of this type represent a collection of quads which can all be
     rendered with the exact same texture/material.
 
-    The assumption with this primitive is that *typically* push will be called
-    a bunch of times in a row to generate a ton of geometry. It seems pretty
-    quick in that situation.
+    The assumption with this primitive is that *typically* push() will be called
+    a bunch of times in a row to generate a ton of geometry.
 **/
 class QuadsPrimitive extends h3d.prim.Primitive {
   var vertices: hxd.FloatBuffer;
@@ -18,6 +17,13 @@ class QuadsPrimitive extends h3d.prim.Primitive {
     this.dirty = true;
   }
 
+  /**
+   * Add a quad to the primitive.
+   *
+   * Each vertex is pushed into internal buffers in the correct order and
+   * layout. The GPU buffer is marked for an update on the next frame.
+   * @param quad the Quad object to actually render
+   */
   public function push(quad: Quad) {
     pushVertex(quad.bottomLeft, 0, 0);
     pushVertex(quad.topLeft, 0, 1);
@@ -25,16 +31,19 @@ class QuadsPrimitive extends h3d.prim.Primitive {
     pushVertex(quad.topRight, 1, 1);
   }
 
+  /**
+      Resize the vertex buffer and dispose the GPU buffer.
+  **/
   public function reset() {
     vertices.resize(0);
-    resetBuffer();
+    disposeGPUBuffer();
   }
 
   /**
       Allocate the GPU buffer and stuff it full of our vertices.
   **/
   override function alloc(engine: h3d.Engine) {
-    resetBuffer();
+    disposeGPUBuffer();
     buffer = h3d.Buffer.ofFloats(vertices, 8, [Quads, RawFormat]);
   }
 
@@ -49,8 +58,14 @@ class QuadsPrimitive extends h3d.prim.Primitive {
 		engine.renderQuadBuffer(buffer);
   }
 
-  /* Dispose the internal buffer. It'll be reallocated on the next render. */
-  private function resetBuffer() {
+  /**
+      Dispose the internal buffer.
+
+      It'll be reallocated on the next render. It's debatable if this is faster
+      or slower than attempting to reuse the GPU buffer. It probably depends
+      on the target platform and the engine implementation.
+  **/
+  private function disposeGPUBuffer() {
     if (buffer != null && !buffer.isDisposed()) {
       buffer.dispose();
       buffer = null;
