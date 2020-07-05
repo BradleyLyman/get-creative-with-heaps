@@ -7,5 +7,6 @@ order: 1
 
 # Usage
 
-* Click anywhere on screen to add a new random signal.
-* Right click anywhere on screen to remove the last signal.
+* Press and release the UP ARROW to add a new harmonic signal to the total
+* Press and release the DOWN ARROW to remove the most recent signal
+
