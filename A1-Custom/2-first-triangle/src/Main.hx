@@ -61,12 +61,12 @@ class MyTriangle extends h3d.prim.Primitive {
 }
 
 class MyDrawableThingy extends h2d.Drawable {
-  final first : First;
+  final first : MyTriangle;
   final col : Texture;
 
   public function new(parent: h2d.Object) {
     super(parent);
-    this.first = new First();
+    this.first = new MyTriangle();
     this.col = Texture.fromColor(0xFFFFFF, 1.0);
   }
 
@@ -80,8 +80,6 @@ class MyDrawableThingy extends h2d.Drawable {
 }
 
 class Main extends hxd.App {
-
-  var frames = new RollingAverage();
 
   override function init() {
     new FullscreenButton(s2d);
