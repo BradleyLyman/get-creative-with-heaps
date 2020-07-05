@@ -1,7 +1,7 @@
-# Signal Composition
+# [Signal Composition](http://bradlyman.github.io/get-creative-with-heaps/P3-Harmonics/1-signal-composition/)
 
 <a href="http://bradlyman.github.io/get-creative-with-heaps/P3-Harmonics/1-signal-composition/"
-   style="box-shadow: 0 0.4rem 0.8rem 0 rgba(0,0,0,0.2);">
+   title="Live Demo" >
   ![demoscreenshot](https://bradlyman.github.io/get-creative-with-heaps/P3-Harmonics/1-signal-composition/Screenshot.png)
 </a>
 
