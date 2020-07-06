@@ -15,7 +15,7 @@ layout: article
 {% for page in sorted %}
   <article class="demoCard">
     <a href="{{site.url}}{{site.baseurl}}{{page.url}}"
-       style="background-image: url('{{site.url}}{{site.baseurl}}{{page.url}}/Screenshot.png')" >
+       style="background-image: url('{{site.url}}{{site.baseurl}}{{page.url}}Screenshot.png')" >
       <footer>
         <h4>{{page.title}}</h4>
       </footer>
