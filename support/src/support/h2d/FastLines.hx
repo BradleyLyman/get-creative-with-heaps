@@ -1,6 +1,7 @@
 package support.h2d;
 
-import support.Turtle;
+import support.turtle.Turtle;
+import support.linAlg2d.Vec;
 import support.linAlg2d.Line;
 import h3d.mat.Texture;
 
@@ -13,7 +14,7 @@ import h3d.mat.Texture;
     There is no support for rounded edges or end caps. FastLines maintains all
     previously rendered lines until they are cleared.
 **/
-class FastLines extends h2d.Drawable implements Turtle.View {
+class FastLines extends h2d.Drawable {
   final quads : QuadsPrimitive;
   final white : Texture;
 
@@ -30,6 +31,13 @@ class FastLines extends h2d.Drawable implements Turtle.View {
   }
 
   /**
+      Clear all lines from the display.
+  **/
+  public function clear() {
+    quads.reset();
+  }
+
+  /**
       Add a line to the on screen display.
 
       Units are pixels and coordinates are influenced by the parent object's
@@ -40,10 +48,11 @@ class FastLines extends h2d.Drawable implements Turtle.View {
   }
 
   /**
-      Clear all lines from the display.
+      Create a turtle which emits lines using this drawable.
+      The turtle's coordinates are relative to this instance of FastLines.
   **/
-  public function clear() {
-    quads.reset();
+  public function newTurtle(): Turtle {
+    return new FastLinesTurtle(this);
   }
 
   /**
@@ -53,4 +62,50 @@ class FastLines extends h2d.Drawable implements Turtle.View {
     if (!ctx.beginDrawObject(this, white)) { return; }
     quads.render(ctx.engine);
   }
+}
+
+/**
+    A Turtle implementation which renders lines using FastLines.
+    Example:
+        fastLines.newTurtle().moveTo(0, 0).lineTo(100, 100);
+**/
+private class FastLinesTurtle implements Turtle {
+  /* the turtle's current position */
+  @:isVar public var position(get, set): Vec = new Vec(0, 0);
+
+  /* the line's width */
+  @:isVar public var lineWidth(get, set): Float = 1.0;
+
+  /* a reference to the fast lines which this turtle uses to emit geometry */
+  private final fastLines: FastLines;
+
+  public function new(fastLines: FastLines) {
+    this.fastLines = fastLines;
+  }
+
+  /**
+      Move the cursor to the specified position without emitting any geometry.
+      @return FastLines this
+  **/
+  public function moveTo(x: Float, y: Float): FastLinesTurtle {
+    this.position.x = x;
+    this.position.y = y;
+    return this;
+  }
+
+  /**
+      Draw a line from the cunsor to the specified position.
+      @return FastLinesTurtle this
+  **/
+  public function lineTo(x: Float, y: Float): FastLinesTurtle {
+    final to = new Vec(x, y);
+
+    moveTo(x, y);
+    return this;
+  }
+
+  private function get_position() { return this.position; }
+  private function set_position(p) { return this.position = p; }
+  private function get_lineWidth() { return this.lineWidth; }
+  private function set_lineWidth(w) { return this.lineWidth = w; }
 }
