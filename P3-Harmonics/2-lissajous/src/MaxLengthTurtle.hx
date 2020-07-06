@@ -11,20 +11,18 @@ class MaxLengthTurtle extends DecoratedTurtle {
   }
 
   public override function moveTo(x: Float, y: Float): MaxLengthTurtle {
-    wrapped.lineTo(x, y);
+    wrapped.moveTo(x, y);
     return this;
   }
 
   public override function lineTo(x: Float, y: Float) : MaxLengthTurtle {
     final d = new Vec(x, y).sub(this.position);
-    wrapped.lineTo(x, y);
-    trace(d);
-    // if (d.len() < maxLength) {
-    //   super.lineTo(x, y);
-    // }
-    // else {
-    //   moveTo(x, y);
-    // }
+    if (d.len() < maxLength) {
+      wrapped.lineTo(x, y);
+    }
+    else {
+      moveTo(x, y);
+    }
     return this;
   }
 }

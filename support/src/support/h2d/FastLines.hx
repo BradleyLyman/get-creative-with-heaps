@@ -98,8 +98,7 @@ private class FastLinesTurtle implements Turtle {
       @return FastLinesTurtle this
   **/
   public function lineTo(x: Float, y: Float): FastLinesTurtle {
-    final to = new Vec(x, y);
-
+    this.fastLines.addLine(new Line(position, new Vec(x, y)), lineWidth);
     moveTo(x, y);
     return this;
   }

@@ -4,8 +4,8 @@ import utest.ui.Report;
 class TestAll {
   public static function main() {
     var runner = new Runner();
-    runner.addCase(new support.TurtleTest());
+    runner.addCase(new support.turtle.DecoratedTurtleTest());
     Report.create(runner);
     runner.run();
-  }
+	}
 }
