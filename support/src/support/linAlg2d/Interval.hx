@@ -1,24 +1,26 @@
 package support.linAlg2d;
 
 /**
-    An interval represents a segment of the real numberline fom min to max.
+    An interval represents a segment of the real numberline.
 **/
 class Interval {
-  public var min: Float;
-  public var max: Float;
+  public var start: Float;
+  public var end: Float;
 
   static public final UNIT : Interval = new Interval(0, 1);
 
-  /* Create a new interval from min to max. */
-  public inline function new(min: Float, max: Float) {
-    this.min = min;
-    this.max = max;
+  /* Create a new interval from start to end. */
+  public inline function new(start: Float, end: Float) {
+    this.start = start;
+    this.end = end;
   }
 
   /* Force a value to stay within the interval's range */
   public inline function clamp(x: Float) : Float {
-    if (x <= min) { return min; }
-    else if (x >= max) { return max; }
+    final min = Math.min(start, end);
+    final max = Math.max(start, end);
+    if (x <= min ) { return min; }
+    else if (x >= max ) { return max; }
     else { return x; }
   }
 
@@ -33,20 +35,12 @@ class Interval {
           i.normalize((6+2)/2) == 0.5; // true
   **/
   public inline function normalize(x: Float) : Float {
-    return (x - min)/(max - min);
-  }
-
-  /**
-      The interval's size.
-      Size is signed such that (min + size()) = max.
-  **/
-  public inline function size() : Float {
-    return max - min;
+    return (x - start)/(end - start);
   }
 
   /**
       Return a number on the interval which is linearlly interpolated from
-      min to max.
+      start to end.
 
       Examples:
           final i = new Interval(3, 8);
@@ -55,7 +49,15 @@ class Interval {
           i.lerp(0.5) == (8+3)/2; // true
   **/
   public inline function lerp(x: Float) : Float {
-    return min + x*size();
+    return start + x*size();
+  }
+
+  /**
+      The interval's size.
+      Size is signed such that (start + size()) = end.
+  **/
+  public inline function size() : Float {
+    return end - start;
   }
 
   /**
@@ -71,5 +73,9 @@ class Interval {
       endpoints[i] = lerp(i/count);
     }
     return endpoints;
+  }
+
+  public function toString() : String {
+    return "Interval[" + start + ", " + end + "]";
   }
 }
