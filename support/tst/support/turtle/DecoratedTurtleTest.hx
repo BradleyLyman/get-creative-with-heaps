@@ -16,43 +16,45 @@ class DecoratedTurtleTest extends utest.Test {
 
   function testWrappedPositionChange() {
     // when the wrapped turtle's position is changed
-    wrapped.position.add(new Vec(1, 1));
-
+    wrapped.position = new Vec(1, 1);
     Assert.vecEquals(
       wrapped.position, turtle.position,
-      "The turtle's position should match the wrapped turtle"
-     );
-  }
+      "Then the outer turtle's position should match the wrapped turtle"
+    );
 
-  function testPositionChange()() {
-    // when the turtle moves
+    // when the outer turtle's position is changed
     turtle.position = new Vec(2, 2);
-
-    // then the decated turtle's position should match the wrapped position
     Assert.vecEquals(
       turtle.position, wrapped.position,
-      "Then the wrapped turtle's position should match"
+      "Then the wrapped turtle's position should the outer turtle"
     );
   }
 
   function testLineWidth() {
-    // when the turtle's line width changes
+    // when the outer turtle's line width changes
     turtle.lineWidth = 2;
-
-    // then the decorated turtle's line width should still match
     Assert.floatEquals(turtle.lineWidth, wrapped.lineWidth);
+
+    // when the wrapped turtle's line width changes
+    wrapped.lineWidth = 5;
+    Assert.floatEquals(wrapped.lineWidth, turtle.lineWidth);
   }
 
-  function testMoveWithoutLine() {
-    turtle
-      .moveTo(0, 0)
-      .moveTo(1, 1)
-      .moveTo(2, 2)
-      .moveTo(123, -234);
-    Assert.equals(0, wrapped.lines.length, "no lines should have been emitted");
+  function testMove() {
+    // When the outer turtle moves
+    turtle.moveTo(123, -234);
+    Assert.equals(0, wrapped.lines.length, "no lines should be emitted");
     Assert.vecEquals(
       new Vec(123, -234), turtle.position,
-      "The turtle should be moved"
+      "The outer turtle's position should be updated"
+    );
+
+    // when the wrapped turtle moves
+    wrapped.moveTo(-834, 332);
+    Assert.equals(0, wrapped.lines.length, "no lines should be emitted");
+    Assert.vecEquals(
+      new Vec(-834, 332), turtle.position,
+      "The outer turtle's position should still be updated."
     );
   }
 

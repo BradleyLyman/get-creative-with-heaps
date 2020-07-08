@@ -3,7 +3,7 @@ package support.turtle;
 import support.linAlg2d.Vec;
 
 /**
-    A Turtle is a stateful helper for drawing lines on the screen.
+    A Turtle is a stateful agent which draws lines on the screen.
 
     The turtle has a position and knows how to style lines when they're
     added.
