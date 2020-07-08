@@ -26,11 +26,10 @@ class ObservableTurtle implements Turtle {
   /* emit a line to the lines buffer and update the turtle's position  */
   public function lineTo(x, y): ObservableTurtle {
     lines.push({
-      line: new Line(position, new Vec(x, y)),
+      line: new Line(position.clone(), new Vec(x, y)),
       lineWidth: lineWidth
     });
-    position.x = x;
-    position.y = y;
+    moveTo(x, y);
     return this;
   }
 

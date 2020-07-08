@@ -1,38 +1,46 @@
 package support.turtle;
 
 import utest.Assert;
-import format.mp3.Constants.CEmphasis;
 import support.linAlg2d.Vec;
-import support.linAlg2d.Line;
+
+using support.linAlg2d.AssertVec;
 
 class DecoratedTurtleTest extends utest.Test {
-
   var wrapped: ObservableTurtle;
   var turtle: DecoratedTurtle;
 
-  function before() {
+  public function setup() {
     wrapped = new ObservableTurtle();
     turtle = new DecoratedTurtle(wrapped);
   }
 
-  /* the decorated turtle's position should reflect the wrapped turtle */
-  function testPositionChange() {
+  function testWrappedPositionChange() {
     // when the wrapped turtle's position is changed
     wrapped.position.add(new Vec(1, 1));
 
-    // then the decorated turtle's position should match
-    Assert.floatEquals(wrapped.position.x, turtle.position.x);
-    Assert.floatEquals(wrapped.position.y, turtle.position.y);
+    Assert.vecEquals(
+      wrapped.position, turtle.position,
+      "The turtle's position should match the wrapped turtle"
+     );
   }
 
-  /* moving the decorated turtle should modify the wrapped turtle's position */
-  function testMove() {
+  function testPositionChange()() {
     // when the turtle moves
     turtle.position = new Vec(2, 2);
 
     // then the decated turtle's position should match the wrapped position
-    Assert.floatEquals(turtle.position.x, wrapped.position.x);
-    Assert.floatEquals(turtle.position.y, wrapped.position.y);
+    Assert.vecEquals(
+      turtle.position, wrapped.position,
+      "Then the wrapped turtle's position should match"
+    );
+  }
+
+  function testLineWidth() {
+    // when the turtle's line width changes
+    turtle.lineWidth = 2;
+
+    // then the decorated turtle's line width should still match
+    Assert.floatEquals(turtle.lineWidth, wrapped.lineWidth);
   }
 
   function testMoveWithoutLine() {
@@ -41,24 +49,31 @@ class DecoratedTurtleTest extends utest.Test {
       .moveTo(1, 1)
       .moveTo(2, 2)
       .moveTo(123, -234);
-    Assert.equals(wrapped.lines.length, 0);
-    Assert.floatEquals(turtle.position.x, 123.0);
-    Assert.floatEquals(turtle.position.y, -234);
+    Assert.equals(0, wrapped.lines.length, "no lines should have been emitted");
+    Assert.vecEquals(
+      new Vec(123, -234), turtle.position,
+      "The turtle should be moved"
+    );
   }
 
   function testLineTo() {
     turtle
       .moveTo(0, 0)
       .lineTo(10, -10);
-    Assert.equals(wrapped.lines.length, 1);
-
-    Assert.equals(wrapped.lines[0].lineWidth, turtle.lineWidth);
-    Assert.equals(wrapped.lines[0].line.start.x, 0);
-    Assert.equals(wrapped.lines[0].line.start.y, 0);
-    Assert.equals(wrapped.lines[0].line.end.x, 10);
-    Assert.equals(wrapped.lines[0].line.end.y, -10);
-
-    Assert.floatEquals(turtle.position.x, 10);
-    Assert.floatEquals(turtle.position.y, -10);
+    Assert.equals(1, wrapped.lines.length, "one line should be emitted");
+    Assert.vecEquals(
+      new Vec(0, 0),
+      wrapped.lines[0].line.start,
+      "The line should start at the turtle's previous position"
+    );
+    Assert.vecEquals(
+      new Vec(10, -10),
+      wrapped.lines[0].line.end,
+      "The line should end at the turtles new position."
+    );
+    Assert.vecEquals(
+      new Vec(10, -10), turtle.position,
+      "The turtle should be moved to the line's endpoint."
+    );
   }
 }

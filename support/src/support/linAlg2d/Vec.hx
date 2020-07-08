@@ -63,4 +63,13 @@ class Vec {
   public inline function clone() {
     return new Vec(x, y);
   }
+
+  /**
+      Create a human-readable version of the vector.
+      Example:
+        trace(new Vec(45, 10));
+  **/
+  public inline function toString(): String {
+    return "Vec(" + x + ", " + y + ")";
+  }
 }
