@@ -6,6 +6,7 @@ class TestAll {
     var runner = new Runner();
     runner.addCase(new support.linAlg2d.VecTest());
     runner.addCase(new support.linAlg2d.IntervalTest());
+    runner.addCase(new support.linAlg2d.SpaceTest());
     runner.addCase(new support.turtle.DecoratedTurtleTest());
     Report.create(runner);
     runner.run();
