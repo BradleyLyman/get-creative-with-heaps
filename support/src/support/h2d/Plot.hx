@@ -63,19 +63,6 @@ class Plot extends Object {
     fastQuads.clear();
   }
 
-  // /**
-  //     Plot f(x) for a sequence of connected points along the x axis.
-  //     @param f - the function to plot
-  //     @param subdivisions - the number of points to sample along teh x axis
-  // **/
-  // public function plotFunction(f: (Float) -> Float, subdivisions: Int = 500) {
-  //   fastQuads.clear();
-  //   turtle.moveTo(space.xIn.start, f(space.xIn.start));
-  //   for (x in space.xIn.subdivide(subdivisions)) {
-  //     turtle.lineTo(x, f(x));
-  //   }
-  // }
-
   private function get_lineWidth() { return this.turtle.lineWidth; }
   private function set_lineWidth(s) { return this.turtle.lineWidth = s; }
   private function get_xAxis() { return this.space.xIn; }
