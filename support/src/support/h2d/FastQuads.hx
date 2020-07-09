@@ -1,25 +1,22 @@
 package support.h2d;
 
+import support.h3d.prim.QuadsPrimitive;
 import support.turtle.Turtle;
 import support.linAlg2d.Vec;
 import support.linAlg2d.Line;
+import support.linAlg2d.Quad;
 import h3d.mat.Texture;
 
 /**
-    Objects of this type represent a collection of 2d lines on screen.
-
-    FastLines renders each line as a Quad with vertices computed based on the
-    line's width.
-
-    There is no support for rounded edges or end caps. FastLines maintains all
-    previously rendered lines until they are cleared.
+    Objects of this type represent a collection of drawable quads onscreen.
+    Quads can be individually colored, but do not support texturing.
 **/
-class FastLines extends h2d.Drawable {
+class FastQuads extends h2d.Drawable {
   final quads : QuadsPrimitive;
   final white : Texture;
 
   /**
-      Create a new instance of FastLines.
+      Create a new instance of FastQuads.
 
       @param parent
         an object in the scene which acts as the root for the fast lines
@@ -37,22 +34,17 @@ class FastLines extends h2d.Drawable {
     quads.reset();
   }
 
-  /**
-      Add a line to the on screen display.
-
-      Units are pixels and coordinates are influenced by the parent object's
-      transform.
-  **/
-  public function addLine(line: Line, width: Float) {
-    quads.push(line.toQuad(width));
+  /* Add a new quad to the screen. */
+  public function addQuad(quad: Quad) {
+    quads.push(quad);
   }
 
   /**
-      Create a turtle which emits lines using this drawable.
-      The turtle's coordinates are relative to this instance of FastLines.
+      Create a turtle which emits lines as thin quads.
+      The turtle's coordinates are relative to this instance of FastQuads.
   **/
   public function newTurtle(): Turtle {
-    return new FastLinesTurtle(this);
+    return new FastQuadsTurtle(this);
   }
 
   /**
@@ -65,11 +57,13 @@ class FastLines extends h2d.Drawable {
 }
 
 /**
-    A Turtle implementation which renders lines using FastLines.
+    A Turtle implementation which renders lines using FastQuads.
+    Coordinates are in screenspace (pixels) unless otherwise influenced by
+    the parent fastquads instance.
     Example:
-        fastLines.newTurtle().moveTo(0, 0).lineTo(100, 100);
+        fastQuads.newTurtle().moveTo(0, 0).lineTo(100, 100);
 **/
-private class FastLinesTurtle implements Turtle {
+private class FastQuadsTurtle implements Turtle {
   /* the turtle's current position */
   @:isVar public var position(get, set): Vec = new Vec(0, 0);
 
@@ -77,17 +71,17 @@ private class FastLinesTurtle implements Turtle {
   @:isVar public var lineWidth(get, set): Float = 1.0;
 
   /* a reference to the fast lines which this turtle uses to emit geometry */
-  private final fastLines: FastLines;
+  private final fastQuads: FastQuads;
 
-  public function new(fastLines: FastLines) {
-    this.fastLines = fastLines;
+  public function new(fastQuads: FastQuads) {
+    this.fastQuads = fastQuads;
   }
 
   /**
       Move the cursor to the specified position without emitting any geometry.
-      @return FastLines this
+      @return FastQuads this
   **/
-  public function moveTo(x: Float, y: Float): FastLinesTurtle {
+  public function moveTo(x: Float, y: Float): FastQuadsTurtle {
     this.position.x = x;
     this.position.y = y;
     return this;
@@ -95,12 +89,17 @@ private class FastLinesTurtle implements Turtle {
 
   /**
       Draw a line from the cunsor to the specified position.
-      @return FastLinesTurtle this
+      @return FastQuadsTurtle this
   **/
-  public function lineTo(x: Float, y: Float): FastLinesTurtle {
-    this.fastLines.addLine(new Line(position, new Vec(x, y)), lineWidth);
+  public function lineTo(x: Float, y: Float): FastQuadsTurtle {
+    lineToQuad(new Line(position, new Vec(x, y)));
     moveTo(x, y);
     return this;
+  }
+
+  /* Transform the line into a quad and render it onscreen */
+  private function lineToQuad(line: Line) {
+    fastQuads.addQuad(line.toQuad(lineWidth));
   }
 
   private function get_position() { return this.position; }

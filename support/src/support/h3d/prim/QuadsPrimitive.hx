@@ -1,4 +1,4 @@
-package support.h2d;
+package support.h3d.prim;
 
 import support.linAlg2d.Quad;
 import support.linAlg2d.Vec;
