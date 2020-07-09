@@ -16,9 +16,16 @@ class Plot extends Object {
   private final background: Bitmap;
   private final space: Space;
 
+  /**
+      A line-emitting turtle for this plot. Coordinates are in the x/y Axis for
+      this plot.
+  **/
   public final turtle: SpaceTurtle;
 
+  /* The xAxis for this plot's input space */
   public var xAxis(get, set): Interval;
+
+  /* The yAxis for this plot's input space */
   public var yAxis(get, set): Interval;
 
   /* The plot's width on screen. Call resize() to change */
@@ -27,9 +34,7 @@ class Plot extends Object {
   /* The plot's height on screen. Call resize() to change */
   @:isVar public var height(default, null): Float;
 
-  /**
-      Create a new Plot object which can be used to present data on screen.
-  **/
+  /* Create a new plot with the provided parent. */
   public function new(parent: h2d.Object) {
     super(parent);
     this.background = new Bitmap(Tile.fromColor(0xFFFFFF, 1, 1, 0.1), this);
@@ -57,11 +62,9 @@ class Plot extends Object {
     space.xOut = new Interval(0, width);
     space.yOut = new Interval(height, 0);
 
-    fastQuads.clear();
+    clear();
   }
 
-  private function get_lineWidth() { return this.turtle.lineWidth; }
-  private function set_lineWidth(s) { return this.turtle.lineWidth = s; }
   private function get_xAxis() { return this.space.xIn; }
   private function set_xAxis(axis) { return this.space.xIn = axis; }
   private function get_yAxis() { return this.space.yIn; }
