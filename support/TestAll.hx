@@ -9,6 +9,7 @@ class TestAll {
     runner.addCase(new support.linAlg2d.SpaceTest());
     runner.addCase(new support.turtle.SpaceTurtleTest());
     runner.addCase(new support.turtle.DecoratedTurtleTest());
+    runner.addCase(new support.color.RGBATest());
     Report.create(runner);
     runner.run();
 	}
