@@ -7,6 +7,7 @@ class TestAll {
     runner.addCase(new support.linAlg2d.VecTest());
     runner.addCase(new support.linAlg2d.IntervalTest());
     runner.addCase(new support.linAlg2d.SpaceTest());
+    runner.addCase(new support.turtle.SpaceTurtleTest());
     runner.addCase(new support.turtle.DecoratedTurtleTest());
     Report.create(runner);
     runner.run();
