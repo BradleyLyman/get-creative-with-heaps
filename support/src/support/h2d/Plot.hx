@@ -4,10 +4,7 @@ import support.linAlg2d.Space;
 import support.turtle.SpaceTurtle;
 import support.linAlg2d.Interval;
 
-import hxd.fmt.hmd.Data.Position;
 import h2d.Object;
-import h2d.Graphics;
-import h2d.Text;
 import h2d.Bitmap;
 import h2d.Tile;
 
