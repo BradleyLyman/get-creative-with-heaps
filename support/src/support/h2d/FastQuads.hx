@@ -1,5 +1,7 @@
 package support.h2d;
 
+import support.color.Color;
+import support.color.RGBA;
 import support.h3d.prim.QuadsPrimitive;
 import support.turtle.Turtle;
 import support.linAlg2d.Vec;
@@ -35,8 +37,8 @@ class FastQuads extends h2d.Drawable {
   }
 
   /* Add a new quad to the screen. */
-  public function addQuad(quad: Quad) {
-    quads.push(quad);
+  public function addQuad(quad: Quad, color: RGBA) {
+    quads.push(quad, color);
   }
 
   /**
@@ -70,6 +72,9 @@ private class FastQuadsTurtle implements Turtle {
   /* the line's width */
   @:isVar public var lineWidth(get, set): Float = 1.0;
 
+  /* the line's color */
+  @:isVar public var color(get, set): Color = new RGBA();
+
   /* a reference to the fast lines which this turtle uses to emit geometry */
   private final fastQuads: FastQuads;
 
@@ -99,11 +104,13 @@ private class FastQuadsTurtle implements Turtle {
 
   /* Transform the line into a quad and render it onscreen */
   private function lineToQuad(line: Line) {
-    fastQuads.addQuad(line.toQuad(lineWidth));
+    fastQuads.addQuad(line.toQuad(lineWidth), color.toRGBA());
   }
 
   private function get_position() { return this.position; }
   private function set_position(p) { return this.position = p; }
   private function get_lineWidth() { return this.lineWidth; }
   private function set_lineWidth(w) { return this.lineWidth = w; }
+  private function get_color() { return this.color; }
+  private function set_color(c) { return this.color = c; }
 }

@@ -1,3 +1,4 @@
+import support.color.RGBA;
 import support.h2d.Plot;
 import support.h2d.FullscreenButton;
 import support.linAlg2d.Interval;
@@ -30,16 +31,16 @@ class Main extends hxd.App {
   override function update(dt: Float) {
     final speed = 0.5 * (Math.PI / 4);
     time += dt*speed;
-    final xSignal = (t: Float) -> Math.cos(t*2.1);
-    final ySignal = (t: Float) -> Math.sin(t*1.3);
+    final xSignal = (t: Float) -> Math.cos(time + t*2.1);
+    final ySignal = (t: Float) -> Math.sin(time + t*1.3);
 
     plot.clear();
     final maxLenTurtle = new MaxLengthTurtle(plot.turtle, 0.5);
     for (i in tvals) {
       for (j in tvals) {
         maxLenTurtle
-          .moveTo(xSignal(i+time), ySignal(i+time))
-          .lineTo(xSignal(j+time), ySignal(j+time));
+          .moveTo(xSignal(i), ySignal(i))
+          .lineTo(xSignal(j), ySignal(j));
       }
     }
   }

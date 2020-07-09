@@ -1,6 +1,11 @@
 package support.h2d;
 
+import support.color.Color;
+import support.color.RGBA;
+import h3d.shader.GenTexture;
+import support.linAlg2d.Quad;
 import support.linAlg2d.Space;
+import support.linAlg2d.Vec;
 import support.turtle.SpaceTurtle;
 import support.linAlg2d.Interval;
 
@@ -13,8 +18,10 @@ import h2d.Tile;
 **/
 class Plot extends Object {
   private final fastQuads: FastQuads;
-  private final background: Bitmap;
   private final space: Space;
+
+  /* The color of the plot's background quad */
+  public var backgroundColor: Color = new RGBA(1, 1, 1, 0);
 
   /**
       A line-emitting turtle for this plot. Coordinates are in the x/y Axis for
@@ -37,7 +44,6 @@ class Plot extends Object {
   /* Create a new plot with the provided parent. */
   public function new(parent: h2d.Object) {
     super(parent);
-    this.background = new Bitmap(Tile.fromColor(0xFFFFFF, 1, 1, 0.1), this);
     this.fastQuads = new FastQuads(this);
     this.space = new Space();
     this.turtle = new SpaceTurtle(this.fastQuads.newTurtle(), this.space);
@@ -46,6 +52,26 @@ class Plot extends Object {
   /* Clear everything from the plot and start clean */
   public function clear() {
     fastQuads.clear();
+    fastQuads.addQuad(
+      new Quad(
+        new Vec(0, 0), new Vec(width, 0),
+        new Vec(0, height), new Vec(width, height)
+      ),
+      backgroundColor.toRGBA()
+    );
+  }
+
+  /**
+      Override the bounds method on Object so that the plot plays nicely with
+      the rest of Heaps.io 2d scene logic.
+  **/
+  public override function getBoundsRec(
+    relativeTo: Object,
+    out: h2d.col.Bounds,
+    forSize: Bool
+  ) {
+    super.getBoundsRec(relativeTo, out, forSize);
+    addBounds(relativeTo, out, 0, 0, width, height);
   }
 
   /**
@@ -56,8 +82,6 @@ class Plot extends Object {
   public function resize(width: Float, height: Float) {
     this.width = width;
     this.height = height;
-    background.scaleX = width;
-    background.scaleY = height;
 
     space.xOut = new Interval(0, width);
     space.yOut = new Interval(height, 0);

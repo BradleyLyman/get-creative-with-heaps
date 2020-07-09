@@ -1,5 +1,6 @@
 package support.h3d.prim;
 
+import support.color.RGBA;
 import support.linAlg2d.Quad;
 import support.linAlg2d.Vec;
 
@@ -27,11 +28,11 @@ class QuadsPrimitive extends h3d.prim.Primitive {
       layout. The GPU buffer is marked for an update on the next frame.
       @param quad the Quad object to actually render
   **/
-  public function push(quad: Quad) {
-    pushVertex(quad.bottomLeft, 0, 0);
-    pushVertex(quad.topLeft, 0, 1);
-    pushVertex(quad.bottomRight, 1, 0);
-    pushVertex(quad.topRight, 1, 1);
+  public function push(quad: Quad, color: RGBA) {
+    pushVertex(quad.bottomLeft, 0, 0, color);
+    pushVertex(quad.topLeft, 0, 1, color);
+    pushVertex(quad.bottomRight, 1, 0, color);
+    pushVertex(quad.topRight, 1, 1, color);
   }
 
   /**
@@ -80,7 +81,7 @@ class QuadsPrimitive extends h3d.prim.Primitive {
       Marks the vertices as dirty so the next render call will update the
       h3d.Buffer with the new data.
   **/
-  private function pushVertex(p: Vec, u: Float, v: Float) {
+  private function pushVertex(p: Vec, u: Float, v: Float, color: RGBA) {
     dirty = true;
 
 		vertices.push( p.x );  // xy
@@ -89,9 +90,9 @@ class QuadsPrimitive extends h3d.prim.Primitive {
     vertices.push( u ); // uv
     vertices.push( v );
 
-    vertices.push( 1.0 ); // rgba
-    vertices.push( 1.0 );
-    vertices.push( 1.0 );
-    vertices.push( 1.0 );
+    vertices.push( color.r ); // rgba
+    vertices.push( color.g );
+    vertices.push( color.b );
+    vertices.push( color.a );
   }
 }

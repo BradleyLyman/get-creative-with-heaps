@@ -1,5 +1,6 @@
 package support.turtle;
 
+import support.color.Color;
 import support.linAlg2d.Vec;
 
 /**
@@ -14,6 +15,9 @@ interface Turtle {
 
   /* the line's width */
   var lineWidth(get, set): Float;
+
+  /* the color used when emitting a line */
+  var color(get, set): Color;
 
   /**
       Move the turtle to a set of coordinates.

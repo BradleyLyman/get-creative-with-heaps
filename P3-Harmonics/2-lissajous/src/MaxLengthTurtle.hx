@@ -1,3 +1,4 @@
+import support.color.RGBA;
 import support.turtle.Turtle;
 import support.turtle.DecoratedTurtle;
 import support.linAlg2d.Vec;
@@ -8,6 +9,7 @@ import support.linAlg2d.Vec;
 **/
 class MaxLengthTurtle extends DecoratedTurtle {
   final maxLength: Float;
+  final rgba : RGBA = new RGBA();
 
   public function new(turtle: Turtle, maxLength: Float) {
     super(turtle);
@@ -22,6 +24,8 @@ class MaxLengthTurtle extends DecoratedTurtle {
   public override function lineTo(x: Float, y: Float) : MaxLengthTurtle {
     final d = new Vec(x, y).sub(this.position).len();
     if (d < maxLength) {
+      rgba.a = (1.0 - (d / maxLength));
+      wrapped.color = rgba;
       wrapped.lineTo(x, y);
     }
     else {

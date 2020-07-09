@@ -1,5 +1,6 @@
 package support.turtle;
 
+import support.color.Color;
 import support.linAlg2d.Vec;
 
 /**
@@ -13,6 +14,7 @@ class DecoratedTurtle implements Turtle {
   private final wrapped: Turtle;
   public var position(get, set): Vec;
   public var lineWidth(get, set): Float;
+  public var color(get, set): Color;
 
   /* wrap the provided turtle to apply some modified behaviour */
   public function new(toWrap: Turtle) {
@@ -35,4 +37,6 @@ class DecoratedTurtle implements Turtle {
   private function set_position(v) { return wrapped.position = v; }
   private function get_lineWidth() { return wrapped.lineWidth; }
   private function set_lineWidth(w) { return wrapped.lineWidth = w; }
+  private function get_color() { return wrapped.color; }
+  private function set_color(c) { return wrapped.color = c; }
 }

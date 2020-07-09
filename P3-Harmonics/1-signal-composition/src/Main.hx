@@ -1,5 +1,6 @@
 import support.h2d.Plot;
 import support.linAlg2d.Interval;
+import support.color.RGBA;
 
 import hxd.Key;
 import h2d.Flow;
@@ -34,9 +35,10 @@ class Main extends hxd.App {
     flow.addSpacing(25);
 
     total = new Plot(flow);
-    total.yAxis = new Interval(-1, 1);
+    total.yAxis = new Interval(-1.1, 1.1);
     total.xAxis = new Interval(0, Math.PI*4);
     total.turtle.lineWidth = 2;
+    total.backgroundColor = new RGBA(1.0, 1.0, 1.0, 0.1);
 
     addHarmonic();
 
@@ -63,8 +65,9 @@ class Main extends hxd.App {
     // create the plot, set the scale and visual properties
     final plot = new Plot(flow);
     plot.xAxis = new Interval(0, Math.PI*4);
-    plot.yAxis = new Interval(-1, 1);
+    plot.yAxis = new Interval(-1.1, 1.1);
     plot.turtle.lineWidth = 2;
+    plot.backgroundColor = new RGBA(1.0, 1.0, 1.0, 0.1);
 
     // create a new signal with some randomized fields
     final signal = new Signal(

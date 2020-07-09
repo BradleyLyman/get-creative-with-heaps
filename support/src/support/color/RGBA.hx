@@ -39,8 +39,8 @@ class RGBA implements Color {
   }
 
   /* Return this color */
-  public function toRGBA() : RGBA {
-    return clone();
+  public inline function toRGBA() : RGBA {
+    return this;
   }
 
   /* A new RGBA instance with the exact same rgba values */
