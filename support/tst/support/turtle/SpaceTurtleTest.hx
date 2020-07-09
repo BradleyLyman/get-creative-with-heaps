@@ -1,5 +1,7 @@
 package support.turtle;
 
+import format.abc.Data.ABCData;
+import support.linAlg2d.Space;
 import h3d.shader.pbr.CubeLod;
 using support.linAlg2d.AssertVec;
 
@@ -66,6 +68,20 @@ class SpaceTurtleTest extends utest.Test {
     Assert.vecEquals(
       new Vec(200, 200), wrapped.lines[0].line.end,
       "The line's end point should be in the output space"
+    );
+  }
+
+  function testSpaceInConstructor() {
+    final otherSpace = new Space();
+    turtle = new SpaceTurtle(wrapped, otherSpace);
+    otherSpace.xIn = new Interval(-1, 1);
+    otherSpace.xOut = new Interval(0, 500);
+    otherSpace.yIn = new Interval(-1, 1);
+    otherSpace.yOut = new Interval(0, 500);
+    turtle.position = new Vec(1, 0);
+    Assert.vecEquals(
+      new Vec(500, 250), wrapped.position,
+      "The turtle should use the provided space"
     );
   }
 }

@@ -36,7 +36,7 @@ class Main extends hxd.App {
     total = new Plot(flow);
     total.yAxis = new Interval(-1, 1);
     total.xAxis = new Interval(0, Math.PI*4);
-    total.lineWidth = 2;
+    total.turtle.lineWidth = 2;
 
     addHarmonic();
 
@@ -64,7 +64,7 @@ class Main extends hxd.App {
     final plot = new Plot(flow);
     plot.xAxis = new Interval(0, Math.PI*4);
     plot.yAxis = new Interval(-1, 1);
-    plot.lineWidth = 2;
+    plot.turtle.lineWidth = 2;
 
     // create a new signal with some randomized fields
     final signal = new Signal(
@@ -115,14 +115,19 @@ class Main extends hxd.App {
   override function update(dt: Float) {
     final rdt = dt * Math.PI/2; // advance 1/4 of cycle per second
     for (harmonic in harmonics) {
-      harmonic.plot.xAxis.min += rdt;
-      harmonic.plot.xAxis.max += rdt;
-      harmonic.plot.plotFunction(harmonic.signal.eval);
+      harmonic.signal.offset += rdt;
+      plotFunction(harmonic.plot, harmonic.signal.eval);
     }
 
-    total.xAxis.min += rdt;
-    total.xAxis.max += rdt;
-    total.plotFunction(composedSignal);
+    plotFunction(total, composedSignal);
+  }
+
+  private function plotFunction(plot: Plot, f: (x: Float) -> Float) {
+    plot.clear();
+    plot.turtle.moveTo(plot.xAxis.start, f(plot.xAxis.start));
+    for (x in plot.xAxis.subdivide(500)) {
+      plot.turtle.lineTo(x, f(x));
+    }
   }
 
   /**

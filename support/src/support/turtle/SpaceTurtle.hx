@@ -10,6 +10,13 @@ import support.linAlg2d.Space;
 class SpaceTurtle extends DecoratedTurtle {
   public final space: Space = new Space();
 
+  public function new(wrapped: Turtle, ?space: Space) {
+    super(wrapped);
+    if (space != null) {
+      this.space = space;
+    }
+  }
+
   public override function moveTo(x: Float, y: Float): SpaceTurtle {
     wrapped.moveTo(space.mapX(x), space.mapY(y));
     return this;
