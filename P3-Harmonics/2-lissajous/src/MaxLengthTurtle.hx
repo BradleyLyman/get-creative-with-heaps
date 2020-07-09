@@ -2,6 +2,10 @@ import support.turtle.Turtle;
 import support.turtle.DecoratedTurtle;
 import support.linAlg2d.Vec;
 
+/**
+    A line-drawing turtle which only emits a line when it is longer than some
+    maximum length threshold.
+**/
 class MaxLengthTurtle extends DecoratedTurtle {
   final maxLength: Float;
 
@@ -16,8 +20,8 @@ class MaxLengthTurtle extends DecoratedTurtle {
   }
 
   public override function lineTo(x: Float, y: Float) : MaxLengthTurtle {
-    final d = new Vec(x, y).sub(this.position);
-    if (d.len() < maxLength) {
+    final d = new Vec(x, y).sub(this.position).len();
+    if (d < maxLength) {
       wrapped.lineTo(x, y);
     }
     else {
