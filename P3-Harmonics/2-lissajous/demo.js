@@ -247,13 +247,10 @@ Main.main = function() {
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
-		this.lines = new support_h2d_FastLines(this.s2d);
+		this.plot = new support_h2d_Plot(this.s2d);
 		new support_h2d_FullscreenButton(this.s2d);
-		this.space = new support_linAlg2d_Space();
-		this.turtle = new MaxLengthTurtle(new support_SpaceTurtle(this.lines,this.space),0.5);
-		this.turtle.turtle.set_lineWidth(1);
-		this.space.xIn = new support_linAlg2d_Interval(-1,1);
-		this.space.yIn = new support_linAlg2d_Interval(-1,1);
+		this.plot.set_xAxis(new support_linAlg2d_Interval(-1,1));
+		this.plot.set_yAxis(new support_linAlg2d_Interval(-1,1));
 		var _this = this.domain;
 		var this1 = new Array(102);
 		var endpoints = this1;
@@ -261,21 +258,20 @@ Main.prototype = $extend(hxd_App.prototype,{
 		var _g1 = endpoints.length;
 		while(_g < _g1) {
 			var i = _g++;
-			endpoints[i] = _this.min + i / 101 * (_this.max - _this.min);
+			endpoints[i] = _this.start + i / 101 * (_this.end - _this.start);
 		}
 		this.tvals = endpoints;
 		this.onResize();
 	}
 	,onResize: function() {
 		var side = Math.min(this.s2d.width,this.s2d.height) * 0.95;
-		var _this = this.lines;
+		this.plot.resize(side,side);
+		var _this = this.plot;
 		_this.posChanged = true;
 		_this.x = (this.s2d.width - side) / 2.0;
-		var _this = this.lines;
+		var _this = this.plot;
 		_this.posChanged = true;
 		_this.y = (this.s2d.height - side) / 2.0;
-		this.space.xOut = new support_linAlg2d_Interval(0,side);
-		this.space.yOut = new support_linAlg2d_Interval(side,0);
 	}
 	,update: function(dt) {
 		var speed = 0.5 * (Math.PI / 4);
@@ -286,7 +282,8 @@ Main.prototype = $extend(hxd_App.prototype,{
 		var ySignal = function(t) {
 			return Math.sin(t * 1.3);
 		};
-		this.lines.clear();
+		this.plot.clear();
+		var maxLenTurtle = new MaxLengthTurtle(this.plot.turtle,0.5);
 		var _g = 0;
 		var _g1 = this.tvals;
 		while(_g < _g1.length) {
@@ -297,63 +294,74 @@ Main.prototype = $extend(hxd_App.prototype,{
 			while(_g2 < _g3.length) {
 				var j = _g3[_g2];
 				++_g2;
-				var _this = this.turtle;
-				var x = xSignal(i + this.time);
-				var y = ySignal(i + this.time);
-				_this.turtle.moveTo(x,y);
-				_this.cursor.x = x;
-				_this.cursor.y = y;
-				var _this1 = _this;
-				var x1 = xSignal(j + this.time);
-				var y1 = ySignal(j + this.time);
-				var dx = x1 - _this1.cursor.x;
-				var dy = y1 - _this1.cursor.y;
-				if(Math.sqrt(dx * dx + dy * dy) < _this1.maxLength) {
-					_this1.turtle.lineTo(x1,y1);
-				} else {
-					_this1.turtle.moveTo(x1,y1);
-				}
-				_this1.cursor.x = x1;
-				_this1.cursor.y = y1;
+				maxLenTurtle.moveTo(xSignal(i + this.time),ySignal(i + this.time)).lineTo(xSignal(j + this.time),ySignal(j + this.time));
 			}
 		}
 	}
 	,__class__: Main
 });
-var MaxLengthTurtle = function(turtle,maxLength) {
-	this.cursor = new support_linAlg2d_Vec(0,0);
-	this.turtle = turtle;
-	this.maxLength = maxLength;
+Math.__name__ = "Math";
+var support_turtle_Turtle = function() { };
+support_turtle_Turtle.__name__ = "support.turtle.Turtle";
+support_turtle_Turtle.__isInterface__ = true;
+support_turtle_Turtle.prototype = {
+	__class__: support_turtle_Turtle
 };
-MaxLengthTurtle.__name__ = "MaxLengthTurtle";
-MaxLengthTurtle.prototype = {
+var support_turtle_DecoratedTurtle = function(toWrap) {
+	this.wrapped = toWrap;
+};
+support_turtle_DecoratedTurtle.__name__ = "support.turtle.DecoratedTurtle";
+support_turtle_DecoratedTurtle.__interfaces__ = [support_turtle_Turtle];
+support_turtle_DecoratedTurtle.prototype = {
 	moveTo: function(x,y) {
-		this.turtle.moveTo(x,y);
-		this.cursor.x = x;
-		this.cursor.y = y;
+		this.wrapped.moveTo(x,y);
 		return this;
 	}
 	,lineTo: function(x,y) {
-		var dx = x - this.cursor.x;
-		var dy = y - this.cursor.y;
-		if(Math.sqrt(dx * dx + dy * dy) < this.maxLength) {
-			this.turtle.lineTo(x,y);
-		} else {
-			this.turtle.moveTo(x,y);
-		}
-		this.cursor.x = x;
-		this.cursor.y = y;
+		this.wrapped.lineTo(x,y);
 		return this;
 	}
+	,get_position: function() {
+		return this.wrapped.get_position();
+	}
+	,set_position: function(v) {
+		return this.wrapped.set_position(v);
+	}
 	,get_lineWidth: function() {
-		return this.turtle.get_lineWidth();
+		return this.wrapped.get_lineWidth();
 	}
 	,set_lineWidth: function(w) {
-		return this.turtle.set_lineWidth(w);
+		return this.wrapped.set_lineWidth(w);
+	}
+	,__class__: support_turtle_DecoratedTurtle
+};
+var MaxLengthTurtle = function(turtle,maxLength) {
+	support_turtle_DecoratedTurtle.call(this,turtle);
+	this.maxLength = maxLength;
+};
+MaxLengthTurtle.__name__ = "MaxLengthTurtle";
+MaxLengthTurtle.__super__ = support_turtle_DecoratedTurtle;
+MaxLengthTurtle.prototype = $extend(support_turtle_DecoratedTurtle.prototype,{
+	moveTo: function(x,y) {
+		this.wrapped.moveTo(x,y);
+		return this;
+	}
+	,lineTo: function(x,y) {
+		var _this_x = x;
+		var _this_y = y;
+		var v = this.get_position();
+		_this_x -= v.x;
+		_this_y -= v.y;
+		var d = Math.sqrt(_this_x * _this_x + _this_y * _this_y);
+		if(d < this.maxLength) {
+			this.wrapped.lineTo(x,y);
+		} else {
+			this.moveTo(x,y);
+		}
+		return this;
 	}
 	,__class__: MaxLengthTurtle
-};
-Math.__name__ = "Math";
+});
 var Reflect = function() { };
 Reflect.__name__ = "Reflect";
 Reflect.field = function(o,field) {
@@ -585,36 +593,6 @@ Type.enumParameters = function(e) {
 	} else {
 		return [];
 	}
-};
-var VectorPairIterator = function(vector) {
-	this.cursor = 0;
-	if(vector.length % 2 != 0) {
-		throw new haxe_ValueException("only even length vectors can be iterated in pairs");
-	}
-	this.vector = vector;
-};
-VectorPairIterator.__name__ = "VectorPairIterator";
-VectorPairIterator.pairs = function(vector) {
-	return new VectorPairIterator(vector);
-};
-VectorPairIterator.prototype = {
-	hasNext: function() {
-		return this.cursor < this.vector.length;
-	}
-	,next: function() {
-		var a = this.vector[this.cursor++];
-		var b = this.vector[this.cursor++];
-		return new Pair(a,b);
-	}
-	,__class__: VectorPairIterator
-};
-var Pair = function(a,b) {
-	this.a = a;
-	this.b = b;
-};
-Pair.__name__ = "Pair";
-Pair.prototype = {
-	__class__: Pair
 };
 var format_gif_Block = $hxEnums["format.gif.Block"] = { __ename__ : true, __constructs__ : ["BFrame","BExtension","BEOF"]
 	,BFrame: ($_=function(frame) { return {_hx_index:0,frame:frame,__enum__:"format.gif.Block",toString:$estr}; },$_.__params__ = ["frame"],$_)
@@ -34963,12 +34941,6 @@ haxe_Exception.prototype = $extend(Error.prototype,{
 	unwrap: function() {
 		return this.__nativeException;
 	}
-	,toString: function() {
-		return this.get_message();
-	}
-	,get_message: function() {
-		return this.message;
-	}
 	,get_native: function() {
 		return this.__nativeException;
 	}
@@ -57890,91 +57862,52 @@ js_html__$CanvasElement_CanvasUtil.getContextWebGL = function(canvas,attribs) {
 	return null;
 };
 Math.__name__ = "Math";
-var support_SpaceTurtle = function(view,space) {
-	this.turtle = new support_Turtle(view);
-	this.space = space;
-};
-support_SpaceTurtle.__name__ = "support.SpaceTurtle";
-support_SpaceTurtle.prototype = {
-	moveTo: function(x,y) {
-		var _this = this.turtle;
-		var _this1 = this.space;
-		var _this2 = _this1.xIn;
-		var _this3 = _this1.xIn;
-		var norm = ((x <= _this3.min ? _this3.min : x >= _this3.max ? _this3.max : x) - _this2.min) / (_this2.max - _this2.min);
-		var _this2 = _this1.xOut;
-		var _this1 = this.space;
-		var _this3 = _this1.yIn;
-		var _this4 = _this1.yIn;
-		var norm1 = ((y <= _this4.min ? _this4.min : y >= _this4.max ? _this4.max : y) - _this3.min) / (_this3.max - _this3.min);
-		var _this3 = _this1.yOut;
-		_this.position.x = _this2.min + norm * (_this2.max - _this2.min);
-		_this.position.y = _this3.min + norm1 * (_this3.max - _this3.min);
-		return this;
-	}
-	,lineTo: function(x,y) {
-		var _this = this.turtle;
-		var _this1 = this.space;
-		var _this2 = _this1.xIn;
-		var _this3 = _this1.xIn;
-		var norm = ((x <= _this3.min ? _this3.min : x >= _this3.max ? _this3.max : x) - _this2.min) / (_this2.max - _this2.min);
-		var _this2 = _this1.xOut;
-		var _this1 = this.space;
-		var _this3 = _this1.yIn;
-		var _this4 = _this1.yIn;
-		var norm1 = ((y <= _this4.min ? _this4.min : y >= _this4.max ? _this4.max : y) - _this3.min) / (_this3.max - _this3.min);
-		var _this3 = _this1.yOut;
-		var to = new support_linAlg2d_Vec(_this2.min + norm * (_this2.max - _this2.min),_this3.min + norm1 * (_this3.max - _this3.min));
-		_this.view.addLine(new support_linAlg2d_Line(_this.position,to),_this.lineWidth);
-		_this.position = to;
-		return this;
-	}
-	,get_lineWidth: function() {
-		return this.turtle.lineWidth;
-	}
-	,set_lineWidth: function(v) {
-		return this.turtle.lineWidth = v;
-	}
-	,__class__: support_SpaceTurtle
-};
-var support_View = function() { };
-support_View.__name__ = "support.View";
-support_View.__isInterface__ = true;
-support_View.prototype = {
-	__class__: support_View
-};
-var support_Turtle = function(view) {
-	this.position = new support_linAlg2d_Vec(0,0);
-	this.lineWidth = 1;
-	this.view = view;
-};
-support_Turtle.__name__ = "support.Turtle";
-support_Turtle.prototype = {
-	moveTo: function(x,y) {
-		this.position.x = x;
-		this.position.y = y;
-		return this;
-	}
-	,lineTo: function(x,y) {
-		var to = new support_linAlg2d_Vec(x,y);
-		this.view.addLine(new support_linAlg2d_Line(this.position,to),this.lineWidth);
-		this.position = to;
-		return this;
-	}
-	,__class__: support_Turtle
-};
-var support_h2d_FastLines = function(parent) {
+var support_h2d_FastQuads = function(parent) {
 	h2d_Drawable.call(this,parent);
-	this.quads = new support_h2d_QuadsPrimitive();
+	this.quads = new support_h3d_prim_QuadsPrimitive();
 	this.white = h3d_mat_Texture.fromColor(16777215,1.0);
 };
-support_h2d_FastLines.__name__ = "support.h2d.FastLines";
-support_h2d_FastLines.__interfaces__ = [support_View];
-support_h2d_FastLines.__super__ = h2d_Drawable;
-support_h2d_FastLines.prototype = $extend(h2d_Drawable.prototype,{
-	addLine: function(line,width) {
-		var tmp = this.quads;
-		var half_width = width / 2;
+support_h2d_FastQuads.__name__ = "support.h2d.FastQuads";
+support_h2d_FastQuads.__super__ = h2d_Drawable;
+support_h2d_FastQuads.prototype = $extend(h2d_Drawable.prototype,{
+	clear: function() {
+		this.quads.reset();
+	}
+	,addQuad: function(quad) {
+		this.quads.push(quad);
+	}
+	,newTurtle: function() {
+		return new support_h2d__$FastQuads_FastQuadsTurtle(this);
+	}
+	,draw: function(ctx) {
+		if(!ctx.beginDrawObject(this,this.white)) {
+			return;
+		}
+		this.quads.render(ctx.engine);
+	}
+	,__class__: support_h2d_FastQuads
+});
+var support_h2d__$FastQuads_FastQuadsTurtle = function(fastQuads) {
+	this.lineWidth = 1.0;
+	this.position = new support_linAlg2d_Vec(0,0);
+	this.fastQuads = fastQuads;
+};
+support_h2d__$FastQuads_FastQuadsTurtle.__name__ = "support.h2d._FastQuads.FastQuadsTurtle";
+support_h2d__$FastQuads_FastQuadsTurtle.__interfaces__ = [support_turtle_Turtle];
+support_h2d__$FastQuads_FastQuadsTurtle.prototype = {
+	moveTo: function(x,y) {
+		this.get_position().x = x;
+		this.get_position().y = y;
+		return this;
+	}
+	,lineTo: function(x,y) {
+		this.lineToQuad(new support_linAlg2d_Line(this.get_position(),new support_linAlg2d_Vec(x,y)));
+		this.moveTo(x,y);
+		return this;
+	}
+	,lineToQuad: function(line) {
+		var tmp = this.fastQuads;
+		var half_width = this.get_lineWidth() / 2;
 		var _this = line.end;
 		var mainAxis_x = _this.x;
 		var mainAxis_y = _this.y;
@@ -58012,19 +57945,22 @@ support_h2d_FastLines.prototype = $extend(h2d_Drawable.prototype,{
 		_this.x += mainAxis_x;
 		_this.y += mainAxis_y;
 		var bottomRight = _this;
-		tmp.push(new support_linAlg2d_Quad(topLeft,topRight,bottomLeft,bottomRight));
+		tmp.addQuad(new support_linAlg2d_Quad(topLeft,topRight,bottomLeft,bottomRight));
 	}
-	,clear: function() {
-		this.quads.reset();
+	,get_position: function() {
+		return this.position;
 	}
-	,draw: function(ctx) {
-		if(!ctx.beginDrawObject(this,this.white)) {
-			return;
-		}
-		this.quads.render(ctx.engine);
+	,set_position: function(p) {
+		return this.position = p;
 	}
-	,__class__: support_h2d_FastLines
-});
+	,get_lineWidth: function() {
+		return this.lineWidth;
+	}
+	,set_lineWidth: function(w) {
+		return this.lineWidth = w;
+	}
+	,__class__: support_h2d__$FastQuads_FastQuadsTurtle
+};
 var support_h2d_FullscreenButton = function(parent) {
 	this.root = new h2d_Object(parent);
 	this.graphics = new h2d_Graphics(this.root);
@@ -58158,15 +58094,55 @@ support_h2d_FullscreenButton.prototype = {
 	}
 	,__class__: support_h2d_FullscreenButton
 };
-var support_h2d_QuadsPrimitive = function() {
+var support_h2d_Plot = function(parent) {
+	h2d_Object.call(this,parent);
+	this.background = new h2d_Bitmap(h2d_Tile.fromColor(16777215,1,1,0.1),this);
+	this.fastQuads = new support_h2d_FastQuads(this);
+	this.space = new support_linAlg2d_Space();
+	this.turtle = new support_turtle_SpaceTurtle(this.fastQuads.newTurtle(),this.space);
+};
+support_h2d_Plot.__name__ = "support.h2d.Plot";
+support_h2d_Plot.__super__ = h2d_Object;
+support_h2d_Plot.prototype = $extend(h2d_Object.prototype,{
+	clear: function() {
+		this.fastQuads.clear();
+	}
+	,resize: function(width,height) {
+		this.width = width;
+		this.height = height;
+		var _this = this.background;
+		_this.posChanged = true;
+		_this.scaleX = width;
+		var _this = this.background;
+		_this.posChanged = true;
+		_this.scaleY = height;
+		this.space.xOut = new support_linAlg2d_Interval(0,width);
+		this.space.yOut = new support_linAlg2d_Interval(height,0);
+		this.clear();
+	}
+	,get_xAxis: function() {
+		return this.space.xIn;
+	}
+	,set_xAxis: function(axis) {
+		return this.space.xIn = axis;
+	}
+	,get_yAxis: function() {
+		return this.space.yIn;
+	}
+	,set_yAxis: function(axis) {
+		return this.space.yIn = axis;
+	}
+	,__class__: support_h2d_Plot
+});
+var support_h3d_prim_QuadsPrimitive = function() {
 	h3d_prim_Primitive.call(this);
 	var this1 = hxd__$FloatBuffer_Float32Expand._new(0);
 	this.vertices = this1;
 	this.dirty = true;
 };
-support_h2d_QuadsPrimitive.__name__ = "support.h2d.QuadsPrimitive";
-support_h2d_QuadsPrimitive.__super__ = h3d_prim_Primitive;
-support_h2d_QuadsPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
+support_h3d_prim_QuadsPrimitive.__name__ = "support.h3d.prim.QuadsPrimitive";
+support_h3d_prim_QuadsPrimitive.__super__ = h3d_prim_Primitive;
+support_h3d_prim_QuadsPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
 	push: function(quad) {
 		this.pushVertex(quad.bottomLeft,0,0);
 		this.pushVertex(quad.topLeft,0,1);
@@ -58287,31 +58263,33 @@ support_h2d_QuadsPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
 		}
 		this1.array[this1.pos++] = 1.0;
 	}
-	,__class__: support_h2d_QuadsPrimitive
+	,__class__: support_h3d_prim_QuadsPrimitive
 });
-var support_linAlg2d_Interval = function(min,max) {
-	this.min = min;
-	this.max = max;
+var support_linAlg2d_Interval = function(start,end) {
+	this.start = start;
+	this.end = end;
 };
 support_linAlg2d_Interval.__name__ = "support.linAlg2d.Interval";
 support_linAlg2d_Interval.prototype = {
 	clamp: function(x) {
-		if(x <= this.min) {
-			return this.min;
-		} else if(x >= this.max) {
-			return this.max;
+		var min = Math.min(this.start,this.end);
+		var max = Math.max(this.start,this.end);
+		if(x <= min) {
+			return min;
+		} else if(x >= max) {
+			return max;
 		} else {
 			return x;
 		}
 	}
 	,normalize: function(x) {
-		return (x - this.min) / (this.max - this.min);
-	}
-	,size: function() {
-		return this.max - this.min;
+		return (x - this.start) / (this.end - this.start);
 	}
 	,lerp: function(x) {
-		return this.min + x * (this.max - this.min);
+		return this.start + x * (this.end - this.start);
+	}
+	,size: function() {
+		return this.end - this.start;
 	}
 	,subdivide: function(count) {
 		var this1 = new Array(count + 1);
@@ -58320,9 +58298,12 @@ support_linAlg2d_Interval.prototype = {
 		var _g1 = endpoints.length;
 		while(_g < _g1) {
 			var i = _g++;
-			endpoints[i] = this.min + i / count * (this.max - this.min);
+			endpoints[i] = this.start + i / count * (this.end - this.start);
 		}
 		return endpoints;
+	}
+	,toString: function() {
+		return "Interval[" + this.start + ", " + this.end + "]";
 	}
 	,__class__: support_linAlg2d_Interval
 };
@@ -58396,30 +58377,38 @@ support_linAlg2d_Space.prototype = {
 	mapX: function(x) {
 		var _this = this.xIn;
 		var _this1 = this.xIn;
-		var norm = ((x <= _this1.min ? _this1.min : x >= _this1.max ? _this1.max : x) - _this.min) / (_this.max - _this.min);
+		var min = Math.min(_this1.start,_this1.end);
+		var max = Math.max(_this1.start,_this1.end);
+		var norm = ((x <= min ? min : x >= max ? max : x) - _this.start) / (_this.end - _this.start);
 		var _this = this.xOut;
-		return _this.min + norm * (_this.max - _this.min);
+		return _this.start + norm * (_this.end - _this.start);
 	}
 	,mapY: function(y) {
 		var _this = this.yIn;
 		var _this1 = this.yIn;
-		var norm = ((y <= _this1.min ? _this1.min : y >= _this1.max ? _this1.max : y) - _this.min) / (_this.max - _this.min);
+		var min = Math.min(_this1.start,_this1.end);
+		var max = Math.max(_this1.start,_this1.end);
+		var norm = ((y <= min ? min : y >= max ? max : y) - _this.start) / (_this.end - _this.start);
 		var _this = this.yOut;
-		return _this.min + norm * (_this.max - _this.min);
+		return _this.start + norm * (_this.end - _this.start);
 	}
 	,map: function(v) {
 		var x = v.x;
 		var _this = this.xIn;
 		var _this1 = this.xIn;
-		var norm = ((x <= _this1.min ? _this1.min : x >= _this1.max ? _this1.max : x) - _this.min) / (_this.max - _this.min);
+		var min = Math.min(_this1.start,_this1.end);
+		var max = Math.max(_this1.start,_this1.end);
+		var norm = ((x <= min ? min : x >= max ? max : x) - _this.start) / (_this.end - _this.start);
 		var _this = this.xOut;
-		v.x = _this.min + norm * (_this.max - _this.min);
+		v.x = _this.start + norm * (_this.end - _this.start);
 		var y = v.y;
 		var _this = this.yIn;
 		var _this1 = this.yIn;
-		var norm = ((y <= _this1.min ? _this1.min : y >= _this1.max ? _this1.max : y) - _this.min) / (_this.max - _this.min);
+		var min = Math.min(_this1.start,_this1.end);
+		var max = Math.max(_this1.start,_this1.end);
+		var norm = ((y <= min ? min : y >= max ? max : y) - _this.start) / (_this.end - _this.start);
 		var _this = this.yOut;
-		v.y = _this.min + norm * (_this.max - _this.min);
+		v.y = _this.start + norm * (_this.end - _this.start);
 		return v;
 	}
 	,__class__: support_linAlg2d_Space
@@ -58467,8 +58456,73 @@ support_linAlg2d_Vec.prototype = {
 	,clone: function() {
 		return new support_linAlg2d_Vec(this.x,this.y);
 	}
+	,toString: function() {
+		return "Vec(" + this.x + ", " + this.y + ")";
+	}
 	,__class__: support_linAlg2d_Vec
 };
+var support_turtle_SpaceTurtle = function(wrapped,space) {
+	this.space = new support_linAlg2d_Space();
+	support_turtle_DecoratedTurtle.call(this,wrapped);
+	if(space != null) {
+		this.space = space;
+	}
+};
+support_turtle_SpaceTurtle.__name__ = "support.turtle.SpaceTurtle";
+support_turtle_SpaceTurtle.__super__ = support_turtle_DecoratedTurtle;
+support_turtle_SpaceTurtle.prototype = $extend(support_turtle_DecoratedTurtle.prototype,{
+	moveTo: function(x,y) {
+		var _this = this.space;
+		var _this1 = _this.xIn;
+		var _this2 = _this.xIn;
+		var min = Math.min(_this2.start,_this2.end);
+		var max = Math.max(_this2.start,_this2.end);
+		var norm = ((x <= min ? min : x >= max ? max : x) - _this1.start) / (_this1.end - _this1.start);
+		var _this1 = _this.xOut;
+		var _this = this.space;
+		var _this2 = _this.yIn;
+		var _this3 = _this.yIn;
+		var min = Math.min(_this3.start,_this3.end);
+		var max = Math.max(_this3.start,_this3.end);
+		var norm1 = ((y <= min ? min : y >= max ? max : y) - _this2.start) / (_this2.end - _this2.start);
+		var _this2 = _this.yOut;
+		this.wrapped.moveTo(_this1.start + norm * (_this1.end - _this1.start),_this2.start + norm1 * (_this2.end - _this2.start));
+		return this;
+	}
+	,lineTo: function(x,y) {
+		var _this = this.space;
+		var _this1 = _this.xIn;
+		var _this2 = _this.xIn;
+		var min = Math.min(_this2.start,_this2.end);
+		var max = Math.max(_this2.start,_this2.end);
+		var norm = ((x <= min ? min : x >= max ? max : x) - _this1.start) / (_this1.end - _this1.start);
+		var _this1 = _this.xOut;
+		var _this = this.space;
+		var _this2 = _this.yIn;
+		var _this3 = _this.yIn;
+		var min = Math.min(_this3.start,_this3.end);
+		var max = Math.max(_this3.start,_this3.end);
+		var norm1 = ((y <= min ? min : y >= max ? max : y) - _this2.start) / (_this2.end - _this2.start);
+		var _this2 = _this.yOut;
+		this.wrapped.lineTo(_this1.start + norm * (_this1.end - _this1.start),_this2.start + norm1 * (_this2.end - _this2.start));
+		return this;
+	}
+	,get_position: function() {
+		var _this = this.wrapped.get_position();
+		var wp_x = _this.x;
+		var wp_y = _this.y;
+		var _this = this.space.xIn;
+		var _this1 = this.space.xOut;
+		var _this2 = this.space.yIn;
+		var _this3 = this.space.yOut;
+		return new support_linAlg2d_Vec(_this.start + (wp_x - _this1.start) / (_this1.end - _this1.start) * (_this.end - _this.start),_this2.start + (wp_y - _this3.start) / (_this3.end - _this3.start) * (_this2.end - _this2.start));
+	}
+	,set_position: function(v) {
+		this.moveTo(v.x,v.y);
+		return v;
+	}
+	,__class__: support_turtle_SpaceTurtle
+});
 function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;

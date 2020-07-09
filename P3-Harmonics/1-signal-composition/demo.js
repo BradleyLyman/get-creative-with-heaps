@@ -255,7 +255,7 @@ Main.prototype = $extend(hxd_App.prototype,{
 		this.total = new support_h2d_Plot(this.flow);
 		this.total.set_yAxis(new support_linAlg2d_Interval(-1,1));
 		this.total.set_xAxis(new support_linAlg2d_Interval(0,Math.PI * 4));
-		this.total.set_lineWidth(2);
+		this.total.turtle.set_lineWidth(2);
 		this.addHarmonic();
 		new support_h2d_FullscreenButton(this.s2d);
 		hxd_Window.getInstance().addEventTarget($bind(this,this.onKeyUp));
@@ -282,7 +282,7 @@ Main.prototype = $extend(hxd_App.prototype,{
 		var plot = new support_h2d_Plot(this.flow);
 		plot.set_xAxis(new support_linAlg2d_Interval(0,Math.PI * 4));
 		plot.set_yAxis(new support_linAlg2d_Interval(-1,1));
-		plot.set_lineWidth(2);
+		plot.turtle.set_lineWidth(2);
 		var signal = new Signal(Math.random() * Math.PI * 2,1 + Math.random() * (this.harmonics.length + 1));
 		this.harmonics.push({ plot : plot, signal : signal});
 		this.onResize();
@@ -320,13 +320,30 @@ Main.prototype = $extend(hxd_App.prototype,{
 		while(_g < _g1.length) {
 			var harmonic = _g1[_g];
 			++_g;
-			harmonic.plot.get_xAxis().min += rdt;
-			harmonic.plot.get_xAxis().max += rdt;
-			harmonic.plot.plotFunction(($_=harmonic.signal,$bind($_,$_.eval)));
+			harmonic.signal.offset += rdt;
+			this.plotFunction(harmonic.plot,($_=harmonic.signal,$bind($_,$_.eval)));
 		}
-		this.total.get_xAxis().min += rdt;
-		this.total.get_xAxis().max += rdt;
-		this.total.plotFunction($bind(this,this.composedSignal));
+		this.plotFunction(this.total,$bind(this,this.composedSignal));
+	}
+	,plotFunction: function(plot,f) {
+		plot.clear();
+		plot.turtle.moveTo(plot.get_xAxis().start,f(plot.get_xAxis().start));
+		var _g = 0;
+		var _this = plot.get_xAxis();
+		var this1 = new Array(501);
+		var endpoints = this1;
+		var _g1 = 0;
+		var _g2 = endpoints.length;
+		while(_g1 < _g2) {
+			var i = _g1++;
+			endpoints[i] = _this.start + i / 500 * (_this.end - _this.start);
+		}
+		var _g1 = endpoints;
+		while(_g < _g1.length) {
+			var x = _g1[_g];
+			++_g;
+			plot.turtle.lineTo(x,f(x));
+		}
 	}
 	,composedSignal: function(x) {
 		var len = this.harmonics.length;
@@ -6392,149 +6409,6 @@ h2d_Flow.prototype = $extend(h2d_Object.prototype,{
 	}
 	,__class__: h2d_Flow
 });
-var h2d_Kerning = function(c,o) {
-	this.prevChar = c;
-	this.offset = o;
-};
-h2d_Kerning.__name__ = "h2d.Kerning";
-h2d_Kerning.prototype = {
-	__class__: h2d_Kerning
-};
-var h2d_FontChar = function(t,w) {
-	this.t = t;
-	this.width = w;
-};
-h2d_FontChar.__name__ = "h2d.FontChar";
-h2d_FontChar.prototype = {
-	addKerning: function(prevChar,offset) {
-		var k = new h2d_Kerning(prevChar,offset);
-		k.next = this.kerning;
-		this.kerning = k;
-	}
-	,getKerningOffset: function(prevChar) {
-		var k = this.kerning;
-		while(k != null) {
-			if(k.prevChar == prevChar) {
-				return k.offset;
-			}
-			k = k.next;
-		}
-		return 0;
-	}
-	,clone: function() {
-		var c = new h2d_FontChar(this.t.clone(),this.width);
-		var k = this.kerning;
-		if(k != null) {
-			var kc = new h2d_Kerning(k.prevChar,k.offset);
-			c.kerning = kc;
-			k = k.next;
-			while(k != null) {
-				var kn = new h2d_Kerning(k.prevChar,k.offset);
-				kc = kc.next = kn;
-				k = k.next;
-			}
-		}
-		return c;
-	}
-	,__class__: h2d_FontChar
-};
-var h2d_FontType = $hxEnums["h2d.FontType"] = { __ename__ : true, __constructs__ : ["BitmapFont","SignedDistanceField"]
-	,BitmapFont: {_hx_index:0,__enum__:"h2d.FontType",toString:$estr}
-	,SignedDistanceField: ($_=function(channel,alphaCutoff,smoothing) { return {_hx_index:1,channel:channel,alphaCutoff:alphaCutoff,smoothing:smoothing,__enum__:"h2d.FontType",toString:$estr}; },$_.__params__ = ["channel","alphaCutoff","smoothing"],$_)
-};
-h2d_FontType.__empty_constructs__ = [h2d_FontType.BitmapFont];
-var h2d_Font = function(name,size,type) {
-	this.offsetY = 0;
-	this.offsetX = 0;
-	this.name = name;
-	this.size = size;
-	this.initSize = size;
-	this.glyphs = new haxe_ds_IntMap();
-	this.defaultChar = this.nullChar = new h2d_FontChar(new h2d_Tile(null,0,0,0,0),0);
-	this.charset = hxd_Charset.getDefault();
-	if(name != null) {
-		this.tilePath = haxe_io_Path.withExtension(name,"png");
-	}
-	if(type == null) {
-		this.type = h2d_FontType.BitmapFont;
-	} else {
-		this.type = type;
-	}
-};
-h2d_Font.__name__ = "h2d.Font";
-h2d_Font.prototype = {
-	getChar: function(code) {
-		var c = this.glyphs.h[code];
-		if(c == null) {
-			c = this.charset.resolveChar(code,this.glyphs);
-			if(c == null) {
-				c = code == 13 || code == 10 ? this.nullChar : this.defaultChar;
-			}
-		}
-		return c;
-	}
-	,setOffset: function(x,y) {
-		var dx = x - this.offsetX;
-		var dy = y - this.offsetY;
-		if(dx == 0 && dy == 0) {
-			return;
-		}
-		var g = this.glyphs.iterator();
-		while(g.hasNext()) {
-			var g1 = g.next();
-			g1.t.dx += dx;
-			g1.t.dy += dy;
-		}
-		this.offsetX += dx;
-		this.offsetY += dy;
-	}
-	,clone: function() {
-		var f = new h2d_Font(this.name,this.size);
-		f.baseLine = this.baseLine;
-		f.lineHeight = this.lineHeight;
-		f.tile = this.tile.clone();
-		f.charset = this.charset;
-		f.defaultChar = this.defaultChar.clone();
-		f.type = this.type;
-		var g = this.glyphs.keys();
-		while(g.hasNext()) {
-			var g1 = g.next();
-			var c = this.glyphs.h[g1];
-			var c2 = c.clone();
-			if(c == this.defaultChar) {
-				f.defaultChar = c2;
-			}
-			f.glyphs.h[g1] = c2;
-		}
-		return f;
-	}
-	,resizeTo: function(size) {
-		var ratio = size / this.initSize;
-		var c = this.glyphs.iterator();
-		while(c.hasNext()) {
-			var c1 = c.next();
-			c1.width *= ratio;
-			c1.t.scaleToSize(c1.t.width * ratio,c1.t.height * ratio);
-			c1.t.dx *= ratio;
-			c1.t.dy *= ratio;
-			var k = c1.kerning;
-			while(k != null) {
-				k.offset *= ratio;
-				k = k.next;
-			}
-		}
-		this.lineHeight *= ratio;
-		this.baseLine *= ratio;
-		this.size = size;
-	}
-	,hasChar: function(code) {
-		return this.glyphs.h[code] != null;
-	}
-	,dispose: function() {
-		this.tile.dispose();
-	}
-	,__class__: h2d_Font
-};
 var h2d_GPoint = function() {
 };
 h2d_GPoint.__name__ = "h2d.GPoint";
@@ -11181,548 +11055,6 @@ h2d_Scene.prototype = $extend(h2d_Layers.prototype,{
 		return new h2d_Bitmap(target);
 	}
 	,__class__: h2d_Scene
-});
-var h2d_Align = $hxEnums["h2d.Align"] = { __ename__ : true, __constructs__ : ["Left","Right","Center","MultilineRight","MultilineCenter"]
-	,Left: {_hx_index:0,__enum__:"h2d.Align",toString:$estr}
-	,Right: {_hx_index:1,__enum__:"h2d.Align",toString:$estr}
-	,Center: {_hx_index:2,__enum__:"h2d.Align",toString:$estr}
-	,MultilineRight: {_hx_index:3,__enum__:"h2d.Align",toString:$estr}
-	,MultilineCenter: {_hx_index:4,__enum__:"h2d.Align",toString:$estr}
-};
-h2d_Align.__empty_constructs__ = [h2d_Align.Left,h2d_Align.Right,h2d_Align.Center,h2d_Align.MultilineRight,h2d_Align.MultilineCenter];
-var h2d_Text = function(font,parent) {
-	this.realMaxWidth = -1;
-	this.constraintWidth = -1;
-	h2d_Drawable.call(this,parent);
-	this.set_font(font);
-	this.set_textAlign(h2d_Align.Left);
-	this.set_letterSpacing(1);
-	this.set_lineSpacing(0);
-	this.set_text("");
-	this.currentText = "";
-	this.set_textColor(16777215);
-};
-h2d_Text.__name__ = "h2d.Text";
-h2d_Text.__super__ = h2d_Drawable;
-h2d_Text.prototype = $extend(h2d_Drawable.prototype,{
-	set_font: function(font) {
-		if(this.font == font) {
-			return font;
-		}
-		this.font = font;
-		if(font != null) {
-			var _g = font.type;
-			switch(_g._hx_index) {
-			case 0:
-				if(this.sdfShader != null) {
-					this.removeShader(this.sdfShader);
-					this.sdfShader = null;
-				}
-				break;
-			case 1:
-				var smoothing = _g.smoothing;
-				var alphaCutoff = _g.alphaCutoff;
-				var channel = _g.channel;
-				if(this.sdfShader == null) {
-					this.sdfShader = new h3d_shader_SignedDistanceField();
-					this.addShader(this.sdfShader);
-				}
-				this.sdfShader.alphaCutoff__ = alphaCutoff;
-				this.sdfShader.smoothing__ = smoothing;
-				var _this = this.sdfShader;
-				_this.constModified = true;
-				_this.channel__ = channel;
-				break;
-			}
-		}
-		if(this.glyphs != null) {
-			var _this = this.glyphs;
-			if(_this != null && _this.parent != null) {
-				_this.parent.removeChild(_this);
-			}
-		}
-		this.glyphs = new h2d_TileGroup(font == null ? null : font.tile,this);
-		this.glyphs.set_visible(false);
-		this.rebuild();
-		return font;
-	}
-	,set_textAlign: function(a) {
-		if(this.textAlign == a) {
-			return a;
-		}
-		this.textAlign = a;
-		this.rebuild();
-		return a;
-	}
-	,set_letterSpacing: function(s) {
-		if(this.letterSpacing == s) {
-			return s;
-		}
-		this.letterSpacing = s;
-		this.rebuild();
-		return s;
-	}
-	,set_lineSpacing: function(s) {
-		if(this.lineSpacing == s) {
-			return s;
-		}
-		this.lineSpacing = s;
-		this.rebuild();
-		return s;
-	}
-	,constraintSize: function(width,height) {
-		this.constraintWidth = width;
-		this.updateConstraint();
-	}
-	,onAdd: function() {
-		h2d_Drawable.prototype.onAdd.call(this);
-		this.rebuild();
-	}
-	,checkText: function() {
-		if(this.textChanged && this.text != this.currentText) {
-			this.textChanged = false;
-			this.currentText = this.text;
-			this.calcDone = false;
-			this.needsRebuild = true;
-		}
-	}
-	,sync: function(ctx) {
-		h2d_Drawable.prototype.sync.call(this,ctx);
-		if(this.textChanged && this.text != this.currentText) {
-			this.textChanged = false;
-			this.currentText = this.text;
-			this.calcDone = false;
-			this.needsRebuild = true;
-		}
-		if(this.needsRebuild) {
-			this.initGlyphs(this.currentText);
-		}
-	}
-	,draw: function(ctx) {
-		if(this.glyphs == null) {
-			this.emitTile(ctx,h2d_Tile.fromColor(16711935,16,16));
-			return;
-		}
-		if(this.textChanged && this.text != this.currentText) {
-			this.textChanged = false;
-			this.currentText = this.text;
-			this.calcDone = false;
-			this.needsRebuild = true;
-		}
-		if(this.needsRebuild) {
-			this.initGlyphs(this.currentText);
-		}
-		if(this.dropShadow != null) {
-			var oldX = this.absX;
-			var oldY = this.absY;
-			this.absX += this.dropShadow.dx * this.matA + this.dropShadow.dy * this.matC;
-			this.absY += this.dropShadow.dx * this.matB + this.dropShadow.dy * this.matD;
-			var oldR = this.color.x;
-			var oldG = this.color.y;
-			var oldB = this.color.z;
-			var oldA = this.color.w;
-			var _this = this.color;
-			var c = this.dropShadow.color;
-			_this.x = (c >> 16 & 255) / 255;
-			_this.y = (c >> 8 & 255) / 255;
-			_this.z = (c & 255) / 255;
-			_this.w = (c >>> 24) / 255;
-			this.color.w = this.dropShadow.alpha * oldA;
-			this.glyphs.drawWith(ctx,this);
-			this.absX = oldX;
-			this.absY = oldY;
-			var _this = this.color;
-			var x = oldR;
-			var y = oldG;
-			var z = oldB;
-			var w = oldA;
-			if(w == null) {
-				w = 1.;
-			}
-			if(z == null) {
-				z = 0.;
-			}
-			if(y == null) {
-				y = 0.;
-			}
-			if(x == null) {
-				x = 0.;
-			}
-			_this.x = x;
-			_this.y = y;
-			_this.z = z;
-			_this.w = w;
-		}
-		this.glyphs.drawWith(ctx,this);
-	}
-	,set_text: function(t) {
-		var t1 = t == null ? "null" : t;
-		if(t1 == this.text) {
-			return t1;
-		}
-		this.text = t1;
-		this.textChanged = true;
-		this.validateText();
-		if(this.parentContainer != null) {
-			this.parentContainer.contentChanged(this);
-		}
-		return t1;
-	}
-	,validateText: function() {
-	}
-	,rebuild: function() {
-		this.calcDone = false;
-		this.needsRebuild = true;
-		if(this.parentContainer != null) {
-			this.parentContainer.contentChanged(this);
-		}
-	}
-	,calcTextWidth: function(text) {
-		if(this.calcDone) {
-			var ow = this.calcWidth;
-			var oh = this.calcHeight;
-			var osh = this.calcSizeHeight;
-			var ox = this.calcXMin;
-			var oy = this.calcYMin;
-			this.initGlyphs(text,false);
-			var w = this.calcWidth;
-			this.calcWidth = ow;
-			this.calcHeight = oh;
-			this.calcSizeHeight = osh;
-			this.calcXMin = ox;
-			this.calcYMin = oy;
-			return w;
-		} else {
-			this.initGlyphs(text,false);
-			this.calcDone = false;
-			return this.calcWidth;
-		}
-	}
-	,splitText: function(text) {
-		return this.splitRawText(text,0,0);
-	}
-	,splitRawText: function(text,leftMargin,afterData,font,sizes,prevChar) {
-		if(prevChar == null) {
-			prevChar = -1;
-		}
-		if(afterData == null) {
-			afterData = 0.;
-		}
-		if(leftMargin == null) {
-			leftMargin = 0.;
-		}
-		var maxWidth = this.realMaxWidth;
-		if(maxWidth < 0) {
-			if(sizes == null) {
-				return text;
-			} else {
-				maxWidth = Infinity;
-			}
-		}
-		if(font == null) {
-			font = this.font;
-		}
-		var lines = [];
-		var restPos = 0;
-		var x = leftMargin;
-		var _g = 0;
-		var _g1 = text.length;
-		while(_g < _g1) {
-			var i = _g++;
-			var cc = HxOverrides.cca(text,i);
-			var c = font.glyphs.h[cc];
-			if(c == null) {
-				c = font.charset.resolveChar(cc,font.glyphs);
-				if(c == null) {
-					c = cc == 13 || cc == 10 ? font.nullChar : font.defaultChar;
-				}
-			}
-			var e = c;
-			var newline = cc == 10;
-			var esize = e.width + e.getKerningOffset(prevChar);
-			if(font.charset.isBreakChar(cc)) {
-				if(lines.length == 0 && leftMargin > 0 && x > maxWidth) {
-					lines.push("");
-					if(sizes != null) {
-						sizes.push(leftMargin);
-					}
-					x -= leftMargin;
-				}
-				var size = x + esize + this.letterSpacing;
-				var k = i + 1;
-				var max = text.length;
-				var prevChar1 = prevChar;
-				var breakFound = false;
-				while(size <= maxWidth && k < max) {
-					var cc1 = HxOverrides.cca(text,k++);
-					if(font.charset.isSpace(cc1) || cc1 == 10) {
-						breakFound = true;
-						break;
-					}
-					var c1 = font.glyphs.h[cc1];
-					if(c1 == null) {
-						c1 = font.charset.resolveChar(cc1,font.glyphs);
-						if(c1 == null) {
-							c1 = cc1 == 13 || cc1 == 10 ? font.nullChar : font.defaultChar;
-						}
-					}
-					var e1 = c1;
-					size += e1.width + this.letterSpacing + e1.getKerningOffset(prevChar1);
-					prevChar1 = cc1;
-					if(font.charset.isBreakChar(cc1)) {
-						break;
-					}
-				}
-				if(size > maxWidth || !breakFound && size + afterData > maxWidth) {
-					newline = true;
-					if(font.charset.isSpace(cc)) {
-						lines.push(HxOverrides.substr(text,restPos,i - restPos));
-						e = null;
-					} else {
-						lines.push(HxOverrides.substr(text,restPos,i + 1 - restPos));
-					}
-					restPos = i + 1;
-				}
-			}
-			if(e != null && cc != 10) {
-				x += esize + this.letterSpacing;
-			}
-			if(newline) {
-				if(sizes != null) {
-					sizes.push(x);
-				}
-				x = 0;
-				prevChar = -1;
-			} else {
-				prevChar = cc;
-			}
-		}
-		if(restPos < text.length) {
-			if(lines.length == 0 && leftMargin > 0 && x + afterData - this.letterSpacing > maxWidth) {
-				lines.push("");
-				if(sizes != null) {
-					sizes.push(leftMargin);
-				}
-				x -= leftMargin;
-			}
-			lines.push(HxOverrides.substr(text,restPos,text.length - restPos));
-			if(sizes != null) {
-				sizes.push(x);
-			}
-		}
-		return lines.join("\n");
-	}
-	,getTextProgress: function(text,progress) {
-		if(progress >= text.length) {
-			return text;
-		}
-		return HxOverrides.substr(text,0,progress | 0);
-	}
-	,initGlyphs: function(text,rebuild) {
-		if(rebuild == null) {
-			rebuild = true;
-		}
-		if(rebuild) {
-			this.glyphs.clear();
-		}
-		var x = 0.;
-		var y = 0.;
-		var xMax = 0.;
-		var xMin = 0.;
-		var yMin = 0.;
-		var prevChar = -1;
-		var linei = 0;
-		var align = this.textAlign;
-		var lines = [];
-		var dl = this.font.lineHeight + this.lineSpacing;
-		var t = this.splitRawText(text,0,0,null,lines);
-		var _g = 0;
-		while(_g < lines.length) {
-			var lw = lines[_g];
-			++_g;
-			if(lw > x) {
-				x = lw;
-			}
-		}
-		this.calcWidth = x;
-		switch(align._hx_index) {
-		case 0:
-			x = 0;
-			break;
-		case 1:case 2:case 3:case 4:
-			var max = align == h2d_Align.MultilineCenter || align == h2d_Align.MultilineRight ? Math.ceil(this.calcWidth) : this.realMaxWidth < 0 ? 0 : Math.ceil(this.realMaxWidth);
-			var k = align == h2d_Align.Center || align == h2d_Align.MultilineCenter ? 0.5 : 1;
-			var _g = 0;
-			var _g1 = lines.length;
-			while(_g < _g1) {
-				var i = _g++;
-				lines[i] = Math.floor((max - lines[i]) * k);
-			}
-			x = lines[0];
-			xMin = x;
-			break;
-		}
-		var _g = 0;
-		var _g1 = t.length;
-		while(_g < _g1) {
-			var i = _g++;
-			var cc = HxOverrides.cca(t,i);
-			var _this = this.font;
-			var c = _this.glyphs.h[cc];
-			if(c == null) {
-				c = _this.charset.resolveChar(cc,_this.glyphs);
-				if(c == null) {
-					c = cc == 13 || cc == 10 ? _this.nullChar : _this.defaultChar;
-				}
-			}
-			var e = c;
-			var offs = e.getKerningOffset(prevChar);
-			var esize = e.width + offs;
-			if(cc == 10) {
-				if(x > xMax) {
-					xMax = x;
-				}
-				switch(align._hx_index) {
-				case 0:
-					x = 0;
-					break;
-				case 1:case 2:case 3:case 4:
-					x = lines[++linei];
-					if(x < xMin) {
-						xMin = x;
-					}
-					break;
-				}
-				y += dl;
-				prevChar = -1;
-			} else {
-				if(e != null) {
-					if(rebuild) {
-						var _this1 = this.glyphs;
-						_this1.content.add(x + offs,y,_this1.curColor.x,_this1.curColor.y,_this1.curColor.z,_this1.curColor.w,e.t);
-					}
-					if(y == 0 && e.t.dy < yMin) {
-						yMin = e.t.dy;
-					}
-					x += esize + this.letterSpacing;
-				}
-				prevChar = cc;
-			}
-		}
-		if(x > xMax) {
-			xMax = x;
-		}
-		this.calcXMin = xMin;
-		this.calcYMin = yMin;
-		this.calcWidth = xMax - xMin;
-		this.calcHeight = y + this.font.lineHeight;
-		this.calcSizeHeight = y + (this.font.baseLine > 0 ? this.font.baseLine : this.font.lineHeight);
-		this.calcDone = true;
-		if(rebuild) {
-			this.needsRebuild = false;
-		}
-	}
-	,updateSize: function() {
-		if(this.textChanged && this.text != this.currentText) {
-			this.textChanged = false;
-			this.currentText = this.text;
-			this.calcDone = false;
-			this.needsRebuild = true;
-		}
-		if(!this.calcDone) {
-			this.initGlyphs(this.text,this.needsRebuild);
-		}
-	}
-	,get_textHeight: function() {
-		if(this.textChanged && this.text != this.currentText) {
-			this.textChanged = false;
-			this.currentText = this.text;
-			this.calcDone = false;
-			this.needsRebuild = true;
-		}
-		if(!this.calcDone) {
-			this.initGlyphs(this.text,this.needsRebuild);
-		}
-		return this.calcHeight;
-	}
-	,get_textWidth: function() {
-		if(this.textChanged && this.text != this.currentText) {
-			this.textChanged = false;
-			this.currentText = this.text;
-			this.calcDone = false;
-			this.needsRebuild = true;
-		}
-		if(!this.calcDone) {
-			this.initGlyphs(this.text,this.needsRebuild);
-		}
-		return this.calcWidth;
-	}
-	,set_maxWidth: function(w) {
-		if(this.maxWidth == w) {
-			return w;
-		}
-		this.maxWidth = w;
-		this.updateConstraint();
-		return w;
-	}
-	,updateConstraint: function() {
-		var old = this.realMaxWidth;
-		if(this.maxWidth == null) {
-			this.realMaxWidth = this.constraintWidth;
-		} else if(this.constraintWidth < 0) {
-			this.realMaxWidth = this.maxWidth;
-		} else {
-			var a = this.maxWidth;
-			var b = this.constraintWidth;
-			this.realMaxWidth = a > b ? b : a;
-		}
-		if(this.realMaxWidth != old) {
-			this.rebuild();
-		}
-	}
-	,set_textColor: function(c) {
-		if(this.textColor == c) {
-			return c;
-		}
-		this.textColor = c;
-		var a = this.color.w;
-		var _this = this.color;
-		_this.x = (c >> 16 & 255) / 255;
-		_this.y = (c >> 8 & 255) / 255;
-		_this.z = (c & 255) / 255;
-		_this.w = (c >>> 24) / 255;
-		this.color.w = a;
-		return c;
-	}
-	,getBoundsRec: function(relativeTo,out,forSize) {
-		h2d_Drawable.prototype.getBoundsRec.call(this,relativeTo,out,forSize);
-		if(this.textChanged && this.text != this.currentText) {
-			this.textChanged = false;
-			this.currentText = this.text;
-			this.calcDone = false;
-			this.needsRebuild = true;
-		}
-		if(!this.calcDone) {
-			this.initGlyphs(this.text,this.needsRebuild);
-		}
-		var x;
-		var y;
-		var w;
-		var h;
-		if(forSize) {
-			x = this.calcXMin;
-			y = 0.;
-			w = this.calcWidth;
-			h = this.calcSizeHeight;
-		} else {
-			x = this.calcXMin;
-			y = this.calcYMin;
-			w = this.calcWidth;
-			h = this.calcHeight - this.calcYMin;
-		}
-		this.addBounds(relativeTo,out,x,y,w,h);
-	}
-	,__class__: h2d_Text
 });
 var h2d_Tile = function(tex,x,y,w,h,dx,dy) {
 	if(dy == null) {
@@ -38480,75 +37812,6 @@ h3d_shader_Shadow.prototype = $extend(hxsl_Shader.prototype,{
 	}
 	,__class__: h3d_shader_Shadow
 });
-var h3d_shader_SignedDistanceField = function() {
-	this.smoothing__ = 0.041666666666666664;
-	this.alphaCutoff__ = 0.5;
-	this.channel__ = 0;
-	hxsl_Shader.call(this);
-};
-h3d_shader_SignedDistanceField.__name__ = "h3d.shader.SignedDistanceField";
-h3d_shader_SignedDistanceField.__super__ = hxsl_Shader;
-h3d_shader_SignedDistanceField.prototype = $extend(hxsl_Shader.prototype,{
-	get_channel: function() {
-		return this.channel__;
-	}
-	,set_channel: function(_v) {
-		this.constModified = true;
-		return this.channel__ = _v;
-	}
-	,get_alphaCutoff: function() {
-		return this.alphaCutoff__;
-	}
-	,set_alphaCutoff: function(_v) {
-		return this.alphaCutoff__ = _v;
-	}
-	,get_smoothing: function() {
-		return this.smoothing__;
-	}
-	,set_smoothing: function(_v) {
-		return this.smoothing__ = _v;
-	}
-	,updateConstants: function(globals) {
-		this.constBits = 0;
-		var v = this.channel__;
-		if(v >>> 8 != 0) {
-			throw haxe_Exception.thrown("channel" + " is out of range " + v + ">" + 255);
-		}
-		this.constBits |= v;
-		this.updateConstantsFinal(globals);
-	}
-	,getParamValue: function(index) {
-		switch(index) {
-		case 0:
-			return this.channel__;
-		case 1:
-			return this.alphaCutoff__;
-		case 2:
-			return this.smoothing__;
-		default:
-		}
-		return null;
-	}
-	,getParamFloatValue: function(index) {
-		switch(index) {
-		case 1:
-			return this.alphaCutoff__;
-		case 2:
-			return this.smoothing__;
-		default:
-		}
-		return 0.;
-	}
-	,clone: function() {
-		var s = Object.create(h3d_shader_SignedDistanceField.prototype);
-		s.shader = this.shader;
-		s.channel__ = this.channel__;
-		s.alphaCutoff__ = this.alphaCutoff__;
-		s.smoothing__ = this.smoothing__;
-		return s;
-	}
-	,__class__: h3d_shader_SignedDistanceField
-});
 var h3d_shader_SkinBase = function() {
 	this.bonesMatrixes__ = [];
 	this.MaxBones__ = 0;
@@ -40644,16 +39907,8 @@ haxe_io_Path.extension = function(path) {
 	}
 	return s.ext;
 };
-haxe_io_Path.withExtension = function(path,ext) {
-	var s = new haxe_io_Path(path);
-	s.ext = ext;
-	return s.toString();
-};
 haxe_io_Path.prototype = {
-	toString: function() {
-		return (this.dir == null ? "" : this.dir + (this.backslash ? "\\" : "/")) + this.file + (this.ext == null ? "" : "." + this.ext);
-	}
-	,__class__: haxe_io_Path
+	__class__: haxe_io_Path
 };
 var haxe_iterators_ArrayIterator = function(array) {
 	this.current = 0;
@@ -41600,144 +40855,6 @@ hxd_BitmapData.prototype = {
 		return png;
 	}
 	,__class__: hxd_BitmapData
-};
-var hxd_Charset = function() {
-	var _gthis = this;
-	this.map = new haxe_ds_IntMap();
-	var _g = 0;
-	while(_g < 94) {
-		var i = _g++;
-		_gthis.map.h[65281 + i] = 33 + i;
-	}
-	var _g = 192;
-	var _g1 = 199;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 65;
-	}
-	var _g = 224;
-	var _g1 = 231;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 97;
-	}
-	var _g = 200;
-	var _g1 = 204;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 69;
-	}
-	var _g = 232;
-	var _g1 = 236;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 101;
-	}
-	var _g = 204;
-	var _g1 = 208;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 73;
-	}
-	var _g = 236;
-	var _g1 = 240;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 105;
-	}
-	var _g = 210;
-	var _g1 = 215;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 79;
-	}
-	var _g = 242;
-	var _g1 = 247;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 111;
-	}
-	var _g = 217;
-	var _g1 = 221;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 85;
-	}
-	var _g = 249;
-	var _g1 = 253;
-	while(_g < _g1) {
-		var i = _g++;
-		_gthis.map.h[i] = 117;
-	}
-	_gthis.map.h[199] = 67;
-	_gthis.map.h[231] = 67;
-	_gthis.map.h[208] = 68;
-	_gthis.map.h[222] = 100;
-	_gthis.map.h[209] = 78;
-	_gthis.map.h[241] = 110;
-	_gthis.map.h[221] = 89;
-	_gthis.map.h[253] = 121;
-	_gthis.map.h[255] = 121;
-	_gthis.map.h[8364] = 69;
-	_gthis.map.h[12288] = 32;
-	_gthis.map.h[160] = 32;
-	_gthis.map.h[171] = 34;
-	_gthis.map.h[187] = 34;
-	_gthis.map.h[8220] = 34;
-	_gthis.map.h[8221] = 34;
-	_gthis.map.h[8216] = 39;
-	_gthis.map.h[8217] = 39;
-	_gthis.map.h[180] = 39;
-	_gthis.map.h[8216] = 39;
-	_gthis.map.h[8249] = 60;
-	_gthis.map.h[8250] = 62;
-	_gthis.map.h[8211] = 45;
-};
-hxd_Charset.__name__ = "hxd.Charset";
-hxd_Charset.getDefault = function() {
-	if(hxd_Charset.inst == null) {
-		hxd_Charset.inst = new hxd_Charset();
-	}
-	return hxd_Charset.inst;
-};
-hxd_Charset.prototype = {
-	resolveChar: function(code,glyphs) {
-		var c = code;
-		while(c != null) {
-			var g = glyphs.h[c];
-			if(g != null) {
-				return g;
-			}
-			c = this.map.h[c];
-		}
-		return null;
-	}
-	,isCJK: function(code) {
-		if(!(code >= 11904 && code <= 42191 || code >= 63744 && code <= 64255)) {
-			if(code >= 131072) {
-				return code <= 262141;
-			} else {
-				return false;
-			}
-		} else {
-			return true;
-		}
-	}
-	,isSpace: function(code) {
-		if(code != 32) {
-			return code == 12288;
-		} else {
-			return true;
-		}
-	}
-	,isBreakChar: function(code) {
-		if(!this.isSpace(code)) {
-			return this.isCJK(code);
-		} else {
-			return true;
-		}
-	}
-	,__class__: hxd_Charset
 };
 var hxd_Cursor = $hxEnums["hxd.Cursor"] = { __ename__ : true, __constructs__ : ["Default","Button","Move","TextInput","Hide","Custom","Callback"]
 	,Default: {_hx_index:0,__enum__:"hxd.Cursor",toString:$estr}
@@ -62169,91 +61286,58 @@ js_html__$CanvasElement_CanvasUtil.getContextWebGL = function(canvas,attribs) {
 	return null;
 };
 Math.__name__ = "Math";
-var support_SpaceTurtle = function(view,space) {
-	this.turtle = new support_Turtle(view);
-	this.space = space;
-};
-support_SpaceTurtle.__name__ = "support.SpaceTurtle";
-support_SpaceTurtle.prototype = {
-	moveTo: function(x,y) {
-		var _this = this.turtle;
-		var _this1 = this.space;
-		var _this2 = _this1.xIn;
-		var _this3 = _this1.xIn;
-		var norm = ((x <= _this3.min ? _this3.min : x >= _this3.max ? _this3.max : x) - _this2.min) / (_this2.max - _this2.min);
-		var _this2 = _this1.xOut;
-		var _this1 = this.space;
-		var _this3 = _this1.yIn;
-		var _this4 = _this1.yIn;
-		var norm1 = ((y <= _this4.min ? _this4.min : y >= _this4.max ? _this4.max : y) - _this3.min) / (_this3.max - _this3.min);
-		var _this3 = _this1.yOut;
-		_this.position.x = _this2.min + norm * (_this2.max - _this2.min);
-		_this.position.y = _this3.min + norm1 * (_this3.max - _this3.min);
-		return this;
-	}
-	,lineTo: function(x,y) {
-		var _this = this.turtle;
-		var _this1 = this.space;
-		var _this2 = _this1.xIn;
-		var _this3 = _this1.xIn;
-		var norm = ((x <= _this3.min ? _this3.min : x >= _this3.max ? _this3.max : x) - _this2.min) / (_this2.max - _this2.min);
-		var _this2 = _this1.xOut;
-		var _this1 = this.space;
-		var _this3 = _this1.yIn;
-		var _this4 = _this1.yIn;
-		var norm1 = ((y <= _this4.min ? _this4.min : y >= _this4.max ? _this4.max : y) - _this3.min) / (_this3.max - _this3.min);
-		var _this3 = _this1.yOut;
-		var to = new support_linAlg2d_Vec(_this2.min + norm * (_this2.max - _this2.min),_this3.min + norm1 * (_this3.max - _this3.min));
-		_this.view.addLine(new support_linAlg2d_Line(_this.position,to),_this.lineWidth);
-		_this.position = to;
-		return this;
-	}
-	,get_lineWidth: function() {
-		return this.turtle.lineWidth;
-	}
-	,set_lineWidth: function(v) {
-		return this.turtle.lineWidth = v;
-	}
-	,__class__: support_SpaceTurtle
-};
-var support_View = function() { };
-support_View.__name__ = "support.View";
-support_View.__isInterface__ = true;
-support_View.prototype = {
-	__class__: support_View
-};
-var support_Turtle = function(view) {
-	this.position = new support_linAlg2d_Vec(0,0);
-	this.lineWidth = 1;
-	this.view = view;
-};
-support_Turtle.__name__ = "support.Turtle";
-support_Turtle.prototype = {
-	moveTo: function(x,y) {
-		this.position.x = x;
-		this.position.y = y;
-		return this;
-	}
-	,lineTo: function(x,y) {
-		var to = new support_linAlg2d_Vec(x,y);
-		this.view.addLine(new support_linAlg2d_Line(this.position,to),this.lineWidth);
-		this.position = to;
-		return this;
-	}
-	,__class__: support_Turtle
-};
-var support_h2d_FastLines = function(parent) {
+var support_h2d_FastQuads = function(parent) {
 	h2d_Drawable.call(this,parent);
-	this.quads = new support_h2d_QuadsPrimitive();
+	this.quads = new support_h3d_prim_QuadsPrimitive();
 	this.white = h3d_mat_Texture.fromColor(16777215,1.0);
 };
-support_h2d_FastLines.__name__ = "support.h2d.FastLines";
-support_h2d_FastLines.__interfaces__ = [support_View];
-support_h2d_FastLines.__super__ = h2d_Drawable;
-support_h2d_FastLines.prototype = $extend(h2d_Drawable.prototype,{
-	addLine: function(line,width) {
-		var tmp = this.quads;
-		var half_width = width / 2;
+support_h2d_FastQuads.__name__ = "support.h2d.FastQuads";
+support_h2d_FastQuads.__super__ = h2d_Drawable;
+support_h2d_FastQuads.prototype = $extend(h2d_Drawable.prototype,{
+	clear: function() {
+		this.quads.reset();
+	}
+	,addQuad: function(quad) {
+		this.quads.push(quad);
+	}
+	,newTurtle: function() {
+		return new support_h2d__$FastQuads_FastQuadsTurtle(this);
+	}
+	,draw: function(ctx) {
+		if(!ctx.beginDrawObject(this,this.white)) {
+			return;
+		}
+		this.quads.render(ctx.engine);
+	}
+	,__class__: support_h2d_FastQuads
+});
+var support_turtle_Turtle = function() { };
+support_turtle_Turtle.__name__ = "support.turtle.Turtle";
+support_turtle_Turtle.__isInterface__ = true;
+support_turtle_Turtle.prototype = {
+	__class__: support_turtle_Turtle
+};
+var support_h2d__$FastQuads_FastQuadsTurtle = function(fastQuads) {
+	this.lineWidth = 1.0;
+	this.position = new support_linAlg2d_Vec(0,0);
+	this.fastQuads = fastQuads;
+};
+support_h2d__$FastQuads_FastQuadsTurtle.__name__ = "support.h2d._FastQuads.FastQuadsTurtle";
+support_h2d__$FastQuads_FastQuadsTurtle.__interfaces__ = [support_turtle_Turtle];
+support_h2d__$FastQuads_FastQuadsTurtle.prototype = {
+	moveTo: function(x,y) {
+		this.get_position().x = x;
+		this.get_position().y = y;
+		return this;
+	}
+	,lineTo: function(x,y) {
+		this.lineToQuad(new support_linAlg2d_Line(this.get_position(),new support_linAlg2d_Vec(x,y)));
+		this.moveTo(x,y);
+		return this;
+	}
+	,lineToQuad: function(line) {
+		var tmp = this.fastQuads;
+		var half_width = this.get_lineWidth() / 2;
 		var _this = line.end;
 		var mainAxis_x = _this.x;
 		var mainAxis_y = _this.y;
@@ -62291,19 +61375,22 @@ support_h2d_FastLines.prototype = $extend(h2d_Drawable.prototype,{
 		_this.x += mainAxis_x;
 		_this.y += mainAxis_y;
 		var bottomRight = _this;
-		tmp.push(new support_linAlg2d_Quad(topLeft,topRight,bottomLeft,bottomRight));
+		tmp.addQuad(new support_linAlg2d_Quad(topLeft,topRight,bottomLeft,bottomRight));
 	}
-	,clear: function() {
-		this.quads.reset();
+	,get_position: function() {
+		return this.position;
 	}
-	,draw: function(ctx) {
-		if(!ctx.beginDrawObject(this,this.white)) {
-			return;
-		}
-		this.quads.render(ctx.engine);
+	,set_position: function(p) {
+		return this.position = p;
 	}
-	,__class__: support_h2d_FastLines
-});
+	,get_lineWidth: function() {
+		return this.lineWidth;
+	}
+	,set_lineWidth: function(w) {
+		return this.lineWidth = w;
+	}
+	,__class__: support_h2d__$FastQuads_FastQuadsTurtle
+};
 var support_h2d_FullscreenButton = function(parent) {
 	this.root = new h2d_Object(parent);
 	this.graphics = new h2d_Graphics(this.root);
@@ -62438,17 +61525,19 @@ support_h2d_FullscreenButton.prototype = {
 	,__class__: support_h2d_FullscreenButton
 };
 var support_h2d_Plot = function(parent) {
-	this.margin = 0.01;
-	this.space = new support_linAlg2d_Space();
 	h2d_Object.call(this,parent);
 	this.background = new h2d_Bitmap(h2d_Tile.fromColor(16777215,1,1,0.1),this);
-	this.fastLines = new support_h2d_FastLines(this);
-	this.turtle = new support_SpaceTurtle(this.fastLines,this.space);
+	this.fastQuads = new support_h2d_FastQuads(this);
+	this.space = new support_linAlg2d_Space();
+	this.turtle = new support_turtle_SpaceTurtle(this.fastQuads.newTurtle(),this.space);
 };
 support_h2d_Plot.__name__ = "support.h2d.Plot";
 support_h2d_Plot.__super__ = h2d_Object;
 support_h2d_Plot.prototype = $extend(h2d_Object.prototype,{
-	resize: function(width,height) {
+	clear: function() {
+		this.fastQuads.clear();
+	}
+	,resize: function(width,height) {
 		this.width = width;
 		this.height = height;
 		var _this = this.background;
@@ -62457,41 +61546,9 @@ support_h2d_Plot.prototype = $extend(h2d_Object.prototype,{
 		var _this = this.background;
 		_this.posChanged = true;
 		_this.scaleY = height;
-		var xMargin = width * this.margin;
-		var yMargin = height * this.margin;
-		var pxMargin = Math.max(xMargin,yMargin);
-		this.space.xOut = new support_linAlg2d_Interval(pxMargin,width - pxMargin);
-		this.space.yOut = new support_linAlg2d_Interval(height - pxMargin,pxMargin);
-		this.fastLines.clear();
-	}
-	,plotFunction: function(f,subdivisions) {
-		if(subdivisions == null) {
-			subdivisions = 500;
-		}
-		this.fastLines.clear();
-		this.turtle.moveTo(this.space.xIn.min,f(this.space.xIn.min));
-		var _g = 0;
-		var _this = this.space.xIn;
-		var this1 = new Array(subdivisions + 1);
-		var endpoints = this1;
-		var _g1 = 0;
-		var _g2 = endpoints.length;
-		while(_g1 < _g2) {
-			var i = _g1++;
-			endpoints[i] = _this.min + i / subdivisions * (_this.max - _this.min);
-		}
-		var _g1 = endpoints;
-		while(_g < _g1.length) {
-			var x = _g1[_g];
-			++_g;
-			this.turtle.lineTo(x,f(x));
-		}
-	}
-	,get_lineWidth: function() {
-		return this.turtle.get_lineWidth();
-	}
-	,set_lineWidth: function(s) {
-		return this.turtle.set_lineWidth(s);
+		this.space.xOut = new support_linAlg2d_Interval(0,width);
+		this.space.yOut = new support_linAlg2d_Interval(height,0);
+		this.clear();
 	}
 	,get_xAxis: function() {
 		return this.space.xIn;
@@ -62507,15 +61564,15 @@ support_h2d_Plot.prototype = $extend(h2d_Object.prototype,{
 	}
 	,__class__: support_h2d_Plot
 });
-var support_h2d_QuadsPrimitive = function() {
+var support_h3d_prim_QuadsPrimitive = function() {
 	h3d_prim_Primitive.call(this);
 	var this1 = hxd__$FloatBuffer_Float32Expand._new(0);
 	this.vertices = this1;
 	this.dirty = true;
 };
-support_h2d_QuadsPrimitive.__name__ = "support.h2d.QuadsPrimitive";
-support_h2d_QuadsPrimitive.__super__ = h3d_prim_Primitive;
-support_h2d_QuadsPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
+support_h3d_prim_QuadsPrimitive.__name__ = "support.h3d.prim.QuadsPrimitive";
+support_h3d_prim_QuadsPrimitive.__super__ = h3d_prim_Primitive;
+support_h3d_prim_QuadsPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
 	push: function(quad) {
 		this.pushVertex(quad.bottomLeft,0,0);
 		this.pushVertex(quad.topLeft,0,1);
@@ -62636,31 +61693,33 @@ support_h2d_QuadsPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
 		}
 		this1.array[this1.pos++] = 1.0;
 	}
-	,__class__: support_h2d_QuadsPrimitive
+	,__class__: support_h3d_prim_QuadsPrimitive
 });
-var support_linAlg2d_Interval = function(min,max) {
-	this.min = min;
-	this.max = max;
+var support_linAlg2d_Interval = function(start,end) {
+	this.start = start;
+	this.end = end;
 };
 support_linAlg2d_Interval.__name__ = "support.linAlg2d.Interval";
 support_linAlg2d_Interval.prototype = {
 	clamp: function(x) {
-		if(x <= this.min) {
-			return this.min;
-		} else if(x >= this.max) {
-			return this.max;
+		var min = Math.min(this.start,this.end);
+		var max = Math.max(this.start,this.end);
+		if(x <= min) {
+			return min;
+		} else if(x >= max) {
+			return max;
 		} else {
 			return x;
 		}
 	}
 	,normalize: function(x) {
-		return (x - this.min) / (this.max - this.min);
-	}
-	,size: function() {
-		return this.max - this.min;
+		return (x - this.start) / (this.end - this.start);
 	}
 	,lerp: function(x) {
-		return this.min + x * (this.max - this.min);
+		return this.start + x * (this.end - this.start);
+	}
+	,size: function() {
+		return this.end - this.start;
 	}
 	,subdivide: function(count) {
 		var this1 = new Array(count + 1);
@@ -62669,9 +61728,12 @@ support_linAlg2d_Interval.prototype = {
 		var _g1 = endpoints.length;
 		while(_g < _g1) {
 			var i = _g++;
-			endpoints[i] = this.min + i / count * (this.max - this.min);
+			endpoints[i] = this.start + i / count * (this.end - this.start);
 		}
 		return endpoints;
+	}
+	,toString: function() {
+		return "Interval[" + this.start + ", " + this.end + "]";
 	}
 	,__class__: support_linAlg2d_Interval
 };
@@ -62745,30 +61807,38 @@ support_linAlg2d_Space.prototype = {
 	mapX: function(x) {
 		var _this = this.xIn;
 		var _this1 = this.xIn;
-		var norm = ((x <= _this1.min ? _this1.min : x >= _this1.max ? _this1.max : x) - _this.min) / (_this.max - _this.min);
+		var min = Math.min(_this1.start,_this1.end);
+		var max = Math.max(_this1.start,_this1.end);
+		var norm = ((x <= min ? min : x >= max ? max : x) - _this.start) / (_this.end - _this.start);
 		var _this = this.xOut;
-		return _this.min + norm * (_this.max - _this.min);
+		return _this.start + norm * (_this.end - _this.start);
 	}
 	,mapY: function(y) {
 		var _this = this.yIn;
 		var _this1 = this.yIn;
-		var norm = ((y <= _this1.min ? _this1.min : y >= _this1.max ? _this1.max : y) - _this.min) / (_this.max - _this.min);
+		var min = Math.min(_this1.start,_this1.end);
+		var max = Math.max(_this1.start,_this1.end);
+		var norm = ((y <= min ? min : y >= max ? max : y) - _this.start) / (_this.end - _this.start);
 		var _this = this.yOut;
-		return _this.min + norm * (_this.max - _this.min);
+		return _this.start + norm * (_this.end - _this.start);
 	}
 	,map: function(v) {
 		var x = v.x;
 		var _this = this.xIn;
 		var _this1 = this.xIn;
-		var norm = ((x <= _this1.min ? _this1.min : x >= _this1.max ? _this1.max : x) - _this.min) / (_this.max - _this.min);
+		var min = Math.min(_this1.start,_this1.end);
+		var max = Math.max(_this1.start,_this1.end);
+		var norm = ((x <= min ? min : x >= max ? max : x) - _this.start) / (_this.end - _this.start);
 		var _this = this.xOut;
-		v.x = _this.min + norm * (_this.max - _this.min);
+		v.x = _this.start + norm * (_this.end - _this.start);
 		var y = v.y;
 		var _this = this.yIn;
 		var _this1 = this.yIn;
-		var norm = ((y <= _this1.min ? _this1.min : y >= _this1.max ? _this1.max : y) - _this.min) / (_this.max - _this.min);
+		var min = Math.min(_this1.start,_this1.end);
+		var max = Math.max(_this1.start,_this1.end);
+		var norm = ((y <= min ? min : y >= max ? max : y) - _this.start) / (_this.end - _this.start);
 		var _this = this.yOut;
-		v.y = _this.min + norm * (_this.max - _this.min);
+		v.y = _this.start + norm * (_this.end - _this.start);
 		return v;
 	}
 	,__class__: support_linAlg2d_Space
@@ -62816,8 +61886,101 @@ support_linAlg2d_Vec.prototype = {
 	,clone: function() {
 		return new support_linAlg2d_Vec(this.x,this.y);
 	}
+	,toString: function() {
+		return "Vec(" + this.x + ", " + this.y + ")";
+	}
 	,__class__: support_linAlg2d_Vec
 };
+var support_turtle_DecoratedTurtle = function(toWrap) {
+	this.wrapped = toWrap;
+};
+support_turtle_DecoratedTurtle.__name__ = "support.turtle.DecoratedTurtle";
+support_turtle_DecoratedTurtle.__interfaces__ = [support_turtle_Turtle];
+support_turtle_DecoratedTurtle.prototype = {
+	moveTo: function(x,y) {
+		this.wrapped.moveTo(x,y);
+		return this;
+	}
+	,lineTo: function(x,y) {
+		this.wrapped.lineTo(x,y);
+		return this;
+	}
+	,get_position: function() {
+		return this.wrapped.get_position();
+	}
+	,set_position: function(v) {
+		return this.wrapped.set_position(v);
+	}
+	,get_lineWidth: function() {
+		return this.wrapped.get_lineWidth();
+	}
+	,set_lineWidth: function(w) {
+		return this.wrapped.set_lineWidth(w);
+	}
+	,__class__: support_turtle_DecoratedTurtle
+};
+var support_turtle_SpaceTurtle = function(wrapped,space) {
+	this.space = new support_linAlg2d_Space();
+	support_turtle_DecoratedTurtle.call(this,wrapped);
+	if(space != null) {
+		this.space = space;
+	}
+};
+support_turtle_SpaceTurtle.__name__ = "support.turtle.SpaceTurtle";
+support_turtle_SpaceTurtle.__super__ = support_turtle_DecoratedTurtle;
+support_turtle_SpaceTurtle.prototype = $extend(support_turtle_DecoratedTurtle.prototype,{
+	moveTo: function(x,y) {
+		var _this = this.space;
+		var _this1 = _this.xIn;
+		var _this2 = _this.xIn;
+		var min = Math.min(_this2.start,_this2.end);
+		var max = Math.max(_this2.start,_this2.end);
+		var norm = ((x <= min ? min : x >= max ? max : x) - _this1.start) / (_this1.end - _this1.start);
+		var _this1 = _this.xOut;
+		var _this = this.space;
+		var _this2 = _this.yIn;
+		var _this3 = _this.yIn;
+		var min = Math.min(_this3.start,_this3.end);
+		var max = Math.max(_this3.start,_this3.end);
+		var norm1 = ((y <= min ? min : y >= max ? max : y) - _this2.start) / (_this2.end - _this2.start);
+		var _this2 = _this.yOut;
+		this.wrapped.moveTo(_this1.start + norm * (_this1.end - _this1.start),_this2.start + norm1 * (_this2.end - _this2.start));
+		return this;
+	}
+	,lineTo: function(x,y) {
+		var _this = this.space;
+		var _this1 = _this.xIn;
+		var _this2 = _this.xIn;
+		var min = Math.min(_this2.start,_this2.end);
+		var max = Math.max(_this2.start,_this2.end);
+		var norm = ((x <= min ? min : x >= max ? max : x) - _this1.start) / (_this1.end - _this1.start);
+		var _this1 = _this.xOut;
+		var _this = this.space;
+		var _this2 = _this.yIn;
+		var _this3 = _this.yIn;
+		var min = Math.min(_this3.start,_this3.end);
+		var max = Math.max(_this3.start,_this3.end);
+		var norm1 = ((y <= min ? min : y >= max ? max : y) - _this2.start) / (_this2.end - _this2.start);
+		var _this2 = _this.yOut;
+		this.wrapped.lineTo(_this1.start + norm * (_this1.end - _this1.start),_this2.start + norm1 * (_this2.end - _this2.start));
+		return this;
+	}
+	,get_position: function() {
+		var _this = this.wrapped.get_position();
+		var wp_x = _this.x;
+		var wp_y = _this.y;
+		var _this = this.space.xIn;
+		var _this1 = this.space.xOut;
+		var _this2 = this.space.yIn;
+		var _this3 = this.space.yOut;
+		return new support_linAlg2d_Vec(_this.start + (wp_x - _this1.start) / (_this1.end - _this1.start) * (_this.end - _this.start),_this2.start + (wp_y - _this3.start) / (_this3.end - _this3.start) * (_this2.end - _this2.start));
+	}
+	,set_position: function(v) {
+		this.moveTo(v.x,v.y);
+		return v;
+	}
+	,__class__: support_turtle_SpaceTurtle
+});
 function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;
@@ -63034,7 +62197,6 @@ h3d_shader_MinMaxShader.SRC = "HXSLF2gzZC5zaGFkZXIuTWluTWF4U2hhZGVyCwEFaW5wdXQNA
 h3d_shader_CubeMinMaxShader.SRC = "HXSLG2gzZC5zaGFkZXIuQ3ViZU1pbk1heFNoYWRlcgwBBWlucHV0DQECAghwb3NpdGlvbgUKAQEAAwJ1dgUKAQEAAQAABAVmbGlwWQMCAAAFBm91dHB1dA0CAgYIcG9zaXRpb24FDAQFAAcFY29sb3IFDAQFAAQAAAgKcGl4ZWxDb2xvcgUMBAAACQxjYWxjdWxhdGVkVVYFCgQAAAoEdGV4QQwCAAALBHRleEIMAgAADAVpc01heAICAAEAAAAAAA0DbWF0BgIAAA4IX19pbml0X18OBgAADwZ2ZXJ0ZXgOBgAAEAhmcmFnbWVudA4GAAADAg4AAAUCBgQCBwUMAggFDAUMBgQCCQUKAgMFCgUKAAAPAAAFAQYEAgYFDAkDKg4ECgICBQoAAAMGAQoCAgUKBAADAgQDAwEDAAAAAAAAAAADAQMAAAAAAADwPwMFDAUMAAEQAAAFBQgRAnV2BQoEAAAGAwYBAgkFCgEDAAAAAAAAAEADBQoBAwAAAAAAAPA/AwUKAAgSA2RpcgULBAAABgEJAykOAgIRBQoBAwAAAAAAAPA/AwULAg0GBQsACBMBYQUMBAAACQMhDgICCgwCEgULBQwACBQBYgUMBAAACQMhDgICCwwCEgULBQwABgQCCAUMCwIMAgkDFg4CAhMFDAIUBQwFDAkDFQ4CAhMFDAIUBQwFDAUMBQwA";
 h3d_shader_NormalMap.SRC = "HXSLFGgzZC5zaGFkZXIuTm9ybWFsTWFwCgEGY2FtZXJhDQECAghwb3NpdGlvbgULAAEAAwNkaXIFCwMBAAAAAAQGZ2xvYmFsDQIBBQltb2RlbFZpZXcHAAQBAwAAAAYFaW5wdXQNAwIHBm5vcm1hbAULAQYACAd0YW5nZW50BQsBBgABAAAJB3RleHR1cmUKAgAACgxjYWxjdWxhdGVkVVYFCgQAAAsTdHJhbnNmb3JtZWRQb3NpdGlvbgULBAAADBF0cmFuc2Zvcm1lZE5vcm1hbAULBAAADRJ0cmFuc2Zvcm1lZFRhbmdlbnQFDAMAAA4OX19pbml0X192ZXJ0ZXgOBgAADwhmcmFnbWVudA4GAAACAg4AAAUBBgQCDQUMCQMqDgIGAQIIBQsJAzIOAQIFBwYFCwsGBwkDHQ4CAggFCwIIBQsDAQMAAAAAAADgPwMCAQMAAAAAAADwPwMBAwAAAAAAAPC/AwMFDAUMAAEPAAAFBQgQAW4FCwQAAAIMBQsACBECbmYFCwQAAAkDOQ4BCQMhDgICCQoCCgUKBQwFCwAIEgR0YW5YBQsEAAAJAx8OAQoCDQUMkgAFCwULAAgTBHRhblkFCwQAAAYBCQMeDgICEAULAhIFCwULBwMKAg0FDAwAAwMFCwAGBAIMBQsJAx8OAQQGAAYABgEKAhEFCwAAAwISBQsFCwYBCgIRBQsEAAMCEwULBQsFCwYBCgIRBQsIAAMCEAULBQsFCwULBQsFCwA";
 h3d_shader_Shadow.SRC = "HXSLEWgzZC5zaGFkZXIuU2hhZG93BgEGc2hhZG93DQEFAgNtYXARAQABAAMEcHJvaggAAQAEBWNvbG9yBQsAAQAFBXBvd2VyAwABAAYEYmlhcwMAAQAAAAAHCnBpeGVsQ29sb3IFDAQAAAgTdHJhbnNmb3JtZWRQb3NpdGlvbgULBAAACRhwaXhlbFRyYW5zZm9ybWVkUG9zaXRpb24FCwQAAAoJc2hhZG93UG9zBQsDAAEBCwhmcmFnbWVudA4GAAABAQsAAAUGCAwJc2hhZG93UG9zBQsEAAAGAQIJBQsCAwgFCwAIDQVkZXB0aAMEAAAJAz8OAgICEQEJAzoOAQoCDAULEQAFCgUKAwAIDgR6TWF4AwQAAAkDNQ4BCgIMBQsIAAMDAAgPBWRlbHRhAwQAAAYDCQMVDgIEBgACDQMCBgMDAwIOAwMCDgMDAAgQBXNoYWRlAwQAAAkDNQ4BCQMJDgEGAQIFAwIPAwMDAwAGgQoCBwUMkgAFCwYABgEEBgMBAwAAAAAAAPA/AwIQAwMDCgIEBQuSAAULBQsCEAMFCwULAA";
-h3d_shader_SignedDistanceField.SRC = "HXSLHmgzZC5zaGFkZXIuU2lnbmVkRGlzdGFuY2VGaWVsZA4BBWlucHV0DQEDAghwb3NpdGlvbgUKAQEAAwJ1dgUKAQEABAVjb2xvcgUMAQEAAQAABQZvdXRwdXQNAgIGCHBvc2l0aW9uBQwEBQAHBWNvbG9yBQwEBQAEAAAIBHRpbWUDAAAACQ5zcHJpdGVQb3NpdGlvbgUMBAAAChBhYnNvbHV0ZVBvc2l0aW9uBQwEAAALCnBpeGVsQ29sb3IFDAQAAAwMdGV4dHVyZUNvbG9yBQwEAAANDGNhbGN1bGF0ZWRVVgUKAwAADg5vdXRwdXRQb3NpdGlvbgUMBAAADwdjaGFubmVsAQIAAQAAAAAAEAthbHBoYUN1dG9mZgMCAAARCXNtb290aGluZwMCAAASBm1lZGlhbg4GAAATCGZyYWdtZW50DgYAAAIDEgMUAXIDBAAAFQFnAwQAABYBYgMEAAADBQENCQMWDgIJAxUOAgIUAwIVAwMJAxUOAgkDFg4CAhQDAhUDAwIWAwMDAAABEwAABQQIFw10ZXh0dXJlU2FtcGxlBQwEAAACDAUMAAgYCGRpc3RhbmNlAwQAAAAABgQCGAMLBgUCDwEBAgAAAAABAgoCFwUMAAADCwYFAg8BAQIBAAAAAQIKAhcFDAQAAwsGBQIPAQECAgAAAAECCgIXBQwIAAMLBgUCDwEBAgMAAAABAgoCFwUMDAADCQISDgMKAhcFDAAAAwoCFwUMBAADCgIXBQwIAAMDAwMDAwMGBAIMBQwJAyoOBAEDAAAAAAAA8D8DAQMAAAAAAADwPwMBAwAAAAAAAPA/AwkDGg4DBgMCEAMCEQMDBgACEAMCEQMDAhgDAwUMBQwA";
 h3d_shader_SkinBase.SRC = "HXSLE2gzZC5zaGFkZXIuU2tpbkJhc2UFARByZWxhdGl2ZVBvc2l0aW9uBQsEAAACE3RyYW5zZm9ybWVkUG9zaXRpb24FCwQAAAMRdHJhbnNmb3JtZWROb3JtYWwFCwQAAAQITWF4Qm9uZXMBAgABAAAAAAAFDWJvbmVzTWF0cml4ZXMPCAQCAAEIAA";
 h3d_shader_Skin.SRC = "HXSLD2gzZC5zaGFkZXIuU2tpbggBEHJlbGF0aXZlUG9zaXRpb24FCwQAAAITdHJhbnNmb3JtZWRQb3NpdGlvbgULBAAAAxF0cmFuc2Zvcm1lZE5vcm1hbAULBAAABAhNYXhCb25lcwECAAEAAAAAAAUNYm9uZXNNYXRyaXhlcw8IBAIAAQgGBWlucHV0DQEEBwhwb3NpdGlvbgULAQYACAZub3JtYWwFCwEGAAkHd2VpZ2h0cwULAQYACgdpbmRleGVzCQQAAAABBgABAAALEnRyYW5zZm9ybWVkVGFuZ2VudAUMBAAADAZ2ZXJ0ZXgOBgAAAQAMAAAFAgYEAgIFCwYABgAGAQQGAQIBBQsRAgUPCAQKAgoJBAAAAAAAAQgFCwULCgIJBQsAAAMFCwYBBAYBAgEFCxECBQ8IBAoCCgkEAAAABAABCAULBQsKAgkFCwQAAwULBQsGAQQGAQIBBQsRAgUPCAQKAgoJBAAAAAgAAQgFCwULCgIJBQsIAAMFCwULBQsGBAIDBQsJAx8OAQYABgAGAQQGAQIIBQsJAzIOARECBQ8IBAoCCgkEAAAAAAABCAYFCwULCgIJBQsAAAMFCwYBBAYBAggFCwkDMg4BEQIFDwgECgIKCQQAAAAEAAEIBgULBQsKAgkFCwQAAwULBQsGAQQGAQIIBQsJAzIOARECBQ8IBAoCCgkEAAAACAABCAYFCwULCgIJBQsIAAMFCwULBQsFCwA";
 h3d_shader_SkinTangent.SRC = "HXSLFmgzZC5zaGFkZXIuU2tpblRhbmdlbnQIARByZWxhdGl2ZVBvc2l0aW9uBQsEAAACE3RyYW5zZm9ybWVkUG9zaXRpb24FCwQAAAMRdHJhbnNmb3JtZWROb3JtYWwFCwQAAAQITWF4Qm9uZXMBAgABAAAAAAAFDWJvbmVzTWF0cml4ZXMPCAQCAAEIBgVpbnB1dA0BBQcIcG9zaXRpb24FCwEGAAgGbm9ybWFsBQsBBgAJB3RhbmdlbnQFCwEGAAoHd2VpZ2h0cwULAQYACwdpbmRleGVzCQQAAAABBgABAAAMEnRyYW5zZm9ybWVkVGFuZ2VudAUMBAAADQZ2ZXJ0ZXgOBgAAAQANAAAFAwYEAgIFCwYABgAGAQQGAQIBBQsRAgUPCAQKAgsJBAAAAAAAAQgFCwULCgIKBQsAAAMFCwYBBAYBAgEFCxECBQ8IBAoCCwkEAAAABAABCAULBQsKAgoFCwQAAwULBQsGAQQGAQIBBQsRAgUPCAQKAgsJBAAAAAgAAQgFCwULCgIKBQsIAAMFCwULBQsGBAIDBQsJAx8OAQYABgAGAQQGAQIIBQsJAzIOARECBQ8IBAoCCwkEAAAAAAABCAYFCwULCgIKBQsAAAMFCwYBBAYBAggFCwkDMg4BEQIFDwgECgILCQQAAAAEAAEIBgULBQsKAgoFCwQAAwULBQsGAQQGAQIIBQsJAzIOARECBQ8IBAoCCwkEAAAACAABCAYFCwULCgIKBQsIAAMFCwULBQsFCwYEAgwFDAkDKg4CCQMfDgEGAAYABgEEBgEKAgkFC5IABQsJAzIOARECBQ8IBAoCCwkEAAAAAAABCAYFCwULCgIKBQsAAAMFCwYBBAYBCgIJBQuSAAULCQMyDgERAgUPCAQKAgsJBAAAAAQAAQgGBQsFCwoCCgULBAADBQsFCwYBBAYBCgIJBQuSAAULCQMyDgERAgUPCAQKAgsJBAAAAAgAAQgGBQsFCwoCCgULCAADBQsFCwULCgIMBQwMAAMFDAUMAA";
@@ -63053,14 +62215,6 @@ haxe_zip_InflateImpl.LEN_BASE_VAL_TBL = [3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,3
 haxe_zip_InflateImpl.DIST_EXTRA_BITS_TBL = [0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,-1,-1];
 haxe_zip_InflateImpl.DIST_BASE_VAL_TBL = [1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577];
 haxe_zip_InflateImpl.CODE_LENGTHS_POS = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
-hxd_Charset.ASCII = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-hxd_Charset.LATIN1 = "¡¢£¤¥¦§¨©ª«¬-®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿœæŒÆ€";
-hxd_Charset.CYRILLIC = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя—";
-hxd_Charset.POLISH = "ĄĆĘŁŃÓŚŹŻąćęłńóśźż";
-hxd_Charset.TURKISH = "ÂÇĞIİÎÖŞÜÛâçğıİîöşüû";
-hxd_Charset.JP_KANA = "　あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわゐゑをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヰヱヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヴャぇっッュョァィゥェォ・ー「」、。『』“”！：？％＆（）－０１２３４５６７８９";
-hxd_Charset.UNICODE_SPECIALS = "�□";
-hxd_Charset.DEFAULT_CHARS = hxd_Charset.ASCII + hxd_Charset.LATIN1;
 hxd_Key.BACKSPACE = 8;
 hxd_Key.TAB = 9;
 hxd_Key.ENTER = 13;
