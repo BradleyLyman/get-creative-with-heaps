@@ -50,6 +50,6 @@ class RGBA implements Color {
 
   /* This color as a human-readable string. */
   public function toString() {
-    return "RGBA($r, $g, $b, $a";
+    return 'RGBA($r, $g, $b, $a)';
   }
 }

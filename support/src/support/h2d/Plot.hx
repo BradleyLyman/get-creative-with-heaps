@@ -1,8 +1,12 @@
 package support.h2d;
 
+import h3d.shader.Emissive;
+import h3d.shader.FixedColor;
+import support.linAlg2d.Line;
+import h3d.shader.GenTexture;
+import support.turtle.Turtle;
 import support.color.Color;
 import support.color.RGBA;
-import h3d.shader.GenTexture;
 import support.linAlg2d.Quad;
 import support.linAlg2d.Space;
 import support.linAlg2d.Vec;
@@ -10,11 +14,10 @@ import support.turtle.SpaceTurtle;
 import support.linAlg2d.Interval;
 
 import h2d.Object;
-import h2d.Bitmap;
-import h2d.Tile;
 
 /**
-    Objects of this type represent an onscreen Space.
+    Objects of this type represent a Space on screen which can be used for
+    plotting graphics.
 **/
 class Plot extends Object {
   private final fastQuads: FastQuads;
@@ -27,7 +30,7 @@ class Plot extends Object {
       A line-emitting turtle for this plot. Coordinates are in the x/y Axis for
       this plot.
   **/
-  public final turtle: SpaceTurtle;
+  public final turtle: Turtle;
 
   /* The xAxis for this plot's input space */
   public var xAxis(get, set): Interval;
@@ -62,16 +65,21 @@ class Plot extends Object {
   }
 
   /**
-      Override the bounds method on Object so that the plot plays nicely with
-      the rest of Heaps.io 2d scene logic.
+      Draw a single quad to the screen.
+      @param quad - the quad to draw, coordinates are relative to the x/y axis
+      @param color - defaults to white
   **/
-  public override function getBoundsRec(
-    relativeTo: Object,
-    out: h2d.col.Bounds,
-    forSize: Bool
-  ) {
-    super.getBoundsRec(relativeTo, out, forSize);
-    addBounds(relativeTo, out, 0, 0, width, height);
+  public function drawQuad(quad: Quad, ?color: Color) {
+    final transformed: Quad = new Quad(
+      space.map(quad.topLeft), space.map(quad.topRight),
+      space.map(quad.bottomLeft), space.map(quad.bottomRight)
+    );
+    if (color != null) {
+      fastQuads.addQuad(transformed, color.toRGBA());
+    }
+    else {
+      fastQuads.addQuad(transformed, new RGBA());
+    }
   }
 
   /**
@@ -82,11 +90,22 @@ class Plot extends Object {
   public function resize(width: Float, height: Float) {
     this.width = width;
     this.height = height;
-
     space.xOut = new Interval(0, width);
     space.yOut = new Interval(height, 0);
-
     clear();
+  }
+
+  /**
+      Override the bounds method on Object so that the plot plays nicely with
+      the rest of Heaps.io 2d scene logic.
+  **/
+  override function getBoundsRec(
+    relativeTo: Object,
+    out: h2d.col.Bounds,
+    forSize: Bool
+  ) {
+    super.getBoundsRec(relativeTo, out, forSize);
+    addBounds(relativeTo, out, 0, 0, width, height);
   }
 
   private function get_xAxis() { return this.space.xIn; }

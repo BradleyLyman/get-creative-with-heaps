@@ -10,6 +10,7 @@ class TestAll {
     runner.addCase(new support.turtle.SpaceTurtleTest());
     runner.addCase(new support.turtle.DecoratedTurtleTest());
     runner.addCase(new support.color.RGBATest());
+    runner.addCase(new support.color.HSLTest());
     Report.create(runner);
     runner.run();
 	}
