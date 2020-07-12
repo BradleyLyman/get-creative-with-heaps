@@ -29,139 +29,6 @@ EReg.prototype = {
 	}
 	,__class__: EReg
 };
-var FullscreenButton = function(parent) {
-	this.root = new h2d_Object(parent);
-	this.graphics = new h2d_Graphics(this.root);
-	this.clickable = new h2d_Interactive(1,1,this.root);
-	this.clickable.onClick = $bind(this,this.onClick);
-	this.window = hxd_Window.getInstance();
-	this.window.addResizeEvent($bind(this,this.onResize));
-	this.onResize();
-	this.render();
-};
-FullscreenButton.__name__ = "FullscreenButton";
-FullscreenButton.prototype = {
-	updateDimensions: function() {
-		var size = Math.max(Math.min(this.window.get_width(),this.window.get_height()) / 20,20);
-		this.dimensions = { size : size, lineSize : Math.max(size / 24,1.0), offset : Math.max(size / 6,2)};
-	}
-	,onResize: function() {
-		this.updateDimensions();
-		this.clickable.width = this.dimensions.size;
-		this.clickable.height = this.dimensions.size;
-		var _this = this.root;
-		var v = this.window.get_width();
-		_this.posChanged = true;
-		_this.x = v - this.dimensions.size * 2;
-		var _this = this.root;
-		var v = this.window.get_height();
-		_this.posChanged = true;
-		_this.y = v - this.dimensions.size * 2;
-		var _this = this.graphics;
-		_this.posChanged = true;
-		_this.x = this.dimensions.size / 2;
-		var _this = this.graphics;
-		_this.posChanged = true;
-		_this.y = this.dimensions.size / 2;
-		this.render();
-	}
-	,onClick: function(e) {
-		var tmp = this.window;
-		var tmp1;
-		switch(this.window.get_displayMode()._hx_index) {
-		case 0:
-			tmp1 = hxd_DisplayMode.Fullscreen;
-			break;
-		case 2:
-			tmp1 = hxd_DisplayMode.Windowed;
-			break;
-		default:
-			tmp1 = hxd_DisplayMode.Windowed;
-		}
-		tmp.set_displayMode(tmp1);
-	}
-	,render: function() {
-		this.graphics.clear();
-		this.graphics.beginFill(16777215,0.3);
-		this.graphics.drawRoundedRect(-this.dimensions.size / 2,-this.dimensions.size / 2,this.dimensions.size,this.dimensions.size,this.dimensions.offset);
-		this.graphics.endFill();
-		var offset = this.dimensions.offset;
-		var top = -this.dimensions.size / 2 + offset;
-		var left = -this.dimensions.size / 2 + offset;
-		var bottom = this.dimensions.size / 2 - offset;
-		var right = this.dimensions.size / 2 - offset;
-		this.graphics.lineStyle(this.dimensions.lineSize,16777215,0.95);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(offset,offset,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + offset * _this.mc + _this.mx,offset * _this.mb + offset * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(right,bottom,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + bottom * _this.mc + _this.mx,right * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		var x = -offset;
-		_this.flush();
-		_this.addVertex(x,offset,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + offset * _this.mc + _this.mx,x * _this.mb + offset * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(left,bottom,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + bottom * _this.mc + _this.mx,left * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		var y = -offset;
-		_this.flush();
-		_this.addVertex(offset,y,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + y * _this.mc + _this.mx,offset * _this.mb + y * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(right,top,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + top * _this.mc + _this.mx,right * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		var x = -offset;
-		var y = -offset;
-		_this.flush();
-		_this.addVertex(x,y,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + y * _this.mc + _this.mx,x * _this.mb + y * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(left,top,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + top * _this.mc + _this.mx,left * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(left,top,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + top * _this.mc + _this.mx,left * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		var x = -offset;
-		_this.addVertex(x,top,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + top * _this.mc + _this.mx,x * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(left,top,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + top * _this.mc + _this.mx,left * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		var y = -offset;
-		_this.addVertex(left,y,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + y * _this.mc + _this.mx,left * _this.mb + y * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(right,top,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + top * _this.mc + _this.mx,right * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(offset,top,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + top * _this.mc + _this.mx,offset * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(right,top,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + top * _this.mc + _this.mx,right * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		var y = -offset;
-		_this.addVertex(right,y,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + y * _this.mc + _this.mx,right * _this.mb + y * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(left,bottom,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + bottom * _this.mc + _this.mx,left * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		var x = -offset;
-		_this.addVertex(x,bottom,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + bottom * _this.mc + _this.mx,x * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(left,bottom,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + bottom * _this.mc + _this.mx,left * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(left,offset,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + offset * _this.mc + _this.mx,left * _this.mb + offset * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(right,bottom,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + bottom * _this.mc + _this.mx,right * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(offset,bottom,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + bottom * _this.mc + _this.mx,offset * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(right,bottom,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + bottom * _this.mc + _this.mx,right * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(right,offset,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + offset * _this.mc + _this.mx,right * _this.mb + offset * _this.md + _this.my);
-	}
-	,__class__: FullscreenButton
-};
 var HxOverrides = function() { };
 HxOverrides.__name__ = "HxOverrides";
 HxOverrides.cca = function(s,index) {
@@ -378,44 +245,29 @@ Main.main = function() {
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
-		this.graphics = new h2d_Graphics(this.s2d);
-		this.window = hxd_Window.getInstance();
-		new FullscreenButton(this.s2d);
+		this.foreground = new support_color_HSL(0,0.75,0.65);
+		this.background = new support_color_HSL(0,0.75,0.35);
+		this.quads = new support_h2d_FastQuads(this.s2d);
+		new support_h2d_FullscreenButton(this.s2d);
 	}
 	,update: function(dt) {
-		this.sizeRatio = Math.abs(this.window.get_mouseX() * 2 / this.s2d.width - 1.0);
-		var normalized_y = this.window.get_mouseY() / this.s2d.height;
-		this.foregroundHue = normalized_y * (Math.PI * 2);
-		this.graphics.clear();
+		this.sizeRatio = Math.abs(this.s2d.get_mouseX() * 2 / this.s2d.width - 1.0);
+		var normalized_y = this.s2d.get_mouseY() / this.s2d.height;
+		this.foreground.set_hue(normalized_y * 360);
+		this.background.set_hue(this.foreground.hue + 180);
+		this.quads.clear();
 		this.drawBackground();
 		this.drawForeground();
 	}
 	,drawBackground: function() {
-		this.graphics.beginFill(this.colorFor(this.foregroundHue - Math.PI));
-		this.graphics.drawRect(0,0,this.s2d.width,this.s2d.height);
-		this.graphics.endFill();
+		this.quads.addQuad(support_linAlg2d_Quad.aligned(0,0,this.s2d.height,this.s2d.width),this.background.toRGBA());
 	}
 	,drawForeground: function() {
-		var emptyRatio = 1.0 - this.sizeRatio;
-		var borderWidth = emptyRatio / 2.0;
-		this.graphics.beginFill(this.colorFor(this.foregroundHue));
-		this.graphics.drawRect(this.s2d.width * borderWidth,this.s2d.height * borderWidth,this.s2d.width * this.sizeRatio,this.s2d.height * this.sizeRatio);
-		this.graphics.endFill();
-	}
-	,colorFor: function(hue,saturation,brightness) {
-		if(brightness == null) {
-			brightness = 0.5;
-		}
-		if(saturation == null) {
-			saturation = 0.8;
-		}
-		var vec = new h3d_Vector();
-		vec.makeColor(hue,saturation,brightness);
-		var f = vec.w;
-		var f1 = vec.x;
-		var f2 = vec.y;
-		var f3 = vec.z;
-		return ((f < 0. ? 0. : f > 1. ? 1. : f) * 255 + 0.499 | 0) << 24 | ((f1 < 0. ? 0. : f1 > 1. ? 1. : f1) * 255 + 0.499 | 0) << 16 | ((f2 < 0. ? 0. : f2 > 1. ? 1. : f2) * 255 + 0.499 | 0) << 8 | ((f3 < 0. ? 0. : f3 > 1. ? 1. : f3) * 255 + 0.499 | 0);
+		var width = this.s2d.width * this.sizeRatio;
+		var height = this.s2d.height * this.sizeRatio;
+		var top = (this.s2d.height - height) / 2;
+		var left = (this.s2d.width - width) / 2;
+		this.quads.addQuad(support_linAlg2d_Quad.aligned(top,left,top + height,left + width),this.foreground.toRGBA());
 	}
 	,__class__: Main
 });
@@ -34935,6 +34787,364 @@ h3d_shader_VolumeDecal.prototype = $extend(hxsl_Shader.prototype,{
 	}
 	,__class__: h3d_shader_VolumeDecal
 });
+var h3d_shader_pbr_DecalOverlay = function() {
+	this.emissive__ = 0;
+	this.fadeEnd__ = 0;
+	this.fadeStart__ = 0;
+	this.fadePower__ = 0;
+	this.maxAngle__ = 0;
+	hxsl_Shader.call(this);
+};
+h3d_shader_pbr_DecalOverlay.__name__ = "h3d.shader.pbr.DecalOverlay";
+h3d_shader_pbr_DecalOverlay.__super__ = hxsl_Shader;
+h3d_shader_pbr_DecalOverlay.prototype = $extend(hxsl_Shader.prototype,{
+	get_CENTERED: function() {
+		return this.CENTERED__;
+	}
+	,set_CENTERED: function(_v) {
+		this.constModified = true;
+		return this.CENTERED__ = _v;
+	}
+	,get_GAMMA_CORRECT: function() {
+		return this.GAMMA_CORRECT__;
+	}
+	,set_GAMMA_CORRECT: function(_v) {
+		this.constModified = true;
+		return this.GAMMA_CORRECT__ = _v;
+	}
+	,get_maxAngle: function() {
+		return this.maxAngle__;
+	}
+	,set_maxAngle: function(_v) {
+		return this.maxAngle__ = _v;
+	}
+	,get_fadePower: function() {
+		return this.fadePower__;
+	}
+	,set_fadePower: function(_v) {
+		return this.fadePower__ = _v;
+	}
+	,get_fadeStart: function() {
+		return this.fadeStart__;
+	}
+	,set_fadeStart: function(_v) {
+		return this.fadeStart__ = _v;
+	}
+	,get_fadeEnd: function() {
+		return this.fadeEnd__;
+	}
+	,set_fadeEnd: function(_v) {
+		return this.fadeEnd__ = _v;
+	}
+	,get_emissive: function() {
+		return this.emissive__;
+	}
+	,set_emissive: function(_v) {
+		return this.emissive__ = _v;
+	}
+	,get_colorTexture: function() {
+		return this.colorTexture__;
+	}
+	,set_colorTexture: function(_v) {
+		return this.colorTexture__ = _v;
+	}
+	,updateConstants: function(globals) {
+		this.constBits = 0;
+		if(this.CENTERED__) {
+			this.constBits |= 1;
+		}
+		if(this.GAMMA_CORRECT__) {
+			this.constBits |= 2;
+		}
+		this.updateConstantsFinal(globals);
+	}
+	,getParamValue: function(index) {
+		switch(index) {
+		case 0:
+			return this.CENTERED__;
+		case 1:
+			return this.GAMMA_CORRECT__;
+		case 2:
+			return this.maxAngle__;
+		case 3:
+			return this.fadePower__;
+		case 4:
+			return this.fadeStart__;
+		case 5:
+			return this.fadeEnd__;
+		case 6:
+			return this.emissive__;
+		case 7:
+			return this.colorTexture__;
+		default:
+		}
+		return null;
+	}
+	,getParamFloatValue: function(index) {
+		switch(index) {
+		case 2:
+			return this.maxAngle__;
+		case 3:
+			return this.fadePower__;
+		case 4:
+			return this.fadeStart__;
+		case 5:
+			return this.fadeEnd__;
+		case 6:
+			return this.emissive__;
+		default:
+		}
+		return 0.;
+	}
+	,clone: function() {
+		var s = Object.create(h3d_shader_pbr_DecalOverlay.prototype);
+		s.shader = this.shader;
+		s.CENTERED__ = this.CENTERED__;
+		s.GAMMA_CORRECT__ = this.GAMMA_CORRECT__;
+		s.maxAngle__ = this.maxAngle__;
+		s.fadePower__ = this.fadePower__;
+		s.fadeStart__ = this.fadeStart__;
+		s.fadeEnd__ = this.fadeEnd__;
+		s.emissive__ = this.emissive__;
+		s.colorTexture__ = this.colorTexture__;
+		return s;
+	}
+	,__class__: h3d_shader_pbr_DecalOverlay
+});
+var h3d_shader_pbr_DecalPBR = function() {
+	this.fadeEnd__ = 0;
+	this.fadeStart__ = 0;
+	this.fadePower__ = 0;
+	this.maxAngle__ = 0;
+	this.maxBound__ = new h3d_Vector();
+	this.minBound__ = new h3d_Vector();
+	this.tangent__ = new h3d_Vector();
+	this.normal__ = new h3d_Vector();
+	this.pbrStrength__ = 0;
+	this.normalStrength__ = 0;
+	this.albedoStrength__ = 0;
+	hxsl_Shader.call(this);
+	this.constModified = true;
+	this.CENTERED__ = true;
+};
+h3d_shader_pbr_DecalPBR.__name__ = "h3d.shader.pbr.DecalPBR";
+h3d_shader_pbr_DecalPBR.__super__ = hxsl_Shader;
+h3d_shader_pbr_DecalPBR.prototype = $extend(hxsl_Shader.prototype,{
+	get_CENTERED: function() {
+		return this.CENTERED__;
+	}
+	,set_CENTERED: function(_v) {
+		this.constModified = true;
+		return this.CENTERED__ = _v;
+	}
+	,get_USE_ALBEDO: function() {
+		return this.USE_ALBEDO__;
+	}
+	,set_USE_ALBEDO: function(_v) {
+		this.constModified = true;
+		return this.USE_ALBEDO__ = _v;
+	}
+	,get_USE_NORMAL: function() {
+		return this.USE_NORMAL__;
+	}
+	,set_USE_NORMAL: function(_v) {
+		this.constModified = true;
+		return this.USE_NORMAL__ = _v;
+	}
+	,get_USE_PBR: function() {
+		return this.USE_PBR__;
+	}
+	,set_USE_PBR: function(_v) {
+		this.constModified = true;
+		return this.USE_PBR__ = _v;
+	}
+	,get_albedoStrength: function() {
+		return this.albedoStrength__;
+	}
+	,set_albedoStrength: function(_v) {
+		return this.albedoStrength__ = _v;
+	}
+	,get_normalStrength: function() {
+		return this.normalStrength__;
+	}
+	,set_normalStrength: function(_v) {
+		return this.normalStrength__ = _v;
+	}
+	,get_pbrStrength: function() {
+		return this.pbrStrength__;
+	}
+	,set_pbrStrength: function(_v) {
+		return this.pbrStrength__ = _v;
+	}
+	,get_normal: function() {
+		return this.normal__;
+	}
+	,set_normal: function(_v) {
+		return this.normal__ = _v;
+	}
+	,get_tangent: function() {
+		return this.tangent__;
+	}
+	,set_tangent: function(_v) {
+		return this.tangent__ = _v;
+	}
+	,get_minBound: function() {
+		return this.minBound__;
+	}
+	,set_minBound: function(_v) {
+		return this.minBound__ = _v;
+	}
+	,get_maxBound: function() {
+		return this.maxBound__;
+	}
+	,set_maxBound: function(_v) {
+		return this.maxBound__ = _v;
+	}
+	,get_maxAngle: function() {
+		return this.maxAngle__;
+	}
+	,set_maxAngle: function(_v) {
+		return this.maxAngle__ = _v;
+	}
+	,get_fadePower: function() {
+		return this.fadePower__;
+	}
+	,set_fadePower: function(_v) {
+		return this.fadePower__ = _v;
+	}
+	,get_fadeStart: function() {
+		return this.fadeStart__;
+	}
+	,set_fadeStart: function(_v) {
+		return this.fadeStart__ = _v;
+	}
+	,get_fadeEnd: function() {
+		return this.fadeEnd__;
+	}
+	,set_fadeEnd: function(_v) {
+		return this.fadeEnd__ = _v;
+	}
+	,get_albedoTexture: function() {
+		return this.albedoTexture__;
+	}
+	,set_albedoTexture: function(_v) {
+		return this.albedoTexture__ = _v;
+	}
+	,get_normalTexture: function() {
+		return this.normalTexture__;
+	}
+	,set_normalTexture: function(_v) {
+		return this.normalTexture__ = _v;
+	}
+	,get_pbrTexture: function() {
+		return this.pbrTexture__;
+	}
+	,set_pbrTexture: function(_v) {
+		return this.pbrTexture__ = _v;
+	}
+	,updateConstants: function(globals) {
+		this.constBits = 0;
+		if(this.CENTERED__) {
+			this.constBits |= 1;
+		}
+		if(this.USE_ALBEDO__) {
+			this.constBits |= 2;
+		}
+		if(this.USE_NORMAL__) {
+			this.constBits |= 4;
+		}
+		if(this.USE_PBR__) {
+			this.constBits |= 8;
+		}
+		this.updateConstantsFinal(globals);
+	}
+	,getParamValue: function(index) {
+		switch(index) {
+		case 0:
+			return this.CENTERED__;
+		case 1:
+			return this.USE_ALBEDO__;
+		case 2:
+			return this.USE_NORMAL__;
+		case 3:
+			return this.USE_PBR__;
+		case 4:
+			return this.albedoStrength__;
+		case 5:
+			return this.normalStrength__;
+		case 6:
+			return this.pbrStrength__;
+		case 7:
+			return this.normal__;
+		case 8:
+			return this.tangent__;
+		case 9:
+			return this.minBound__;
+		case 10:
+			return this.maxBound__;
+		case 11:
+			return this.maxAngle__;
+		case 12:
+			return this.fadePower__;
+		case 13:
+			return this.fadeStart__;
+		case 14:
+			return this.fadeEnd__;
+		case 15:
+			return this.albedoTexture__;
+		case 16:
+			return this.normalTexture__;
+		case 17:
+			return this.pbrTexture__;
+		default:
+		}
+		return null;
+	}
+	,getParamFloatValue: function(index) {
+		switch(index) {
+		case 4:
+			return this.albedoStrength__;
+		case 5:
+			return this.normalStrength__;
+		case 6:
+			return this.pbrStrength__;
+		case 11:
+			return this.maxAngle__;
+		case 12:
+			return this.fadePower__;
+		case 13:
+			return this.fadeStart__;
+		case 14:
+			return this.fadeEnd__;
+		default:
+		}
+		return 0.;
+	}
+	,clone: function() {
+		var s = Object.create(h3d_shader_pbr_DecalPBR.prototype);
+		s.shader = this.shader;
+		s.CENTERED__ = this.CENTERED__;
+		s.USE_ALBEDO__ = this.USE_ALBEDO__;
+		s.USE_NORMAL__ = this.USE_NORMAL__;
+		s.USE_PBR__ = this.USE_PBR__;
+		s.albedoStrength__ = this.albedoStrength__;
+		s.normalStrength__ = this.normalStrength__;
+		s.pbrStrength__ = this.pbrStrength__;
+		s.normal__ = this.normal__;
+		s.tangent__ = this.tangent__;
+		s.minBound__ = this.minBound__;
+		s.maxBound__ = this.maxBound__;
+		s.maxAngle__ = this.maxAngle__;
+		s.fadePower__ = this.fadePower__;
+		s.fadeStart__ = this.fadeStart__;
+		s.fadeEnd__ = this.fadeEnd__;
+		s.albedoTexture__ = this.albedoTexture__;
+		s.normalTexture__ = this.normalTexture__;
+		s.pbrTexture__ = this.pbrTexture__;
+		return s;
+	}
+	,__class__: h3d_shader_pbr_DecalPBR
+});
 var haxe_IMap = function() { };
 haxe_IMap.__name__ = "haxe.IMap";
 haxe_IMap.__isInterface__ = true;
@@ -57920,6 +58130,604 @@ js_html__$CanvasElement_CanvasUtil.getContextWebGL = function(canvas,attribs) {
 	return null;
 };
 Math.__name__ = "Math";
+var support_color_Color = function() { };
+support_color_Color.__name__ = "support.color.Color";
+support_color_Color.__isInterface__ = true;
+support_color_Color.prototype = {
+	__class__: support_color_Color
+};
+var support_color_HSL = function(h,s,l,a) {
+	if(a == null) {
+		a = 1.0;
+	}
+	if(l == null) {
+		l = 0.5;
+	}
+	if(s == null) {
+		s = 1.0;
+	}
+	if(h == null) {
+		h = 0.0;
+	}
+	this.set_hue(h);
+	this.set_saturation(s);
+	this.set_lightness(l);
+	this.set_alpha(a);
+};
+support_color_HSL.__name__ = "support.color.HSL";
+support_color_HSL.__interfaces__ = [support_color_Color];
+support_color_HSL.prototype = {
+	toRGBA: function() {
+		var C = this.saturation * (1.0 - Math.abs(2.0 * this.lightness - 1));
+		var H = this.hue / 60.0;
+		var X = C * (1 - Math.abs(H % 2.0 - 1));
+		var triple = H >= 0 && H < 1 ? { r : C, g : X, b : 0} : H >= 1 && H < 2 ? { r : X, g : C, b : 0} : H >= 2 && H < 3 ? { r : 0, g : C, b : X} : H >= 3 && H < 4 ? { r : 0, g : X, b : C} : H >= 4 && H < 5 ? { r : X, g : 0, b : C} : H >= 5 && H < 6 ? { r : C, g : 0, b : X} : { r : 0, g : 0, b : 0};
+		var m = this.lightness - C / 2.0;
+		return new support_color_RGBA(triple.r + m,triple.g + m,triple.b + m,this.alpha);
+	}
+	,clamp: function(x,min,max) {
+		if(max == null) {
+			max = 1;
+		}
+		if(min == null) {
+			min = 0;
+		}
+		if(x <= min) {
+			return min;
+		} else if(x >= max) {
+			return max;
+		} else {
+			return x;
+		}
+	}
+	,set_hue: function(h) {
+		var modded = h % 360;
+		if(modded < 0) {
+			return this.hue = 360 + modded;
+		} else {
+			return this.hue = modded;
+		}
+	}
+	,set_saturation: function(s) {
+		return this.saturation = this.clamp(s);
+	}
+	,set_lightness: function(l) {
+		return this.lightness = this.clamp(l);
+	}
+	,set_alpha: function(a) {
+		return this.alpha = this.clamp(a,0,1);
+	}
+	,__class__: support_color_HSL
+};
+var support_color_RGBA = function(r,g,b,a) {
+	if(a == null) {
+		a = 1.0;
+	}
+	if(b == null) {
+		b = 1.0;
+	}
+	if(g == null) {
+		g = 1.0;
+	}
+	if(r == null) {
+		r = 1.0;
+	}
+	this.r = r;
+	this.g = g;
+	this.b = b;
+	this.a = a;
+};
+support_color_RGBA.__name__ = "support.color.RGBA";
+support_color_RGBA.__interfaces__ = [support_color_Color];
+support_color_RGBA.prototype = {
+	toARGBInt: function() {
+		var ri = Math.floor(this.r * 255);
+		var gi = Math.floor(this.g * 255);
+		var bi = Math.floor(this.b * 255);
+		var ai = Math.floor(this.a * 255);
+		return ai << 24 | ri << 16 | gi << 8 | bi;
+	}
+	,toRGBA: function() {
+		return this;
+	}
+	,clone: function() {
+		return new support_color_RGBA(this.r,this.g,this.b,this.a);
+	}
+	,toString: function() {
+		return "RGBA(" + this.r + ", " + this.g + ", " + this.b + ", " + this.a + ")";
+	}
+	,__class__: support_color_RGBA
+};
+var support_h2d_FastQuads = function(parent) {
+	h2d_Drawable.call(this,parent);
+	this.quads = new support_h3d_prim_QuadsPrimitive();
+	this.white = h3d_mat_Texture.fromColor(16777215,1.0);
+};
+support_h2d_FastQuads.__name__ = "support.h2d.FastQuads";
+support_h2d_FastQuads.__super__ = h2d_Drawable;
+support_h2d_FastQuads.prototype = $extend(h2d_Drawable.prototype,{
+	clear: function() {
+		this.quads.reset();
+	}
+	,addQuad: function(quad,color) {
+		this.quads.push(quad,color);
+	}
+	,newTurtle: function() {
+		return new support_h2d__$FastQuads_FastQuadsTurtle(this);
+	}
+	,draw: function(ctx) {
+		if(!ctx.beginDrawObject(this,this.white)) {
+			return;
+		}
+		this.quads.render(ctx.engine);
+	}
+	,__class__: support_h2d_FastQuads
+});
+var support_turtle_Turtle = function() { };
+support_turtle_Turtle.__name__ = "support.turtle.Turtle";
+support_turtle_Turtle.__isInterface__ = true;
+support_turtle_Turtle.prototype = {
+	__class__: support_turtle_Turtle
+};
+var support_h2d__$FastQuads_FastQuadsTurtle = function(fastQuads) {
+	this.color = new support_color_RGBA();
+	this.lineWidth = 1.0;
+	this.position = new support_linAlg2d_Vec(0,0);
+	this.fastQuads = fastQuads;
+};
+support_h2d__$FastQuads_FastQuadsTurtle.__name__ = "support.h2d._FastQuads.FastQuadsTurtle";
+support_h2d__$FastQuads_FastQuadsTurtle.__interfaces__ = [support_turtle_Turtle];
+support_h2d__$FastQuads_FastQuadsTurtle.prototype = {
+	moveTo: function(x,y) {
+		this.get_position().x = x;
+		this.get_position().y = y;
+		return this;
+	}
+	,lineTo: function(x,y) {
+		this.lineToQuad(new support_linAlg2d_Line(this.get_position(),new support_linAlg2d_Vec(x,y)));
+		this.moveTo(x,y);
+		return this;
+	}
+	,lineToQuad: function(line) {
+		var tmp = this.fastQuads;
+		var half_width = this.get_lineWidth() / 2;
+		var _this = line.end;
+		var mainAxis_x = _this.x;
+		var mainAxis_y = _this.y;
+		var v = line.start;
+		mainAxis_x -= v.x;
+		mainAxis_y -= v.y;
+		var v_x = mainAxis_x;
+		var v_y = mainAxis_y;
+		var tempX = v_x;
+		v_x = -v_y;
+		v_y = tempX;
+		var len = Math.sqrt(v_x * v_x + v_y * v_y);
+		var s = 1.0 / len;
+		v_x *= s;
+		v_y *= s;
+		v_x *= half_width;
+		v_y *= half_width;
+		var _this = line.start;
+		var _this1 = new support_linAlg2d_Vec(_this.x,_this.y);
+		_this1.x += v_x;
+		_this1.y += v_y;
+		var topLeft = _this1;
+		var _this = line.start;
+		var _this1 = new support_linAlg2d_Vec(_this.x,_this.y);
+		v_x *= -1;
+		v_y *= -1;
+		_this1.x += v_x;
+		_this1.y += v_y;
+		var bottomLeft = _this1;
+		var _this = new support_linAlg2d_Vec(topLeft.x,topLeft.y);
+		_this.x += mainAxis_x;
+		_this.y += mainAxis_y;
+		var topRight = _this;
+		var _this = new support_linAlg2d_Vec(bottomLeft.x,bottomLeft.y);
+		_this.x += mainAxis_x;
+		_this.y += mainAxis_y;
+		var bottomRight = _this;
+		tmp.addQuad(new support_linAlg2d_Quad(topLeft,topRight,bottomLeft,bottomRight),this.get_color().toRGBA());
+	}
+	,get_position: function() {
+		return this.position;
+	}
+	,set_position: function(p) {
+		return this.position = p;
+	}
+	,get_lineWidth: function() {
+		return this.lineWidth;
+	}
+	,set_lineWidth: function(w) {
+		return this.lineWidth = w;
+	}
+	,get_color: function() {
+		return this.color;
+	}
+	,set_color: function(c) {
+		return this.color = c;
+	}
+	,__class__: support_h2d__$FastQuads_FastQuadsTurtle
+};
+var support_h2d_FullscreenButton = function(parent) {
+	this.root = new h2d_Object(parent);
+	this.graphics = new h2d_Graphics(this.root);
+	this.clickable = new h2d_Interactive(1,1,this.root);
+	this.clickable.onClick = $bind(this,this.onClick);
+	this.window = hxd_Window.getInstance();
+	this.window.addResizeEvent($bind(this,this.onResize));
+	this.onResize();
+	this.render();
+};
+support_h2d_FullscreenButton.__name__ = "support.h2d.FullscreenButton";
+support_h2d_FullscreenButton.prototype = {
+	updateDimensions: function() {
+		var size = Math.max(Math.min(this.window.get_width(),this.window.get_height()) / 20,20);
+		this.dimensions = { size : size, lineSize : Math.max(size / 24,1.0), offset : Math.max(size / 6,2)};
+	}
+	,onResize: function() {
+		this.updateDimensions();
+		this.clickable.width = this.dimensions.size;
+		this.clickable.height = this.dimensions.size;
+		var _this = this.root;
+		var v = this.window.get_width();
+		_this.posChanged = true;
+		_this.x = v - this.dimensions.size * 2;
+		var _this = this.root;
+		var v = this.window.get_height();
+		_this.posChanged = true;
+		_this.y = v - this.dimensions.size * 2;
+		var _this = this.graphics;
+		_this.posChanged = true;
+		_this.x = this.dimensions.size / 2;
+		var _this = this.graphics;
+		_this.posChanged = true;
+		_this.y = this.dimensions.size / 2;
+		this.render();
+	}
+	,onClick: function(e) {
+		var tmp = this.window;
+		var tmp1;
+		switch(this.window.get_displayMode()._hx_index) {
+		case 0:
+			tmp1 = hxd_DisplayMode.Fullscreen;
+			break;
+		case 2:
+			tmp1 = hxd_DisplayMode.Windowed;
+			break;
+		default:
+			tmp1 = hxd_DisplayMode.Windowed;
+		}
+		tmp.set_displayMode(tmp1);
+	}
+	,render: function() {
+		this.graphics.clear();
+		this.graphics.beginFill(16777215,0.3);
+		this.graphics.drawRoundedRect(-this.dimensions.size / 2,-this.dimensions.size / 2,this.dimensions.size,this.dimensions.size,this.dimensions.offset);
+		this.graphics.endFill();
+		var offset = this.dimensions.offset;
+		var top = -this.dimensions.size / 2 + offset;
+		var left = -this.dimensions.size / 2 + offset;
+		var bottom = this.dimensions.size / 2 - offset;
+		var right = this.dimensions.size / 2 - offset;
+		this.graphics.lineStyle(this.dimensions.lineSize,16777215,0.95);
+		var _this = this.graphics;
+		_this.flush();
+		_this.addVertex(offset,offset,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + offset * _this.mc + _this.mx,offset * _this.mb + offset * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.addVertex(right,bottom,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + bottom * _this.mc + _this.mx,right * _this.mb + bottom * _this.md + _this.my);
+		var _this = this.graphics;
+		var x = -offset;
+		_this.flush();
+		_this.addVertex(x,offset,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + offset * _this.mc + _this.mx,x * _this.mb + offset * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.addVertex(left,bottom,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + bottom * _this.mc + _this.mx,left * _this.mb + bottom * _this.md + _this.my);
+		var _this = this.graphics;
+		var y = -offset;
+		_this.flush();
+		_this.addVertex(offset,y,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + y * _this.mc + _this.mx,offset * _this.mb + y * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.addVertex(right,top,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + top * _this.mc + _this.mx,right * _this.mb + top * _this.md + _this.my);
+		var _this = this.graphics;
+		var x = -offset;
+		var y = -offset;
+		_this.flush();
+		_this.addVertex(x,y,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + y * _this.mc + _this.mx,x * _this.mb + y * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.addVertex(left,top,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + top * _this.mc + _this.mx,left * _this.mb + top * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.flush();
+		_this.addVertex(left,top,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + top * _this.mc + _this.mx,left * _this.mb + top * _this.md + _this.my);
+		var _this = this.graphics;
+		var x = -offset;
+		_this.addVertex(x,top,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + top * _this.mc + _this.mx,x * _this.mb + top * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.flush();
+		_this.addVertex(left,top,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + top * _this.mc + _this.mx,left * _this.mb + top * _this.md + _this.my);
+		var _this = this.graphics;
+		var y = -offset;
+		_this.addVertex(left,y,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + y * _this.mc + _this.mx,left * _this.mb + y * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.flush();
+		_this.addVertex(right,top,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + top * _this.mc + _this.mx,right * _this.mb + top * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.addVertex(offset,top,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + top * _this.mc + _this.mx,offset * _this.mb + top * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.flush();
+		_this.addVertex(right,top,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + top * _this.mc + _this.mx,right * _this.mb + top * _this.md + _this.my);
+		var _this = this.graphics;
+		var y = -offset;
+		_this.addVertex(right,y,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + y * _this.mc + _this.mx,right * _this.mb + y * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.flush();
+		_this.addVertex(left,bottom,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + bottom * _this.mc + _this.mx,left * _this.mb + bottom * _this.md + _this.my);
+		var _this = this.graphics;
+		var x = -offset;
+		_this.addVertex(x,bottom,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + bottom * _this.mc + _this.mx,x * _this.mb + bottom * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.flush();
+		_this.addVertex(left,bottom,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + bottom * _this.mc + _this.mx,left * _this.mb + bottom * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.addVertex(left,offset,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + offset * _this.mc + _this.mx,left * _this.mb + offset * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.flush();
+		_this.addVertex(right,bottom,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + bottom * _this.mc + _this.mx,right * _this.mb + bottom * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.addVertex(offset,bottom,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + bottom * _this.mc + _this.mx,offset * _this.mb + bottom * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.flush();
+		_this.addVertex(right,bottom,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + bottom * _this.mc + _this.mx,right * _this.mb + bottom * _this.md + _this.my);
+		var _this = this.graphics;
+		_this.addVertex(right,offset,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + offset * _this.mc + _this.mx,right * _this.mb + offset * _this.md + _this.my);
+	}
+	,__class__: support_h2d_FullscreenButton
+};
+var support_h3d_prim_QuadsPrimitive = function() {
+	h3d_prim_Primitive.call(this);
+	var this1 = hxd__$FloatBuffer_Float32Expand._new(0);
+	this.vertices = this1;
+	this.dirty = true;
+};
+support_h3d_prim_QuadsPrimitive.__name__ = "support.h3d.prim.QuadsPrimitive";
+support_h3d_prim_QuadsPrimitive.__super__ = h3d_prim_Primitive;
+support_h3d_prim_QuadsPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
+	push: function(quad,color) {
+		this.pushVertex(quad.bottomLeft,0,0,color);
+		this.pushVertex(quad.topLeft,0,1,color);
+		this.pushVertex(quad.bottomRight,1,0,color);
+		this.pushVertex(quad.topRight,1,1,color);
+	}
+	,reset: function() {
+		var this1 = hxd__$FloatBuffer_Float32Expand._new(0);
+		this.vertices = this1;
+		this.disposeGPUBuffer();
+	}
+	,alloc: function(engine) {
+		this.disposeGPUBuffer();
+		this.buffer = h3d_Buffer.ofFloats(this.vertices,8,[h3d_BufferFlag.Quads,h3d_BufferFlag.RawFormat]);
+	}
+	,render: function(engine) {
+		if(this.buffer == null || this.buffer.isDisposed() || this.dirty == true) {
+			this.alloc(engine);
+		}
+		engine.renderBuffer(this.buffer,engine.mem.quadIndexes,2,0,-1);
+	}
+	,disposeGPUBuffer: function() {
+		if(this.buffer != null && !this.buffer.isDisposed()) {
+			this.buffer.dispose();
+			this.buffer = null;
+		}
+	}
+	,pushVertex: function(p,u,v,color) {
+		this.dirty = true;
+		var this1 = this.vertices;
+		var v1 = p.x;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v1;
+		var this1 = this.vertices;
+		var v1 = p.y;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v1;
+		var this1 = this.vertices;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = u;
+		var this1 = this.vertices;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+		var this1 = this.vertices;
+		var v = color.r;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+		var this1 = this.vertices;
+		var v = color.g;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+		var this1 = this.vertices;
+		var v = color.b;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+		var this1 = this.vertices;
+		var v = color.a;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+	}
+	,__class__: support_h3d_prim_QuadsPrimitive
+});
+var support_linAlg2d_Line = function(start,end) {
+	this.start = start;
+	this.end = end;
+};
+support_linAlg2d_Line.__name__ = "support.linAlg2d.Line";
+support_linAlg2d_Line.prototype = {
+	toQuad: function(width) {
+		var half_width = width / 2;
+		var _this = this.end;
+		var mainAxis_x = _this.x;
+		var mainAxis_y = _this.y;
+		var v = this.start;
+		mainAxis_x -= v.x;
+		mainAxis_y -= v.y;
+		var v_x = mainAxis_x;
+		var v_y = mainAxis_y;
+		var tempX = v_x;
+		v_x = -v_y;
+		v_y = tempX;
+		var len = Math.sqrt(v_x * v_x + v_y * v_y);
+		var s = 1.0 / len;
+		v_x *= s;
+		v_y *= s;
+		v_x *= half_width;
+		v_y *= half_width;
+		var _this = this.start;
+		var _this1 = new support_linAlg2d_Vec(_this.x,_this.y);
+		_this1.x += v_x;
+		_this1.y += v_y;
+		var topLeft = _this1;
+		var _this = this.start;
+		var _this1 = new support_linAlg2d_Vec(_this.x,_this.y);
+		v_x *= -1;
+		v_y *= -1;
+		_this1.x += v_x;
+		_this1.y += v_y;
+		var bottomLeft = _this1;
+		var _this = new support_linAlg2d_Vec(topLeft.x,topLeft.y);
+		_this.x += mainAxis_x;
+		_this.y += mainAxis_y;
+		var topRight = _this;
+		var _this = new support_linAlg2d_Vec(bottomLeft.x,bottomLeft.y);
+		_this.x += mainAxis_x;
+		_this.y += mainAxis_y;
+		var bottomRight = _this;
+		return new support_linAlg2d_Quad(topLeft,topRight,bottomLeft,bottomRight);
+	}
+	,__class__: support_linAlg2d_Line
+};
+var support_linAlg2d_Quad = function(topLeft,topRight,bottomLeft,bottomRight) {
+	this.topLeft = topLeft;
+	this.topRight = topRight;
+	this.bottomLeft = bottomLeft;
+	this.bottomRight = bottomRight;
+};
+support_linAlg2d_Quad.__name__ = "support.linAlg2d.Quad";
+support_linAlg2d_Quad.aligned = function(top,left,bottom,right) {
+	return new support_linAlg2d_Quad(new support_linAlg2d_Vec(left,top),new support_linAlg2d_Vec(right,top),new support_linAlg2d_Vec(left,bottom),new support_linAlg2d_Vec(right,bottom));
+};
+support_linAlg2d_Quad.prototype = {
+	__class__: support_linAlg2d_Quad
+};
+var support_linAlg2d_Vec = function(x,y) {
+	this.x = x;
+	this.y = y;
+};
+support_linAlg2d_Vec.__name__ = "support.linAlg2d.Vec";
+support_linAlg2d_Vec.of = function(x,y) {
+	return new support_linAlg2d_Vec(x,y);
+};
+support_linAlg2d_Vec.prototype = {
+	rot90: function() {
+		var tempX = this.x;
+		this.x = -this.y;
+		this.y = tempX;
+		return this;
+	}
+	,sub: function(v) {
+		this.x -= v.x;
+		this.y -= v.y;
+		return this;
+	}
+	,add: function(v) {
+		this.x += v.x;
+		this.y += v.y;
+		return this;
+	}
+	,len: function() {
+		return Math.sqrt(this.x * this.x + this.y * this.y);
+	}
+	,norm: function() {
+		var len = Math.sqrt(this.x * this.x + this.y * this.y);
+		var s = 1.0 / len;
+		this.x *= s;
+		this.y *= s;
+		return this;
+	}
+	,scale: function(s) {
+		this.x *= s;
+		this.y *= s;
+		return this;
+	}
+	,clone: function() {
+		return new support_linAlg2d_Vec(this.x,this.y);
+	}
+	,toString: function() {
+		return "Vec(" + this.x + ", " + this.y + ")";
+	}
+	,__class__: support_linAlg2d_Vec
+};
 function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;
@@ -58144,6 +58952,8 @@ h3d_shader_Texture.SRC = "HXSLEmgzZC5zaGFkZXIuVGV4dHVyZQsBBWlucHV0DQEBAgJ1dgUKAQ
 h3d_shader_UVDelta.SRC = "HXSLEmgzZC5zaGFkZXIuVVZEZWx0YQQBB3V2RGVsdGEFCgIAAAIHdXZTY2FsZQUKAgAAAwxjYWxjdWxhdGVkVVYFCgQAAAQGdmVydGV4DgYAAAEABAAABQEGBAIDBQoGAAYBAgMFCgICBQoFCgIBBQoFCgUKAA";
 h3d_shader_VertexColorAlpha.SRC = "HXSLG2gzZC5zaGFkZXIuVmVydGV4Q29sb3JBbHBoYQQBBWlucHV0DQEBAgVjb2xvcgUMAQEAAQAAAwpwaXhlbENvbG9yBQwEAAAECGFkZGl0aXZlAgIAAQAAAAAABQhmcmFnbWVudA4GAAABAQUAAAUBCwIEAgaAAgMFDAICBQwFDAaBAgMFDAICBQwFDAAA";
 h3d_shader_VolumeDecal.SRC = "HXSLFmgzZC5zaGFkZXIuVm9sdW1lRGVjYWwYAQZjYW1lcmENAQoCBHZpZXcHAAEAAwRwcm9qBwABAAQIcG9zaXRpb24FCwABAAUIcHJvakZsaXADAAEABghwcm9qRGlhZwULAAEABwh2aWV3UHJvagcAAQAID2ludmVyc2VWaWV3UHJvagcAAQAJBXpOZWFyAwABAAoEekZhcgMAAQALA2RpcgULAwEAAAAADAZnbG9iYWwNAgQNBHRpbWUDAAwADglwaXhlbFNpemUFCgAMAA8JbW9kZWxWaWV3BwAMAQMQEG1vZGVsVmlld0ludmVyc2UHAAwBAwAAABEFaW5wdXQNAwISCHBvc2l0aW9uBQsBEQATBm5vcm1hbAULAREAAQAAFAZvdXRwdXQNBAUVCHBvc2l0aW9uBQwEFAAWBWNvbG9yBQwEFAAXBWRlcHRoAwQUABgGbm9ybWFsBQsEFAAZCXdvcmxkRGlzdAMEFAAEAAAaEHJlbGF0aXZlUG9zaXRpb24FCwQAABsTdHJhbnNmb3JtZWRQb3NpdGlvbgULBAAAHBhwaXhlbFRyYW5zZm9ybWVkUG9zaXRpb24FCwQAAB0RdHJhbnNmb3JtZWROb3JtYWwFCwQAAB4RcHJvamVjdGVkUG9zaXRpb24FDAQAAB8KcGl4ZWxDb2xvcgUMBAAAIAVkZXB0aAMEAAAhCHNjcmVlblVWBQoEAAAiCXNwZWNQb3dlcgMEAAAjCXNwZWNDb2xvcgULBAAAJAl3b3JsZERpc3QDBAAAJQhkZXB0aE1hcBEBAAAAJgVzY2FsZQUKAgAAJwZub3JtYWwFCwIAACgHdGFuZ2VudAULAgAAKQppc0NlbnRlcmVkAgIAAQAAAAAAKgxjYWxjdWxhdGVkVVYFCgQAACsSdHJhbnNmb3JtZWRUYW5nZW50BQwEAAAsDl9faW5pdF9fdmVydGV4DgYAAC0IZnJhZ21lbnQOBgAAAgIsAAAFAgYEAh0FCwkDHw4BBAYBAicFCwkDMg4BAg8HBgULBQsFCwULBgQCKwUMCQMqDgIJAx8OAQQGAQIoBQsJAzIOAQIPBwYFCwULBQsBAwAAAAAAAPA/AwUMBQwAAS0AAAUJCC4GbWF0cml4BwQAAAYBAggHAhAHBwAILwlzY3JlZW5Qb3MFCgQAAAYCCgIeBQwRAAUKCgIeBQwMAAMFCgAIMANydXYFDAQAAAkDKg4DAi8FCgkDPw4CAiURAQkDOg4BAi8FCgUKAwEDAAAAAAAA8D8DBQwACDEEd3BvcwUMBAAABgECMAUMAi4HBQwACDIEcHBvcwUMBAAABgECMAUMAggHBQwABgQCHAULBgIKAjIFDJIABQsKAjIFDAwAAwULBQsGBAIqBQoGAQImBQoEBgIKAjEFDBEABQoKAjEFDAwAAwUKBQoFCgUKCwIpAgaAAioFCgEDAAAAAAAA4D8DBQoAAAsGCQkDFQ4CCQMVDgIKAioFCgAAAwoCKgUKBAADAwkDFQ4CBgMBAwAAAAAAAPA/AwoCKgUKAAADAwYDAQMAAAAAAADwPwMKAioFCgQAAwMDAwEDAAAAAAAAAAADAgwAAAAA";
+h3d_shader_pbr_DecalOverlay.SRC = "HXSLG2gzZC5zaGFkZXIucGJyLkRlY2FsT3ZlcmxheRMBBmdsb2JhbA0BBAIEdGltZQMAAQADCXBpeGVsU2l6ZQUKAAEABAltb2RlbFZpZXcHAAEBAwUQbW9kZWxWaWV3SW52ZXJzZQcAAQEDAAAABgZjYW1lcmENAgoHBHZpZXcHAAYACARwcm9qBwAGAAkIcG9zaXRpb24FCwAGAAoIcHJvakZsaXADAAYACwhwcm9qRGlhZwULAAYADAh2aWV3UHJvagcABgAND2ludmVyc2VWaWV3UHJvagcABgAOBXpOZWFyAwAGAA8EekZhcgMABgAQA2RpcgULAwYAAAAAEQZvdXRwdXQNAwESBWNvbG9yBQwEEQAEAAATCENFTlRFUkVEAgIAAQAAAAAAFA1HQU1NQV9DT1JSRUNUAgIAAQAAAAAAFQhkZXB0aE1hcBEBAAAAFghtYXhBbmdsZQMCAAAXCWZhZGVQb3dlcgMCAAAYCWZhZGVTdGFydAMCAAAZB2ZhZGVFbmQDAgAAGghlbWlzc2l2ZQMCAAAbDGNvbG9yVGV4dHVyZQoCAAAcDGNhbGN1bGF0ZWRVVgUKBAAAHQpwaXhlbENvbG9yBQwEAAAeGHBpeGVsVHJhbnNmb3JtZWRQb3NpdGlvbgULBAAAHxFwcm9qZWN0ZWRQb3NpdGlvbgUMBAAAIAhsb2NhbFBvcwULBAAAIQ1vdXRzaWRlQm91bmRzDgYAACIIZnJhZ21lbnQOBgAAAgMhAAIFAQ0EBg8GDwYPBg8GDwYHCgIgBQsAAAMBAwAAAAAAAOA/AwIGCQoCIAULAAADAQMAAAAAAADgvwMCAgYHCgIgBQsEAAMBAwAAAAAAAOA/AwICBgkKAiAFCwQAAwEDAAAAAAAA4L8DAgIGBwoCIAULCAADAQMAAAAAAADgPwMCAgYJCgIgBQsIAAMBAwAAAAAAAOC/AwICAgAAASIAAAURCCMGbWF0cml4BwQAAAYBAg0HAgUHBwAIJAlzY3JlZW5Qb3MFCgQAAAYCCgIfBQwRAAUKCgIfBQwMAAMFCgAIJQVkZXB0aAMEAAAJAz8OAgIVEQEJAzoOAQIkBQoFCgMACCYDcnV2BQwEAAAJAyoOAwIkBQoCJQMBAwAAAAAAAPA/AwUMAAgnBHdwb3MFDAQAAAYBAiYFDAIjBwUMAAgoBHBwb3MFDAQAAAYBAiYFDAINBwUMAAYEAh4FCwYCCgIoBQySAAULCgIoBQwMAAMFCwULBgQCIAULBAYCCgInBQySAAULCgInBQwMAAMFCwULBQsGBAIcBQoKAiAFCxEABQoFCggpCmZhZGVGYWN0b3IDBAAABgMBAwAAAAAAAPA/AwkDFw4DCQMIDgIGAgkDFg4CAQMAAAAAAAAAAAMGAwkDDw4BBgEKAiAFCwgAAwEDAAAAAAAAAEADAwMCGAMDAwQGAwIZAwIYAwMDAwIXAwMBAwAAAAAAAAAAAwEDAAAAAAAA8D8DAwMACwITAgaAAhwFCgEDAAAAAAAA4D8DBQoAAAsJAiEOAAIMAAAACCoFY29sb3IFDAQAAAkDIQ4CAhsKAhwFCgUMAAaBCgIdBQySAAULCgIqBQySAAULBQsLAhQCBoEKAh0FDJIABQsKAh0FDJIABQsFCwAABoAKAh0FDJIABQsGAQoCHQUMkgAFCwIaAwULBQsGBAoCHQUMDAADBgEJAxcOAwkDFg4CCQMWDgIKAh0FDAAAAwoCHQUMBAADAwoCHQUMCAADAwEDAAAAAAAAAAADAQMAAAAAAADwPwMDAikDAwMA";
+h3d_shader_pbr_DecalPBR.SRC = "HXSLF2gzZC5zaGFkZXIucGJyLkRlY2FsUEJSJQEGZ2xvYmFsDQEEAgR0aW1lAwABAAMJcGl4ZWxTaXplBQoAAQAECW1vZGVsVmlldwcAAQEDBRBtb2RlbFZpZXdJbnZlcnNlBwABAQMAAAAGBmNhbWVyYQ0CCgcEdmlldwcABgAIBHByb2oHAAYACQhwb3NpdGlvbgULAAYACghwcm9qRmxpcAMABgALCHByb2pEaWFnBQsABgAMCHZpZXdQcm9qBwAGAA0PaW52ZXJzZVZpZXdQcm9qBwAGAA4Fek5lYXIDAAYADwR6RmFyAwAGABADZGlyBQsDBgAAAAARBm91dHB1dA0DCBIFY29sb3IFDAQRABMGbm9ybWFsBQsEEQAUCW1ldGFsbmVzcwMEEQAVCXJvdWdobmVzcwMEEQAWCW9jY2x1c2lvbgMEEQAXDmFsYmVkb1N0cmVuZ3RoAwQRABgObm9ybWFsU3RyZW5ndGgDBBEAGQtwYnJTdHJlbmd0aAMEEQAEAAAaCENFTlRFUkVEAgIAAQAAAAAAGwpVU0VfQUxCRURPAgIAAQAAAAAAHApVU0VfTk9STUFMAgIAAQAAAAAAHQdVU0VfUEJSAgIAAQAAAAAAHg5hbGJlZG9TdHJlbmd0aAMCAAAfDm5vcm1hbFN0cmVuZ3RoAwIAACALcGJyU3RyZW5ndGgDAgAAIQhkZXB0aE1hcBEBAAAAIgZub3JtYWwFCwIAACMHdGFuZ2VudAULAgAAJAhtaW5Cb3VuZAULAgAAJQhtYXhCb3VuZAULAgAAJghtYXhBbmdsZQMCAAAnCWZhZGVQb3dlcgMCAAAoCWZhZGVTdGFydAMCAAApB2ZhZGVFbmQDAgAAKg1hbGJlZG9UZXh0dXJlCgIAACsNbm9ybWFsVGV4dHVyZQoCAAAsCnBiclRleHR1cmUKAgAALQxjYWxjdWxhdGVkVVYFCgQAAC4SdHJhbnNmb3JtZWRUYW5nZW50BQwEAAAvEXRyYW5zZm9ybWVkTm9ybWFsBQsEAAAwGHBpeGVsVHJhbnNmb3JtZWRQb3NpdGlvbgULBAAAMRFwcm9qZWN0ZWRQb3NpdGlvbgUMBAAAMgpwaXhlbENvbG9yBQwEAAAzCXByYlZhbHVlcwUMBAAANAhzdHJlbmd0aAUMBAAANQhsb2NhbFBvcwULBAAANgVh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";
 haxe_EntryPoint.pending = [];
 haxe_EntryPoint.threadCount = 0;
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
