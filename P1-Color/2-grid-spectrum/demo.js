@@ -29,139 +29,6 @@ EReg.prototype = {
 	}
 	,__class__: EReg
 };
-var FullscreenButton = function(parent) {
-	this.root = new h2d_Object(parent);
-	this.graphics = new h2d_Graphics(this.root);
-	this.clickable = new h2d_Interactive(1,1,this.root);
-	this.clickable.onClick = $bind(this,this.onClick);
-	this.window = hxd_Window.getInstance();
-	this.window.addResizeEvent($bind(this,this.onResize));
-	this.onResize();
-	this.render();
-};
-FullscreenButton.__name__ = "FullscreenButton";
-FullscreenButton.prototype = {
-	updateDimensions: function() {
-		var size = Math.max(Math.min(this.window.get_width(),this.window.get_height()) / 20,20);
-		this.dimensions = { size : size, lineSize : Math.max(size / 24,1.0), offset : Math.max(size / 6,2)};
-	}
-	,onResize: function() {
-		this.updateDimensions();
-		this.clickable.width = this.dimensions.size;
-		this.clickable.height = this.dimensions.size;
-		var _this = this.root;
-		var v = this.window.get_width();
-		_this.posChanged = true;
-		_this.x = v - this.dimensions.size * 2;
-		var _this = this.root;
-		var v = this.window.get_height();
-		_this.posChanged = true;
-		_this.y = v - this.dimensions.size * 2;
-		var _this = this.graphics;
-		_this.posChanged = true;
-		_this.x = this.dimensions.size / 2;
-		var _this = this.graphics;
-		_this.posChanged = true;
-		_this.y = this.dimensions.size / 2;
-		this.render();
-	}
-	,onClick: function(e) {
-		var tmp = this.window;
-		var tmp1;
-		switch(this.window.get_displayMode()._hx_index) {
-		case 0:
-			tmp1 = hxd_DisplayMode.Fullscreen;
-			break;
-		case 2:
-			tmp1 = hxd_DisplayMode.Windowed;
-			break;
-		default:
-			tmp1 = hxd_DisplayMode.Windowed;
-		}
-		tmp.set_displayMode(tmp1);
-	}
-	,render: function() {
-		this.graphics.clear();
-		this.graphics.beginFill(16777215,0.3);
-		this.graphics.drawRoundedRect(-this.dimensions.size / 2,-this.dimensions.size / 2,this.dimensions.size,this.dimensions.size,this.dimensions.offset);
-		this.graphics.endFill();
-		var offset = this.dimensions.offset;
-		var top = -this.dimensions.size / 2 + offset;
-		var left = -this.dimensions.size / 2 + offset;
-		var bottom = this.dimensions.size / 2 - offset;
-		var right = this.dimensions.size / 2 - offset;
-		this.graphics.lineStyle(this.dimensions.lineSize,16777215,0.95);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(offset,offset,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + offset * _this.mc + _this.mx,offset * _this.mb + offset * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(right,bottom,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + bottom * _this.mc + _this.mx,right * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		var x = -offset;
-		_this.flush();
-		_this.addVertex(x,offset,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + offset * _this.mc + _this.mx,x * _this.mb + offset * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(left,bottom,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + bottom * _this.mc + _this.mx,left * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		var y = -offset;
-		_this.flush();
-		_this.addVertex(offset,y,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + y * _this.mc + _this.mx,offset * _this.mb + y * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(right,top,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + top * _this.mc + _this.mx,right * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		var x = -offset;
-		var y = -offset;
-		_this.flush();
-		_this.addVertex(x,y,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + y * _this.mc + _this.mx,x * _this.mb + y * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(left,top,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + top * _this.mc + _this.mx,left * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(left,top,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + top * _this.mc + _this.mx,left * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		var x = -offset;
-		_this.addVertex(x,top,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + top * _this.mc + _this.mx,x * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(left,top,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + top * _this.mc + _this.mx,left * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		var y = -offset;
-		_this.addVertex(left,y,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + y * _this.mc + _this.mx,left * _this.mb + y * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(right,top,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + top * _this.mc + _this.mx,right * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(offset,top,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + top * _this.mc + _this.mx,offset * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(right,top,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + top * _this.mc + _this.mx,right * _this.mb + top * _this.md + _this.my);
-		var _this = this.graphics;
-		var y = -offset;
-		_this.addVertex(right,y,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + y * _this.mc + _this.mx,right * _this.mb + y * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(left,bottom,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + bottom * _this.mc + _this.mx,left * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		var x = -offset;
-		_this.addVertex(x,bottom,_this.curR,_this.curG,_this.curB,_this.curA,x * _this.ma + bottom * _this.mc + _this.mx,x * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(left,bottom,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + bottom * _this.mc + _this.mx,left * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(left,offset,_this.curR,_this.curG,_this.curB,_this.curA,left * _this.ma + offset * _this.mc + _this.mx,left * _this.mb + offset * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(right,bottom,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + bottom * _this.mc + _this.mx,right * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(offset,bottom,_this.curR,_this.curG,_this.curB,_this.curA,offset * _this.ma + bottom * _this.mc + _this.mx,offset * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.flush();
-		_this.addVertex(right,bottom,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + bottom * _this.mc + _this.mx,right * _this.mb + bottom * _this.md + _this.my);
-		var _this = this.graphics;
-		_this.addVertex(right,offset,_this.curR,_this.curG,_this.curB,_this.curA,right * _this.ma + offset * _this.mc + _this.mx,right * _this.mb + offset * _this.md + _this.my);
-	}
-	,__class__: FullscreenButton
-};
 var HxOverrides = function() { };
 HxOverrides.__name__ = "HxOverrides";
 HxOverrides.cca = function(s,index) {
@@ -380,67 +247,41 @@ Main.main = function() {
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
-		this.graphics = new h2d_Graphics(this.s2d);
-		this.window = hxd_Window.getInstance();
-		new FullscreenButton(this.s2d);
+		this.quads = new support_h2d_FastQuads(this.s2d);
+		new support_h2d_FullscreenButton(this.s2d);
 	}
 	,update: function(dt) {
-		this.graphics.clear();
+		this.quads.clear();
 		this.updateSteps();
 		this.drawSpectrumGrid();
 	}
 	,updateSteps: function() {
-		var normalized_x = this.window.get_mouseX() / this.s2d.width;
-		var normalized_y = this.window.get_mouseY() / this.s2d.height;
-		this.columnCount = 3 + Math.floor(normalized_x * 47);
-		this.rowCount = 3 + Math.floor(normalized_y * 17);
+		var normalized_x = this.s2d.get_mouseX() / this.s2d.width;
+		var normalized_y = this.s2d.get_mouseY() / this.s2d.height;
+		this.columnCount = 3 + Math.floor(normalized_x * 357);
+		this.rowCount = 3 + Math.floor(normalized_y * 97);
 	}
 	,drawSpectrumGrid: function() {
-		var _g = [];
-		var _g1 = 0;
-		var _g2 = this.columnCount;
-		while(_g1 < _g2) {
-			var x = _g1++;
-			var _g3 = 0;
-			var _g4 = this.rowCount;
-			while(_g3 < _g4) {
-				var y = _g3++;
-				var normalized_x = x / this.columnCount;
-				var normalized_y = y / this.rowCount;
-				var left_position = normalized_x * this.s2d.width;
-				var top_position = normalized_y * this.s2d.height;
-				var hue = normalized_x * (Math.PI * 2);
-				var midpoint_step = 0.5 / this.rowCount;
-				var value = normalized_y + midpoint_step;
-				_g.push({ left : left_position, top : top_position, hue : hue, value : value});
-			}
-		}
-		var grid = _g;
 		var width = this.s2d.width / this.columnCount;
 		var height = this.s2d.height / this.rowCount;
 		var _g = 0;
-		while(_g < grid.length) {
-			var rect = grid[_g];
-			++_g;
-			this.graphics.beginFill(this.colorFor(rect.hue,0.8,rect.value));
-			this.graphics.drawRect(rect.left,rect.top,width,height);
-			this.graphics.endFill();
+		var _g1 = this.columnCount;
+		while(_g < _g1) {
+			var x = _g++;
+			var _g2 = 0;
+			var _g3 = this.rowCount;
+			while(_g2 < _g3) {
+				var y = _g2++;
+				var normalized_x = x / this.columnCount;
+				var normalized_y = y / this.rowCount;
+				var left = normalized_x * this.s2d.width;
+				var top = normalized_y * this.s2d.height;
+				var hue = normalized_x * 360;
+				var midpoint_step = 0.5 / this.rowCount;
+				var value = normalized_y + midpoint_step;
+				this.quads.addQuad(support_linAlg2d_Quad.aligned(top,left,top + height,left + width),new support_color_HSL(hue,0.8,value).toRGBA());
+			}
 		}
-	}
-	,colorFor: function(hue,saturation,brightness) {
-		if(brightness == null) {
-			brightness = 0.5;
-		}
-		if(saturation == null) {
-			saturation = 0.8;
-		}
-		var vec = new h3d_Vector();
-		vec.makeColor(hue,saturation,brightness);
-		var f = vec.w;
-		var f1 = vec.x;
-		var f2 = vec.y;
-		var f3 = vec.z;
-		return ((f < 0. ? 0. : f > 1. ? 1. : f) * 255 + 0.499 | 0) << 24 | ((f1 < 0. ? 0. : f1 > 1. ? 1. : f1) * 255 + 0.499 | 0) << 16 | ((f2 < 0. ? 0. : f2 > 1. ? 1. : f2) * 255 + 0.499 | 0) << 8 | ((f3 < 0. ? 0. : f3 > 1. ? 1. : f3) * 255 + 0.499 | 0);
 	}
 	,__class__: Main
 });
@@ -5253,1847 +5094,6 @@ var h2d_BlendMode = $hxEnums["h2d.BlendMode"] = { __ename__ : true, __constructs
 	,Min: {_hx_index:11,__enum__:"h2d.BlendMode",toString:$estr}
 };
 h2d_BlendMode.__empty_constructs__ = [h2d_BlendMode.None,h2d_BlendMode.Alpha,h2d_BlendMode.Add,h2d_BlendMode.AlphaAdd,h2d_BlendMode.SoftAdd,h2d_BlendMode.Multiply,h2d_BlendMode.AlphaMultiply,h2d_BlendMode.Erase,h2d_BlendMode.Screen,h2d_BlendMode.Sub,h2d_BlendMode.Max,h2d_BlendMode.Min];
-var h2d_GPoint = function() {
-};
-h2d_GPoint.__name__ = "h2d.GPoint";
-h2d_GPoint.prototype = {
-	load: function(x,y,r,g,b,a) {
-		this.x = x;
-		this.y = y;
-		this.r = r;
-		this.g = g;
-		this.b = b;
-		this.a = a;
-	}
-	,__class__: h2d_GPoint
-};
-var hxd_impl__$Serializable_NoSerializeSupport = function() { };
-hxd_impl__$Serializable_NoSerializeSupport.__name__ = "hxd.impl._Serializable.NoSerializeSupport";
-hxd_impl__$Serializable_NoSerializeSupport.__isInterface__ = true;
-var h3d_prim_Primitive = function() {
-	this.refCount = 0;
-};
-h3d_prim_Primitive.__name__ = "h3d.prim.Primitive";
-h3d_prim_Primitive.__interfaces__ = [hxd_impl__$Serializable_NoSerializeSupport];
-h3d_prim_Primitive.prototype = {
-	triCount: function() {
-		if(this.indexes != null) {
-			return this.indexes.count / 3 | 0;
-		} else if(this.buffer == null) {
-			return 0;
-		} else {
-			return this.buffer.totalVertices() / 3 | 0;
-		}
-	}
-	,vertexCount: function() {
-		return 0;
-	}
-	,getCollider: function() {
-		throw haxe_Exception.thrown("not implemented for " + Std.string(this));
-	}
-	,getBounds: function() {
-		throw haxe_Exception.thrown("not implemented for " + Std.string(this));
-	}
-	,incref: function() {
-		this.refCount++;
-	}
-	,decref: function() {
-		this.refCount--;
-		if(this.refCount <= 0) {
-			this.refCount = 0;
-			this.dispose();
-		}
-	}
-	,alloc: function(engine) {
-		throw haxe_Exception.thrown("not implemented");
-	}
-	,selectMaterial: function(material) {
-	}
-	,buildNormalsDisplay: function() {
-		throw haxe_Exception.thrown("not implemented for " + Std.string(this));
-	}
-	,render: function(engine) {
-		if(this.buffer == null || this.buffer.isDisposed()) {
-			this.alloc(engine);
-		}
-		if(this.indexes == null) {
-			if((this.buffer.flags & 1 << h3d_BufferFlag.Quads._hx_index) != 0) {
-				engine.renderBuffer(this.buffer,engine.mem.quadIndexes,2,0,-1);
-			} else {
-				engine.renderBuffer(this.buffer,engine.mem.triIndexes,3,0,-1);
-			}
-		} else {
-			engine.renderIndexed(this.buffer,this.indexes);
-		}
-	}
-	,dispose: function() {
-		if(this.buffer != null) {
-			this.buffer.dispose();
-			this.buffer = null;
-		}
-		if(this.indexes != null) {
-			this.indexes.dispose();
-			this.indexes = null;
-		}
-	}
-	,toString: function() {
-		var c = js_Boot.getClass(this);
-		return c.__name__.split(".").pop();
-	}
-	,__class__: h3d_prim_Primitive
-};
-var h2d__$Graphics_GraphicsContent = function() {
-	h3d_prim_Primitive.call(this);
-	this.buffers = [];
-};
-h2d__$Graphics_GraphicsContent.__name__ = "h2d._Graphics.GraphicsContent";
-h2d__$Graphics_GraphicsContent.__super__ = h3d_prim_Primitive;
-h2d__$Graphics_GraphicsContent.prototype = $extend(h3d_prim_Primitive.prototype,{
-	addIndex: function(i) {
-		this.index.push(i);
-		this.indexDirty = true;
-	}
-	,add: function(x,y,u,v,r,g,b,a) {
-		var this1 = this.tmp;
-		if(this1.pos == this1.array.length) {
-			var newSize = this1.array.length << 1;
-			if(newSize < 128) {
-				newSize = 128;
-			}
-			var newArray = new Float32Array(newSize);
-			newArray.set(this1.array);
-			this1.array = newArray;
-		}
-		this1.array[this1.pos++] = x;
-		var this1 = this.tmp;
-		if(this1.pos == this1.array.length) {
-			var newSize = this1.array.length << 1;
-			if(newSize < 128) {
-				newSize = 128;
-			}
-			var newArray = new Float32Array(newSize);
-			newArray.set(this1.array);
-			this1.array = newArray;
-		}
-		this1.array[this1.pos++] = y;
-		var this1 = this.tmp;
-		if(this1.pos == this1.array.length) {
-			var newSize = this1.array.length << 1;
-			if(newSize < 128) {
-				newSize = 128;
-			}
-			var newArray = new Float32Array(newSize);
-			newArray.set(this1.array);
-			this1.array = newArray;
-		}
-		this1.array[this1.pos++] = u;
-		var this1 = this.tmp;
-		if(this1.pos == this1.array.length) {
-			var newSize = this1.array.length << 1;
-			if(newSize < 128) {
-				newSize = 128;
-			}
-			var newArray = new Float32Array(newSize);
-			newArray.set(this1.array);
-			this1.array = newArray;
-		}
-		this1.array[this1.pos++] = v;
-		var this1 = this.tmp;
-		if(this1.pos == this1.array.length) {
-			var newSize = this1.array.length << 1;
-			if(newSize < 128) {
-				newSize = 128;
-			}
-			var newArray = new Float32Array(newSize);
-			newArray.set(this1.array);
-			this1.array = newArray;
-		}
-		this1.array[this1.pos++] = r;
-		var this1 = this.tmp;
-		if(this1.pos == this1.array.length) {
-			var newSize = this1.array.length << 1;
-			if(newSize < 128) {
-				newSize = 128;
-			}
-			var newArray = new Float32Array(newSize);
-			newArray.set(this1.array);
-			this1.array = newArray;
-		}
-		this1.array[this1.pos++] = g;
-		var this1 = this.tmp;
-		if(this1.pos == this1.array.length) {
-			var newSize = this1.array.length << 1;
-			if(newSize < 128) {
-				newSize = 128;
-			}
-			var newArray = new Float32Array(newSize);
-			newArray.set(this1.array);
-			this1.array = newArray;
-		}
-		this1.array[this1.pos++] = b;
-		var this1 = this.tmp;
-		if(this1.pos == this1.array.length) {
-			var newSize = this1.array.length << 1;
-			if(newSize < 128) {
-				newSize = 128;
-			}
-			var newArray = new Float32Array(newSize);
-			newArray.set(this1.array);
-			this1.array = newArray;
-		}
-		this1.array[this1.pos++] = a;
-		this.bufferDirty = true;
-	}
-	,next: function() {
-		var nvect = this.tmp.pos >> 3;
-		if(nvect < 32768) {
-			return false;
-		}
-		this.buffers.push({ buf : this.tmp, idx : this.index, vbuf : null, ibuf : null});
-		var this1 = hxd__$FloatBuffer_Float32Expand._new(0);
-		this.tmp = this1;
-		var this1 = new Array(0);
-		this.index = this1;
-		h3d_prim_Primitive.prototype.dispose.call(this);
-		return true;
-	}
-	,alloc: function(engine) {
-		if(this.index.length <= 0) {
-			return;
-		}
-		this.buffer = h3d_Buffer.ofFloats(this.tmp,8,[h3d_BufferFlag.RawFormat]);
-		this.indexes = h3d_Indexes.alloc(this.index);
-		var _g = 0;
-		var _g1 = this.buffers;
-		while(_g < _g1.length) {
-			var b = _g1[_g];
-			++_g;
-			if(b.vbuf == null || b.vbuf.isDisposed()) {
-				b.vbuf = h3d_Buffer.ofFloats(b.buf,8,[h3d_BufferFlag.RawFormat]);
-			}
-			if(b.ibuf == null || b.ibuf.isDisposed()) {
-				b.ibuf = h3d_Indexes.alloc(b.idx);
-			}
-		}
-		this.bufferDirty = false;
-		this.indexDirty = false;
-	}
-	,render: function(engine) {
-		if(this.index.length <= 0) {
-			return;
-		}
-		if(this.buffer == null || this.buffer.isDisposed()) {
-			this.alloc(h3d_Engine.CURRENT);
-		} else {
-			if(this.bufferDirty) {
-				this.buffer.dispose();
-				this.buffer = h3d_Buffer.ofFloats(this.tmp,8,[h3d_BufferFlag.RawFormat]);
-				this.bufferDirty = false;
-			}
-			if(this.indexDirty) {
-				this.indexes.dispose();
-				this.indexes = h3d_Indexes.alloc(this.index);
-				this.indexDirty = false;
-			}
-		}
-		var _g = 0;
-		var _g1 = this.buffers;
-		while(_g < _g1.length) {
-			var b = _g1[_g];
-			++_g;
-			engine.renderIndexed(b.vbuf,b.ibuf);
-		}
-		h3d_prim_Primitive.prototype.render.call(this,engine);
-	}
-	,flush: function() {
-		if(this.buffer == null || this.buffer.isDisposed()) {
-			this.alloc(h3d_Engine.CURRENT);
-		} else {
-			if(this.bufferDirty) {
-				this.buffer.dispose();
-				this.buffer = h3d_Buffer.ofFloats(this.tmp,8,[h3d_BufferFlag.RawFormat]);
-				this.bufferDirty = false;
-			}
-			if(this.indexDirty) {
-				this.indexes.dispose();
-				this.indexes = h3d_Indexes.alloc(this.index);
-				this.indexDirty = false;
-			}
-		}
-	}
-	,dispose: function() {
-		var _g = 0;
-		var _g1 = this.buffers;
-		while(_g < _g1.length) {
-			var b = _g1[_g];
-			++_g;
-			if(b.vbuf != null) {
-				b.vbuf.dispose();
-			}
-			if(b.ibuf != null) {
-				b.ibuf.dispose();
-			}
-			b.vbuf = null;
-			b.ibuf = null;
-		}
-		h3d_prim_Primitive.prototype.dispose.call(this);
-	}
-	,clear: function() {
-		this.dispose();
-		var this1 = hxd__$FloatBuffer_Float32Expand._new(0);
-		this.tmp = this1;
-		var this1 = new Array(0);
-		this.index = this1;
-		this.buffers = [];
-	}
-	,__class__: h2d__$Graphics_GraphicsContent
-});
-var h2d_Graphics = function(parent) {
-	this.bevel = 0.25;
-	this.my = 0.;
-	this.mx = 0.;
-	this.md = 1.;
-	this.mc = 0.;
-	this.mb = 0.;
-	this.ma = 1.;
-	h2d_Drawable.call(this,parent);
-	this.content = new h2d__$Graphics_GraphicsContent();
-	this.tile = h2d_Tile.fromColor(16777215);
-	this.clear();
-};
-h2d_Graphics.__name__ = "h2d.Graphics";
-h2d_Graphics.__super__ = h2d_Drawable;
-h2d_Graphics.prototype = $extend(h2d_Drawable.prototype,{
-	onRemove: function() {
-		h2d_Drawable.prototype.onRemove.call(this);
-		this.clear();
-	}
-	,clear: function() {
-		this.content.clear();
-		this.tmpPoints = [];
-		this.pindex = 0;
-		this.lineSize = 0;
-		this.xMin = Infinity;
-		this.yMin = Infinity;
-		this.yMax = -Infinity;
-		this.xMax = -Infinity;
-	}
-	,getBoundsRec: function(relativeTo,out,forSize) {
-		h2d_Drawable.prototype.getBoundsRec.call(this,relativeTo,out,forSize);
-		if(this.tile != null) {
-			this.addBounds(relativeTo,out,this.xMin,this.yMin,this.xMax - this.xMin,this.yMax - this.yMin);
-		}
-	}
-	,isConvex: function(points) {
-		var first = true;
-		var sign = false;
-		var _g = 0;
-		var _g1 = points.length;
-		while(_g < _g1) {
-			var i = _g++;
-			var p1 = points[i];
-			var p2 = points[(i + 1) % points.length];
-			var p3 = points[(i + 2) % points.length];
-			var s = (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x) > 0;
-			if(first) {
-				first = false;
-				sign = s;
-			} else if(sign != s) {
-				return false;
-			}
-		}
-		return true;
-	}
-	,flushLine: function(start) {
-		var pts = this.tmpPoints;
-		var last = pts.length - 1;
-		var prev = pts[last];
-		var p = pts[0];
-		var closed = p.x == prev.x && p.y == prev.y;
-		var count = pts.length;
-		if(!closed) {
-			var prevLast = pts[last - 1];
-			if(prevLast == null) {
-				prevLast = p;
-			}
-			var gp = new h2d_GPoint();
-			gp.load(prev.x * 2 - prevLast.x,prev.y * 2 - prevLast.y,0,0,0,0);
-			pts.push(gp);
-			var pNext = pts[1];
-			if(pNext == null) {
-				pNext = p;
-			}
-			var gp = new h2d_GPoint();
-			gp.load(p.x * 2 - pNext.x,p.y * 2 - pNext.y,0,0,0,0);
-			prev = gp;
-		} else if(p != prev) {
-			--count;
-			--last;
-			prev = pts[last];
-		}
-		var _g = 0;
-		var _g1 = count;
-		while(_g < _g1) {
-			var i = _g++;
-			var next = pts[(i + 1) % pts.length];
-			var nx1 = prev.y - p.y;
-			var ny1 = p.x - prev.x;
-			var ns1 = 1. / Math.sqrt(nx1 * nx1 + ny1 * ny1);
-			var nx2 = p.y - next.y;
-			var ny2 = next.x - p.x;
-			var ns2 = 1. / Math.sqrt(nx2 * nx2 + ny2 * ny2);
-			var nx = nx1 * ns1 + nx2 * ns2;
-			var ny = ny1 * ns1 + ny2 * ns2;
-			var ns = 1. / Math.sqrt(nx * nx + ny * ny);
-			nx *= ns;
-			ny *= ns;
-			var size = nx * nx1 * ns1 + ny * ny1 * ns1;
-			if(size < 0.1) {
-				size = 0.1;
-			}
-			var d = this.lineSize * 0.5 / size;
-			nx *= d;
-			ny *= d;
-			if(size > this.bevel) {
-				var _this = this.content;
-				var x = p.x + nx;
-				var y = p.y + ny;
-				var r = p.r;
-				var g = p.g;
-				var b = p.b;
-				var a = p.a;
-				var this1 = _this.tmp;
-				if(this1.pos == this1.array.length) {
-					var newSize = this1.array.length << 1;
-					if(newSize < 128) {
-						newSize = 128;
-					}
-					var newArray = new Float32Array(newSize);
-					newArray.set(this1.array);
-					this1.array = newArray;
-				}
-				this1.array[this1.pos++] = x;
-				var this2 = _this.tmp;
-				if(this2.pos == this2.array.length) {
-					var newSize1 = this2.array.length << 1;
-					if(newSize1 < 128) {
-						newSize1 = 128;
-					}
-					var newArray1 = new Float32Array(newSize1);
-					newArray1.set(this2.array);
-					this2.array = newArray1;
-				}
-				this2.array[this2.pos++] = y;
-				var this3 = _this.tmp;
-				if(this3.pos == this3.array.length) {
-					var newSize2 = this3.array.length << 1;
-					if(newSize2 < 128) {
-						newSize2 = 128;
-					}
-					var newArray2 = new Float32Array(newSize2);
-					newArray2.set(this3.array);
-					this3.array = newArray2;
-				}
-				this3.array[this3.pos++] = 0;
-				var this4 = _this.tmp;
-				if(this4.pos == this4.array.length) {
-					var newSize3 = this4.array.length << 1;
-					if(newSize3 < 128) {
-						newSize3 = 128;
-					}
-					var newArray3 = new Float32Array(newSize3);
-					newArray3.set(this4.array);
-					this4.array = newArray3;
-				}
-				this4.array[this4.pos++] = 0;
-				var this5 = _this.tmp;
-				if(this5.pos == this5.array.length) {
-					var newSize4 = this5.array.length << 1;
-					if(newSize4 < 128) {
-						newSize4 = 128;
-					}
-					var newArray4 = new Float32Array(newSize4);
-					newArray4.set(this5.array);
-					this5.array = newArray4;
-				}
-				this5.array[this5.pos++] = r;
-				var this6 = _this.tmp;
-				if(this6.pos == this6.array.length) {
-					var newSize5 = this6.array.length << 1;
-					if(newSize5 < 128) {
-						newSize5 = 128;
-					}
-					var newArray5 = new Float32Array(newSize5);
-					newArray5.set(this6.array);
-					this6.array = newArray5;
-				}
-				this6.array[this6.pos++] = g;
-				var this7 = _this.tmp;
-				if(this7.pos == this7.array.length) {
-					var newSize6 = this7.array.length << 1;
-					if(newSize6 < 128) {
-						newSize6 = 128;
-					}
-					var newArray6 = new Float32Array(newSize6);
-					newArray6.set(this7.array);
-					this7.array = newArray6;
-				}
-				this7.array[this7.pos++] = b;
-				var this8 = _this.tmp;
-				if(this8.pos == this8.array.length) {
-					var newSize7 = this8.array.length << 1;
-					if(newSize7 < 128) {
-						newSize7 = 128;
-					}
-					var newArray7 = new Float32Array(newSize7);
-					newArray7.set(this8.array);
-					this8.array = newArray7;
-				}
-				this8.array[this8.pos++] = a;
-				_this.bufferDirty = true;
-				var _this1 = this.content;
-				var x1 = p.x - nx;
-				var y1 = p.y - ny;
-				var r1 = p.r;
-				var g1 = p.g;
-				var b1 = p.b;
-				var a1 = p.a;
-				var this9 = _this1.tmp;
-				if(this9.pos == this9.array.length) {
-					var newSize8 = this9.array.length << 1;
-					if(newSize8 < 128) {
-						newSize8 = 128;
-					}
-					var newArray8 = new Float32Array(newSize8);
-					newArray8.set(this9.array);
-					this9.array = newArray8;
-				}
-				this9.array[this9.pos++] = x1;
-				var this10 = _this1.tmp;
-				if(this10.pos == this10.array.length) {
-					var newSize9 = this10.array.length << 1;
-					if(newSize9 < 128) {
-						newSize9 = 128;
-					}
-					var newArray9 = new Float32Array(newSize9);
-					newArray9.set(this10.array);
-					this10.array = newArray9;
-				}
-				this10.array[this10.pos++] = y1;
-				var this11 = _this1.tmp;
-				if(this11.pos == this11.array.length) {
-					var newSize10 = this11.array.length << 1;
-					if(newSize10 < 128) {
-						newSize10 = 128;
-					}
-					var newArray10 = new Float32Array(newSize10);
-					newArray10.set(this11.array);
-					this11.array = newArray10;
-				}
-				this11.array[this11.pos++] = 0;
-				var this12 = _this1.tmp;
-				if(this12.pos == this12.array.length) {
-					var newSize11 = this12.array.length << 1;
-					if(newSize11 < 128) {
-						newSize11 = 128;
-					}
-					var newArray11 = new Float32Array(newSize11);
-					newArray11.set(this12.array);
-					this12.array = newArray11;
-				}
-				this12.array[this12.pos++] = 0;
-				var this13 = _this1.tmp;
-				if(this13.pos == this13.array.length) {
-					var newSize12 = this13.array.length << 1;
-					if(newSize12 < 128) {
-						newSize12 = 128;
-					}
-					var newArray12 = new Float32Array(newSize12);
-					newArray12.set(this13.array);
-					this13.array = newArray12;
-				}
-				this13.array[this13.pos++] = r1;
-				var this14 = _this1.tmp;
-				if(this14.pos == this14.array.length) {
-					var newSize13 = this14.array.length << 1;
-					if(newSize13 < 128) {
-						newSize13 = 128;
-					}
-					var newArray13 = new Float32Array(newSize13);
-					newArray13.set(this14.array);
-					this14.array = newArray13;
-				}
-				this14.array[this14.pos++] = g1;
-				var this15 = _this1.tmp;
-				if(this15.pos == this15.array.length) {
-					var newSize14 = this15.array.length << 1;
-					if(newSize14 < 128) {
-						newSize14 = 128;
-					}
-					var newArray14 = new Float32Array(newSize14);
-					newArray14.set(this15.array);
-					this15.array = newArray14;
-				}
-				this15.array[this15.pos++] = b1;
-				var this16 = _this1.tmp;
-				if(this16.pos == this16.array.length) {
-					var newSize15 = this16.array.length << 1;
-					if(newSize15 < 128) {
-						newSize15 = 128;
-					}
-					var newArray15 = new Float32Array(newSize15);
-					newArray15.set(this16.array);
-					this16.array = newArray15;
-				}
-				this16.array[this16.pos++] = a1;
-				_this1.bufferDirty = true;
-				var pnext = i == last ? start : this.pindex + 2;
-				if(i < count - 1 || closed) {
-					var _this2 = this.content;
-					_this2.index.push(this.pindex);
-					_this2.indexDirty = true;
-					var _this3 = this.content;
-					_this3.index.push(this.pindex + 1);
-					_this3.indexDirty = true;
-					var _this4 = this.content;
-					_this4.index.push(pnext);
-					_this4.indexDirty = true;
-					var _this5 = this.content;
-					_this5.index.push(this.pindex + 1);
-					_this5.indexDirty = true;
-					var _this6 = this.content;
-					_this6.index.push(pnext);
-					_this6.indexDirty = true;
-					var _this7 = this.content;
-					_this7.index.push(pnext + 1);
-					_this7.indexDirty = true;
-				}
-				this.pindex += 2;
-			} else {
-				var n0x = next.x - p.x;
-				var n0y = next.y - p.y;
-				var sign = n0x * nx + n0y * ny;
-				var nnx = -ny;
-				var nny = nx;
-				var size1 = nnx * nx1 * ns1 + nny * ny1 * ns1;
-				var d1 = this.lineSize * 0.5 / size1;
-				nnx *= d1;
-				nny *= d1;
-				var pnext1 = i == last ? start : this.pindex + 3;
-				if(sign > 0) {
-					var _this8 = this.content;
-					var x2 = p.x + nx;
-					var y2 = p.y + ny;
-					var r2 = p.r;
-					var g2 = p.g;
-					var b2 = p.b;
-					var a2 = p.a;
-					var this17 = _this8.tmp;
-					if(this17.pos == this17.array.length) {
-						var newSize16 = this17.array.length << 1;
-						if(newSize16 < 128) {
-							newSize16 = 128;
-						}
-						var newArray16 = new Float32Array(newSize16);
-						newArray16.set(this17.array);
-						this17.array = newArray16;
-					}
-					this17.array[this17.pos++] = x2;
-					var this18 = _this8.tmp;
-					if(this18.pos == this18.array.length) {
-						var newSize17 = this18.array.length << 1;
-						if(newSize17 < 128) {
-							newSize17 = 128;
-						}
-						var newArray17 = new Float32Array(newSize17);
-						newArray17.set(this18.array);
-						this18.array = newArray17;
-					}
-					this18.array[this18.pos++] = y2;
-					var this19 = _this8.tmp;
-					if(this19.pos == this19.array.length) {
-						var newSize18 = this19.array.length << 1;
-						if(newSize18 < 128) {
-							newSize18 = 128;
-						}
-						var newArray18 = new Float32Array(newSize18);
-						newArray18.set(this19.array);
-						this19.array = newArray18;
-					}
-					this19.array[this19.pos++] = 0;
-					var this20 = _this8.tmp;
-					if(this20.pos == this20.array.length) {
-						var newSize19 = this20.array.length << 1;
-						if(newSize19 < 128) {
-							newSize19 = 128;
-						}
-						var newArray19 = new Float32Array(newSize19);
-						newArray19.set(this20.array);
-						this20.array = newArray19;
-					}
-					this20.array[this20.pos++] = 0;
-					var this21 = _this8.tmp;
-					if(this21.pos == this21.array.length) {
-						var newSize20 = this21.array.length << 1;
-						if(newSize20 < 128) {
-							newSize20 = 128;
-						}
-						var newArray20 = new Float32Array(newSize20);
-						newArray20.set(this21.array);
-						this21.array = newArray20;
-					}
-					this21.array[this21.pos++] = r2;
-					var this22 = _this8.tmp;
-					if(this22.pos == this22.array.length) {
-						var newSize21 = this22.array.length << 1;
-						if(newSize21 < 128) {
-							newSize21 = 128;
-						}
-						var newArray21 = new Float32Array(newSize21);
-						newArray21.set(this22.array);
-						this22.array = newArray21;
-					}
-					this22.array[this22.pos++] = g2;
-					var this23 = _this8.tmp;
-					if(this23.pos == this23.array.length) {
-						var newSize22 = this23.array.length << 1;
-						if(newSize22 < 128) {
-							newSize22 = 128;
-						}
-						var newArray22 = new Float32Array(newSize22);
-						newArray22.set(this23.array);
-						this23.array = newArray22;
-					}
-					this23.array[this23.pos++] = b2;
-					var this24 = _this8.tmp;
-					if(this24.pos == this24.array.length) {
-						var newSize23 = this24.array.length << 1;
-						if(newSize23 < 128) {
-							newSize23 = 128;
-						}
-						var newArray23 = new Float32Array(newSize23);
-						newArray23.set(this24.array);
-						this24.array = newArray23;
-					}
-					this24.array[this24.pos++] = a2;
-					_this8.bufferDirty = true;
-					var _this9 = this.content;
-					var x3 = p.x - nnx;
-					var y3 = p.y - nny;
-					var r3 = p.r;
-					var g3 = p.g;
-					var b3 = p.b;
-					var a3 = p.a;
-					var this25 = _this9.tmp;
-					if(this25.pos == this25.array.length) {
-						var newSize24 = this25.array.length << 1;
-						if(newSize24 < 128) {
-							newSize24 = 128;
-						}
-						var newArray24 = new Float32Array(newSize24);
-						newArray24.set(this25.array);
-						this25.array = newArray24;
-					}
-					this25.array[this25.pos++] = x3;
-					var this26 = _this9.tmp;
-					if(this26.pos == this26.array.length) {
-						var newSize25 = this26.array.length << 1;
-						if(newSize25 < 128) {
-							newSize25 = 128;
-						}
-						var newArray25 = new Float32Array(newSize25);
-						newArray25.set(this26.array);
-						this26.array = newArray25;
-					}
-					this26.array[this26.pos++] = y3;
-					var this27 = _this9.tmp;
-					if(this27.pos == this27.array.length) {
-						var newSize26 = this27.array.length << 1;
-						if(newSize26 < 128) {
-							newSize26 = 128;
-						}
-						var newArray26 = new Float32Array(newSize26);
-						newArray26.set(this27.array);
-						this27.array = newArray26;
-					}
-					this27.array[this27.pos++] = 0;
-					var this28 = _this9.tmp;
-					if(this28.pos == this28.array.length) {
-						var newSize27 = this28.array.length << 1;
-						if(newSize27 < 128) {
-							newSize27 = 128;
-						}
-						var newArray27 = new Float32Array(newSize27);
-						newArray27.set(this28.array);
-						this28.array = newArray27;
-					}
-					this28.array[this28.pos++] = 0;
-					var this29 = _this9.tmp;
-					if(this29.pos == this29.array.length) {
-						var newSize28 = this29.array.length << 1;
-						if(newSize28 < 128) {
-							newSize28 = 128;
-						}
-						var newArray28 = new Float32Array(newSize28);
-						newArray28.set(this29.array);
-						this29.array = newArray28;
-					}
-					this29.array[this29.pos++] = r3;
-					var this30 = _this9.tmp;
-					if(this30.pos == this30.array.length) {
-						var newSize29 = this30.array.length << 1;
-						if(newSize29 < 128) {
-							newSize29 = 128;
-						}
-						var newArray29 = new Float32Array(newSize29);
-						newArray29.set(this30.array);
-						this30.array = newArray29;
-					}
-					this30.array[this30.pos++] = g3;
-					var this31 = _this9.tmp;
-					if(this31.pos == this31.array.length) {
-						var newSize30 = this31.array.length << 1;
-						if(newSize30 < 128) {
-							newSize30 = 128;
-						}
-						var newArray30 = new Float32Array(newSize30);
-						newArray30.set(this31.array);
-						this31.array = newArray30;
-					}
-					this31.array[this31.pos++] = b3;
-					var this32 = _this9.tmp;
-					if(this32.pos == this32.array.length) {
-						var newSize31 = this32.array.length << 1;
-						if(newSize31 < 128) {
-							newSize31 = 128;
-						}
-						var newArray31 = new Float32Array(newSize31);
-						newArray31.set(this32.array);
-						this32.array = newArray31;
-					}
-					this32.array[this32.pos++] = a3;
-					_this9.bufferDirty = true;
-					var _this10 = this.content;
-					var x4 = p.x + nnx;
-					var y4 = p.y + nny;
-					var r4 = p.r;
-					var g4 = p.g;
-					var b4 = p.b;
-					var a4 = p.a;
-					var this33 = _this10.tmp;
-					if(this33.pos == this33.array.length) {
-						var newSize32 = this33.array.length << 1;
-						if(newSize32 < 128) {
-							newSize32 = 128;
-						}
-						var newArray32 = new Float32Array(newSize32);
-						newArray32.set(this33.array);
-						this33.array = newArray32;
-					}
-					this33.array[this33.pos++] = x4;
-					var this34 = _this10.tmp;
-					if(this34.pos == this34.array.length) {
-						var newSize33 = this34.array.length << 1;
-						if(newSize33 < 128) {
-							newSize33 = 128;
-						}
-						var newArray33 = new Float32Array(newSize33);
-						newArray33.set(this34.array);
-						this34.array = newArray33;
-					}
-					this34.array[this34.pos++] = y4;
-					var this35 = _this10.tmp;
-					if(this35.pos == this35.array.length) {
-						var newSize34 = this35.array.length << 1;
-						if(newSize34 < 128) {
-							newSize34 = 128;
-						}
-						var newArray34 = new Float32Array(newSize34);
-						newArray34.set(this35.array);
-						this35.array = newArray34;
-					}
-					this35.array[this35.pos++] = 0;
-					var this36 = _this10.tmp;
-					if(this36.pos == this36.array.length) {
-						var newSize35 = this36.array.length << 1;
-						if(newSize35 < 128) {
-							newSize35 = 128;
-						}
-						var newArray35 = new Float32Array(newSize35);
-						newArray35.set(this36.array);
-						this36.array = newArray35;
-					}
-					this36.array[this36.pos++] = 0;
-					var this37 = _this10.tmp;
-					if(this37.pos == this37.array.length) {
-						var newSize36 = this37.array.length << 1;
-						if(newSize36 < 128) {
-							newSize36 = 128;
-						}
-						var newArray36 = new Float32Array(newSize36);
-						newArray36.set(this37.array);
-						this37.array = newArray36;
-					}
-					this37.array[this37.pos++] = r4;
-					var this38 = _this10.tmp;
-					if(this38.pos == this38.array.length) {
-						var newSize37 = this38.array.length << 1;
-						if(newSize37 < 128) {
-							newSize37 = 128;
-						}
-						var newArray37 = new Float32Array(newSize37);
-						newArray37.set(this38.array);
-						this38.array = newArray37;
-					}
-					this38.array[this38.pos++] = g4;
-					var this39 = _this10.tmp;
-					if(this39.pos == this39.array.length) {
-						var newSize38 = this39.array.length << 1;
-						if(newSize38 < 128) {
-							newSize38 = 128;
-						}
-						var newArray38 = new Float32Array(newSize38);
-						newArray38.set(this39.array);
-						this39.array = newArray38;
-					}
-					this39.array[this39.pos++] = b4;
-					var this40 = _this10.tmp;
-					if(this40.pos == this40.array.length) {
-						var newSize39 = this40.array.length << 1;
-						if(newSize39 < 128) {
-							newSize39 = 128;
-						}
-						var newArray39 = new Float32Array(newSize39);
-						newArray39.set(this40.array);
-						this40.array = newArray39;
-					}
-					this40.array[this40.pos++] = a4;
-					_this10.bufferDirty = true;
-					var _this11 = this.content;
-					_this11.index.push(this.pindex);
-					_this11.indexDirty = true;
-					var _this12 = this.content;
-					_this12.index.push(pnext1);
-					_this12.indexDirty = true;
-					var _this13 = this.content;
-					_this13.index.push(this.pindex + 2);
-					_this13.indexDirty = true;
-					var _this14 = this.content;
-					_this14.index.push(this.pindex + 2);
-					_this14.indexDirty = true;
-					var _this15 = this.content;
-					_this15.index.push(pnext1);
-					_this15.indexDirty = true;
-					var _this16 = this.content;
-					_this16.index.push(pnext1 + 1);
-					_this16.indexDirty = true;
-				} else {
-					var _this17 = this.content;
-					var x5 = p.x + nnx;
-					var y5 = p.y + nny;
-					var r5 = p.r;
-					var g5 = p.g;
-					var b5 = p.b;
-					var a5 = p.a;
-					var this41 = _this17.tmp;
-					if(this41.pos == this41.array.length) {
-						var newSize40 = this41.array.length << 1;
-						if(newSize40 < 128) {
-							newSize40 = 128;
-						}
-						var newArray40 = new Float32Array(newSize40);
-						newArray40.set(this41.array);
-						this41.array = newArray40;
-					}
-					this41.array[this41.pos++] = x5;
-					var this42 = _this17.tmp;
-					if(this42.pos == this42.array.length) {
-						var newSize41 = this42.array.length << 1;
-						if(newSize41 < 128) {
-							newSize41 = 128;
-						}
-						var newArray41 = new Float32Array(newSize41);
-						newArray41.set(this42.array);
-						this42.array = newArray41;
-					}
-					this42.array[this42.pos++] = y5;
-					var this43 = _this17.tmp;
-					if(this43.pos == this43.array.length) {
-						var newSize42 = this43.array.length << 1;
-						if(newSize42 < 128) {
-							newSize42 = 128;
-						}
-						var newArray42 = new Float32Array(newSize42);
-						newArray42.set(this43.array);
-						this43.array = newArray42;
-					}
-					this43.array[this43.pos++] = 0;
-					var this44 = _this17.tmp;
-					if(this44.pos == this44.array.length) {
-						var newSize43 = this44.array.length << 1;
-						if(newSize43 < 128) {
-							newSize43 = 128;
-						}
-						var newArray43 = new Float32Array(newSize43);
-						newArray43.set(this44.array);
-						this44.array = newArray43;
-					}
-					this44.array[this44.pos++] = 0;
-					var this45 = _this17.tmp;
-					if(this45.pos == this45.array.length) {
-						var newSize44 = this45.array.length << 1;
-						if(newSize44 < 128) {
-							newSize44 = 128;
-						}
-						var newArray44 = new Float32Array(newSize44);
-						newArray44.set(this45.array);
-						this45.array = newArray44;
-					}
-					this45.array[this45.pos++] = r5;
-					var this46 = _this17.tmp;
-					if(this46.pos == this46.array.length) {
-						var newSize45 = this46.array.length << 1;
-						if(newSize45 < 128) {
-							newSize45 = 128;
-						}
-						var newArray45 = new Float32Array(newSize45);
-						newArray45.set(this46.array);
-						this46.array = newArray45;
-					}
-					this46.array[this46.pos++] = g5;
-					var this47 = _this17.tmp;
-					if(this47.pos == this47.array.length) {
-						var newSize46 = this47.array.length << 1;
-						if(newSize46 < 128) {
-							newSize46 = 128;
-						}
-						var newArray46 = new Float32Array(newSize46);
-						newArray46.set(this47.array);
-						this47.array = newArray46;
-					}
-					this47.array[this47.pos++] = b5;
-					var this48 = _this17.tmp;
-					if(this48.pos == this48.array.length) {
-						var newSize47 = this48.array.length << 1;
-						if(newSize47 < 128) {
-							newSize47 = 128;
-						}
-						var newArray47 = new Float32Array(newSize47);
-						newArray47.set(this48.array);
-						this48.array = newArray47;
-					}
-					this48.array[this48.pos++] = a5;
-					_this17.bufferDirty = true;
-					var _this18 = this.content;
-					var x6 = p.x - nx;
-					var y6 = p.y - ny;
-					var r6 = p.r;
-					var g6 = p.g;
-					var b6 = p.b;
-					var a6 = p.a;
-					var this49 = _this18.tmp;
-					if(this49.pos == this49.array.length) {
-						var newSize48 = this49.array.length << 1;
-						if(newSize48 < 128) {
-							newSize48 = 128;
-						}
-						var newArray48 = new Float32Array(newSize48);
-						newArray48.set(this49.array);
-						this49.array = newArray48;
-					}
-					this49.array[this49.pos++] = x6;
-					var this50 = _this18.tmp;
-					if(this50.pos == this50.array.length) {
-						var newSize49 = this50.array.length << 1;
-						if(newSize49 < 128) {
-							newSize49 = 128;
-						}
-						var newArray49 = new Float32Array(newSize49);
-						newArray49.set(this50.array);
-						this50.array = newArray49;
-					}
-					this50.array[this50.pos++] = y6;
-					var this51 = _this18.tmp;
-					if(this51.pos == this51.array.length) {
-						var newSize50 = this51.array.length << 1;
-						if(newSize50 < 128) {
-							newSize50 = 128;
-						}
-						var newArray50 = new Float32Array(newSize50);
-						newArray50.set(this51.array);
-						this51.array = newArray50;
-					}
-					this51.array[this51.pos++] = 0;
-					var this52 = _this18.tmp;
-					if(this52.pos == this52.array.length) {
-						var newSize51 = this52.array.length << 1;
-						if(newSize51 < 128) {
-							newSize51 = 128;
-						}
-						var newArray51 = new Float32Array(newSize51);
-						newArray51.set(this52.array);
-						this52.array = newArray51;
-					}
-					this52.array[this52.pos++] = 0;
-					var this53 = _this18.tmp;
-					if(this53.pos == this53.array.length) {
-						var newSize52 = this53.array.length << 1;
-						if(newSize52 < 128) {
-							newSize52 = 128;
-						}
-						var newArray52 = new Float32Array(newSize52);
-						newArray52.set(this53.array);
-						this53.array = newArray52;
-					}
-					this53.array[this53.pos++] = r6;
-					var this54 = _this18.tmp;
-					if(this54.pos == this54.array.length) {
-						var newSize53 = this54.array.length << 1;
-						if(newSize53 < 128) {
-							newSize53 = 128;
-						}
-						var newArray53 = new Float32Array(newSize53);
-						newArray53.set(this54.array);
-						this54.array = newArray53;
-					}
-					this54.array[this54.pos++] = g6;
-					var this55 = _this18.tmp;
-					if(this55.pos == this55.array.length) {
-						var newSize54 = this55.array.length << 1;
-						if(newSize54 < 128) {
-							newSize54 = 128;
-						}
-						var newArray54 = new Float32Array(newSize54);
-						newArray54.set(this55.array);
-						this55.array = newArray54;
-					}
-					this55.array[this55.pos++] = b6;
-					var this56 = _this18.tmp;
-					if(this56.pos == this56.array.length) {
-						var newSize55 = this56.array.length << 1;
-						if(newSize55 < 128) {
-							newSize55 = 128;
-						}
-						var newArray55 = new Float32Array(newSize55);
-						newArray55.set(this56.array);
-						this56.array = newArray55;
-					}
-					this56.array[this56.pos++] = a6;
-					_this18.bufferDirty = true;
-					var _this19 = this.content;
-					var x7 = p.x - nnx;
-					var y7 = p.y - nny;
-					var r7 = p.r;
-					var g7 = p.g;
-					var b7 = p.b;
-					var a7 = p.a;
-					var this57 = _this19.tmp;
-					if(this57.pos == this57.array.length) {
-						var newSize56 = this57.array.length << 1;
-						if(newSize56 < 128) {
-							newSize56 = 128;
-						}
-						var newArray56 = new Float32Array(newSize56);
-						newArray56.set(this57.array);
-						this57.array = newArray56;
-					}
-					this57.array[this57.pos++] = x7;
-					var this58 = _this19.tmp;
-					if(this58.pos == this58.array.length) {
-						var newSize57 = this58.array.length << 1;
-						if(newSize57 < 128) {
-							newSize57 = 128;
-						}
-						var newArray57 = new Float32Array(newSize57);
-						newArray57.set(this58.array);
-						this58.array = newArray57;
-					}
-					this58.array[this58.pos++] = y7;
-					var this59 = _this19.tmp;
-					if(this59.pos == this59.array.length) {
-						var newSize58 = this59.array.length << 1;
-						if(newSize58 < 128) {
-							newSize58 = 128;
-						}
-						var newArray58 = new Float32Array(newSize58);
-						newArray58.set(this59.array);
-						this59.array = newArray58;
-					}
-					this59.array[this59.pos++] = 0;
-					var this60 = _this19.tmp;
-					if(this60.pos == this60.array.length) {
-						var newSize59 = this60.array.length << 1;
-						if(newSize59 < 128) {
-							newSize59 = 128;
-						}
-						var newArray59 = new Float32Array(newSize59);
-						newArray59.set(this60.array);
-						this60.array = newArray59;
-					}
-					this60.array[this60.pos++] = 0;
-					var this61 = _this19.tmp;
-					if(this61.pos == this61.array.length) {
-						var newSize60 = this61.array.length << 1;
-						if(newSize60 < 128) {
-							newSize60 = 128;
-						}
-						var newArray60 = new Float32Array(newSize60);
-						newArray60.set(this61.array);
-						this61.array = newArray60;
-					}
-					this61.array[this61.pos++] = r7;
-					var this62 = _this19.tmp;
-					if(this62.pos == this62.array.length) {
-						var newSize61 = this62.array.length << 1;
-						if(newSize61 < 128) {
-							newSize61 = 128;
-						}
-						var newArray61 = new Float32Array(newSize61);
-						newArray61.set(this62.array);
-						this62.array = newArray61;
-					}
-					this62.array[this62.pos++] = g7;
-					var this63 = _this19.tmp;
-					if(this63.pos == this63.array.length) {
-						var newSize62 = this63.array.length << 1;
-						if(newSize62 < 128) {
-							newSize62 = 128;
-						}
-						var newArray62 = new Float32Array(newSize62);
-						newArray62.set(this63.array);
-						this63.array = newArray62;
-					}
-					this63.array[this63.pos++] = b7;
-					var this64 = _this19.tmp;
-					if(this64.pos == this64.array.length) {
-						var newSize63 = this64.array.length << 1;
-						if(newSize63 < 128) {
-							newSize63 = 128;
-						}
-						var newArray63 = new Float32Array(newSize63);
-						newArray63.set(this64.array);
-						this64.array = newArray63;
-					}
-					this64.array[this64.pos++] = a7;
-					_this19.bufferDirty = true;
-					var _this20 = this.content;
-					_this20.index.push(this.pindex + 1);
-					_this20.indexDirty = true;
-					var _this21 = this.content;
-					_this21.index.push(pnext1);
-					_this21.indexDirty = true;
-					var _this22 = this.content;
-					_this22.index.push(this.pindex + 2);
-					_this22.indexDirty = true;
-					var _this23 = this.content;
-					_this23.index.push(this.pindex + 1);
-					_this23.indexDirty = true;
-					var _this24 = this.content;
-					_this24.index.push(pnext1);
-					_this24.indexDirty = true;
-					var _this25 = this.content;
-					_this25.index.push(pnext1 + 1);
-					_this25.indexDirty = true;
-				}
-				var _this26 = this.content;
-				_this26.index.push(this.pindex);
-				_this26.indexDirty = true;
-				var _this27 = this.content;
-				_this27.index.push(this.pindex + 1);
-				_this27.indexDirty = true;
-				var _this28 = this.content;
-				_this28.index.push(this.pindex + 2);
-				_this28.indexDirty = true;
-				this.pindex += 3;
-			}
-			prev = p;
-			p = next;
-		}
-	}
-	,flushFill: function(i0) {
-		if(this.tmpPoints.length < 3) {
-			return;
-		}
-		var pts = this.tmpPoints;
-		var p0 = pts[0];
-		var p1 = pts[pts.length - 1];
-		var last = null;
-		var tmp;
-		var f = p0.x - p1.x;
-		if((f < 0 ? -f : f) < 1e-9) {
-			var f = p0.y - p1.y;
-			tmp = (f < 0 ? -f : f) < 1e-9;
-		} else {
-			tmp = false;
-		}
-		if(tmp) {
-			last = pts.pop();
-		}
-		if(this.isConvex(pts)) {
-			var _g = 1;
-			var _g1 = pts.length - 1;
-			while(_g < _g1) {
-				var i = _g++;
-				var _this = this.content;
-				_this.index.push(i0);
-				_this.indexDirty = true;
-				var _this1 = this.content;
-				_this1.index.push(i0 + i);
-				_this1.indexDirty = true;
-				var _this2 = this.content;
-				_this2.index.push(i0 + i + 1);
-				_this2.indexDirty = true;
-			}
-		} else {
-			var ear = h2d_Graphics.EARCUT;
-			if(ear == null) {
-				ear = new hxd_earcut_Earcut();
-				h2d_Graphics.EARCUT = ear;
-			}
-			var _g = 0;
-			var _g1 = ear.triangulate_h2d_GPoint(pts);
-			while(_g < _g1.length) {
-				var i = _g1[_g];
-				++_g;
-				var _this = this.content;
-				_this.index.push(i + i0);
-				_this.indexDirty = true;
-			}
-		}
-		if(last != null) {
-			pts.push(last);
-		}
-	}
-	,flush: function() {
-		if(this.tmpPoints.length == 0) {
-			return;
-		}
-		if(this.doFill) {
-			this.flushFill(this.pindex);
-			this.pindex += this.tmpPoints.length;
-			if(this.content.next()) {
-				this.pindex = 0;
-			}
-		}
-		if(this.lineSize > 0) {
-			this.flushLine(this.pindex);
-			if(this.content.next()) {
-				this.pindex = 0;
-			}
-		}
-		this.tmpPoints = [];
-	}
-	,beginFill: function(color,alpha) {
-		if(alpha == null) {
-			alpha = 1.;
-		}
-		if(color == null) {
-			color = 0;
-		}
-		this.flush();
-		var alpha1 = alpha;
-		if(alpha1 == null) {
-			alpha1 = 1.;
-		}
-		this.curA = alpha1;
-		this.curR = (color >> 16 & 255) / 255.;
-		this.curG = (color >> 8 & 255) / 255.;
-		this.curB = (color & 255) / 255.;
-		this.doFill = true;
-	}
-	,beginTileFill: function(dx,dy,scaleX,scaleY,tile) {
-		this.beginFill(16777215);
-		if(dx == null) {
-			dx = 0;
-		}
-		if(dy == null) {
-			dy = 0;
-		}
-		if(tile != null) {
-			if(this.tile != null && tile.innerTex != this.tile.innerTex) {
-				var tex = this.tile.innerTex;
-				if(tex.width != 1 || tex.height != 1) {
-					throw haxe_Exception.thrown("All tiles must be of the same texture");
-				}
-				this.tile = tile;
-			}
-			if(this.tile == null) {
-				this.tile = tile;
-			}
-		} else {
-			tile = this.tile;
-		}
-		if(tile == null) {
-			throw haxe_Exception.thrown("Tile not specified");
-		}
-		if(scaleX == null) {
-			scaleX = 1;
-		}
-		if(scaleY == null) {
-			scaleY = 1;
-		}
-		dx -= tile.x;
-		dy -= tile.y;
-		var tex = tile.innerTex;
-		var pixWidth = 1 / tex.width;
-		var pixHeight = 1 / tex.height;
-		this.ma = pixWidth / scaleX;
-		this.mb = 0;
-		this.mc = 0;
-		this.md = pixHeight / scaleY;
-		this.mx = -dx * this.ma;
-		this.my = -dy * this.md;
-	}
-	,drawTile: function(x,y,tile) {
-		this.beginTileFill(x,y,null,null,tile);
-		this.drawRect(x,y,tile.width,tile.height);
-		this.endFill();
-	}
-	,lineStyle: function(size,color,alpha) {
-		if(alpha == null) {
-			alpha = 1.;
-		}
-		if(color == null) {
-			color = 0;
-		}
-		if(size == null) {
-			size = 0;
-		}
-		this.flush();
-		this.lineSize = size;
-		this.lineA = alpha;
-		this.lineR = (color >> 16 & 255) / 255.;
-		this.lineG = (color >> 8 & 255) / 255.;
-		this.lineB = (color & 255) / 255.;
-	}
-	,moveTo: function(x,y) {
-		this.flush();
-		this.addVertex(x,y,this.curR,this.curG,this.curB,this.curA,x * this.ma + y * this.mc + this.mx,x * this.mb + y * this.md + this.my);
-	}
-	,endFill: function() {
-		this.flush();
-		this.doFill = false;
-	}
-	,setColor: function(color,alpha) {
-		if(alpha == null) {
-			alpha = 1.;
-		}
-		this.curA = alpha;
-		this.curR = (color >> 16 & 255) / 255.;
-		this.curG = (color >> 8 & 255) / 255.;
-		this.curB = (color & 255) / 255.;
-	}
-	,drawRect: function(x,y,w,h) {
-		this.flush();
-		this.addVertex(x,y,this.curR,this.curG,this.curB,this.curA,x * this.ma + y * this.mc + this.mx,x * this.mb + y * this.md + this.my);
-		var x1 = x + w;
-		this.addVertex(x1,y,this.curR,this.curG,this.curB,this.curA,x1 * this.ma + y * this.mc + this.mx,x1 * this.mb + y * this.md + this.my);
-		var x1 = x + w;
-		var y1 = y + h;
-		this.addVertex(x1,y1,this.curR,this.curG,this.curB,this.curA,x1 * this.ma + y1 * this.mc + this.mx,x1 * this.mb + y1 * this.md + this.my);
-		var y1 = y + h;
-		this.addVertex(x,y1,this.curR,this.curG,this.curB,this.curA,x * this.ma + y1 * this.mc + this.mx,x * this.mb + y1 * this.md + this.my);
-		this.addVertex(x,y,this.curR,this.curG,this.curB,this.curA,x * this.ma + y * this.mc + this.mx,x * this.mb + y * this.md + this.my);
-		var e = 0.01;
-		this.tmpPoints[0].x += e;
-		this.tmpPoints[0].y += e;
-		this.tmpPoints[1].y += e;
-		this.tmpPoints[3].x += e;
-		this.tmpPoints[4].x += e;
-		this.tmpPoints[4].y += e;
-		this.flush();
-	}
-	,drawRoundedRect: function(x,y,w,h,radius,nsegments) {
-		if(nsegments == null) {
-			nsegments = 0;
-		}
-		var _gthis = this;
-		if(radius <= 0) {
-			this.drawRect(x,y,w,h);
-			return;
-		}
-		x += radius;
-		y += radius;
-		w -= radius * 2;
-		h -= radius * 2;
-		this.flush();
-		if(nsegments == 0) {
-			var f = radius * 1.5707963267948966 / 4;
-			nsegments = Math.ceil(f < 0 ? -f : f);
-		}
-		if(nsegments < 3) {
-			nsegments = 3;
-		}
-		var angle = 1.5707963267948966 / (nsegments - 1);
-		var y1 = y - radius;
-		this.addVertex(x,y1,this.curR,this.curG,this.curB,this.curA,x * this.ma + y1 * this.mc + this.mx,x * this.mb + y1 * this.md + this.my);
-		var x1 = x + w;
-		var y1 = y - radius;
-		this.addVertex(x1,y1,this.curR,this.curG,this.curB,this.curA,x1 * this.ma + y1 * this.mc + this.mx,x1 * this.mb + y1 * this.md + this.my);
-		var x1 = x + w;
-		var _g = 0;
-		var _g1 = nsegments;
-		while(_g < _g1) {
-			var i = _g++;
-			var a = i * angle + 4.71238898038469;
-			var x2 = x1 + Math.cos(a) * radius;
-			var y1 = y + Math.sin(a) * radius;
-			_gthis.addVertex(x2,y1,_gthis.curR,_gthis.curG,_gthis.curB,_gthis.curA,x2 * _gthis.ma + y1 * _gthis.mc + _gthis.mx,x2 * _gthis.mb + y1 * _gthis.md + _gthis.my);
-		}
-		var x1 = x + w + radius;
-		var y1 = y + h;
-		this.addVertex(x1,y1,this.curR,this.curG,this.curB,this.curA,x1 * this.ma + y1 * this.mc + this.mx,x1 * this.mb + y1 * this.md + this.my);
-		var x1 = x + w;
-		var y1 = y + h;
-		var _g = 0;
-		var _g1 = nsegments;
-		while(_g < _g1) {
-			var i = _g++;
-			var a = i * angle;
-			var x2 = x1 + Math.cos(a) * radius;
-			var y2 = y1 + Math.sin(a) * radius;
-			_gthis.addVertex(x2,y2,_gthis.curR,_gthis.curG,_gthis.curB,_gthis.curA,x2 * _gthis.ma + y2 * _gthis.mc + _gthis.mx,x2 * _gthis.mb + y2 * _gthis.md + _gthis.my);
-		}
-		var y1 = y + h + radius;
-		this.addVertex(x,y1,this.curR,this.curG,this.curB,this.curA,x * this.ma + y1 * this.mc + this.mx,x * this.mb + y1 * this.md + this.my);
-		var y1 = y + h;
-		var _g = 0;
-		var _g1 = nsegments;
-		while(_g < _g1) {
-			var i = _g++;
-			var a = i * angle + 1.5707963267948966;
-			var x1 = x + Math.cos(a) * radius;
-			var y2 = y1 + Math.sin(a) * radius;
-			_gthis.addVertex(x1,y2,_gthis.curR,_gthis.curG,_gthis.curB,_gthis.curA,x1 * _gthis.ma + y2 * _gthis.mc + _gthis.mx,x1 * _gthis.mb + y2 * _gthis.md + _gthis.my);
-		}
-		var x1 = x - radius;
-		this.addVertex(x1,y,this.curR,this.curG,this.curB,this.curA,x1 * this.ma + y * this.mc + this.mx,x1 * this.mb + y * this.md + this.my);
-		var _g = 0;
-		var _g1 = nsegments;
-		while(_g < _g1) {
-			var i = _g++;
-			var a = i * angle + 3.1415926535897931;
-			var x1 = x + Math.cos(a) * radius;
-			var y1 = y + Math.sin(a) * radius;
-			_gthis.addVertex(x1,y1,_gthis.curR,_gthis.curG,_gthis.curB,_gthis.curA,x1 * _gthis.ma + y1 * _gthis.mc + _gthis.mx,x1 * _gthis.mb + y1 * _gthis.md + _gthis.my);
-		}
-		this.flush();
-	}
-	,drawCircle: function(cx,cy,radius,nsegments) {
-		if(nsegments == null) {
-			nsegments = 0;
-		}
-		this.flush();
-		if(nsegments == 0) {
-			var f = radius * 3.14 * 2 / 4;
-			nsegments = Math.ceil(f < 0 ? -f : f);
-		}
-		if(nsegments < 3) {
-			nsegments = 3;
-		}
-		var angle = 6.2831853071795862 / nsegments;
-		var _g = 0;
-		var _g1 = nsegments + 1;
-		while(_g < _g1) {
-			var i = _g++;
-			var a = i * angle;
-			var x = cx + Math.cos(a) * radius;
-			var y = cy + Math.sin(a) * radius;
-			this.addVertex(x,y,this.curR,this.curG,this.curB,this.curA,x * this.ma + y * this.mc + this.mx,x * this.mb + y * this.md + this.my);
-		}
-		this.flush();
-	}
-	,drawEllipse: function(cx,cy,radiusX,radiusY,rotationAngle,nsegments) {
-		if(nsegments == null) {
-			nsegments = 0;
-		}
-		if(rotationAngle == null) {
-			rotationAngle = 0;
-		}
-		this.flush();
-		if(nsegments == 0) {
-			var f = radiusY * 3.14 * 2 / 4;
-			nsegments = Math.ceil(f < 0 ? -f : f);
-		}
-		if(nsegments < 3) {
-			nsegments = 3;
-		}
-		var angle = 6.2831853071795862 / nsegments;
-		var x1;
-		var y1;
-		var _g = 0;
-		var _g1 = nsegments + 1;
-		while(_g < _g1) {
-			var i = _g++;
-			var a = i * angle;
-			x1 = Math.cos(a) * Math.cos(rotationAngle) * radiusX - Math.sin(a) * Math.sin(rotationAngle) * radiusY;
-			y1 = Math.cos(rotationAngle) * Math.sin(a) * radiusY + Math.cos(a) * Math.sin(rotationAngle) * radiusX;
-			var x = cx + x1;
-			var y = cy + y1;
-			this.addVertex(x,y,this.curR,this.curG,this.curB,this.curA,x * this.ma + y * this.mc + this.mx,x * this.mb + y * this.md + this.my);
-		}
-		this.flush();
-	}
-	,drawPie: function(cx,cy,radius,angleStart,angleLength,nsegments) {
-		if(nsegments == null) {
-			nsegments = 0;
-		}
-		if((angleLength < 0 ? -angleLength : angleLength) >= 6.2831853071795862) {
-			this.drawCircle(cx,cy,radius,nsegments);
-			return;
-		}
-		this.flush();
-		this.addVertex(cx,cy,this.curR,this.curG,this.curB,this.curA,cx * this.ma + cy * this.mc + this.mx,cx * this.mb + cy * this.md + this.my);
-		if(nsegments == 0) {
-			var f = radius * angleLength / 4;
-			nsegments = Math.ceil(f < 0 ? -f : f);
-		}
-		if(nsegments < 3) {
-			nsegments = 3;
-		}
-		var angle = angleLength / (nsegments - 1);
-		var _g = 0;
-		var _g1 = nsegments;
-		while(_g < _g1) {
-			var i = _g++;
-			var a = i * angle + angleStart;
-			var x = cx + Math.cos(a) * radius;
-			var y = cy + Math.sin(a) * radius;
-			this.addVertex(x,y,this.curR,this.curG,this.curB,this.curA,x * this.ma + y * this.mc + this.mx,x * this.mb + y * this.md + this.my);
-		}
-		this.addVertex(cx,cy,this.curR,this.curG,this.curB,this.curA,cx * this.ma + cy * this.mc + this.mx,cx * this.mb + cy * this.md + this.my);
-		this.flush();
-	}
-	,drawRectanglePie: function(cx,cy,width,height,angleStart,angleLength,nsegments) {
-		if(nsegments == null) {
-			nsegments = 0;
-		}
-		if((angleLength < 0 ? -angleLength : angleLength) >= 6.2831853071795862) {
-			this.drawRect(cx - width / 2,cy - height / 2,width,height);
-			return;
-		}
-		this.flush();
-		this.addVertex(cx,cy,this.curR,this.curG,this.curB,this.curA,cx * this.ma + cy * this.mc + this.mx,cx * this.mb + cy * this.md + this.my);
-		if(nsegments == 0) {
-			var f = (width < height ? height : width) * angleLength / 4;
-			nsegments = Math.ceil(f < 0 ? -f : f);
-		}
-		if(nsegments < 3) {
-			nsegments = 3;
-		}
-		var angle = angleLength / (nsegments - 1);
-		var square2 = Math.sqrt(2);
-		var _g = 0;
-		var _g1 = nsegments;
-		while(_g < _g1) {
-			var i = _g++;
-			var a = i * angle + angleStart;
-			var _width = Math.cos(a) * (width / 2 + 1) * square2;
-			var _height = Math.sin(a) * (height / 2 + 1) * square2;
-			if((_width < 0 ? -_width : _width) >= width / 2) {
-				_width = Math.cos(a) < 0 ? width / 2 * -1 : width / 2;
-			}
-			if((_height < 0 ? -_height : _height) >= height / 2) {
-				_height = Math.sin(a) < 0 ? height / 2 * -1 : height / 2;
-			}
-			var x = cx + _width;
-			var y = cy + _height;
-			this.addVertex(x,y,this.curR,this.curG,this.curB,this.curA,x * this.ma + y * this.mc + this.mx,x * this.mb + y * this.md + this.my);
-		}
-		this.addVertex(cx,cy,this.curR,this.curG,this.curB,this.curA,cx * this.ma + cy * this.mc + this.mx,cx * this.mb + cy * this.md + this.my);
-		this.flush();
-	}
-	,curveTo: function(bx,by,cx,cy) {
-		var ax = this.tmpPoints.length == 0 ? 0 : this.tmpPoints[this.tmpPoints.length - 1].x;
-		var ay = this.tmpPoints.length == 0 ? 0 : this.tmpPoints[this.tmpPoints.length - 1].y;
-		var t = 0.66666666666666663;
-		this.cubicCurveTo(ax + t * (bx - ax),ay + t * (by - ay),cx + t * (bx - cx),cy + t * (by - cy),cx,cy);
-	}
-	,cubicCurveTo: function(bx,by,cx,cy,dx,dy,nsegments) {
-		if(nsegments == null) {
-			nsegments = 40;
-		}
-		var ax = this.tmpPoints.length == 0 ? 0 : this.tmpPoints[this.tmpPoints.length - 1].x;
-		var ay = this.tmpPoints.length == 0 ? 0 : this.tmpPoints[this.tmpPoints.length - 1].y;
-		var tobx = bx - ax;
-		var toby = by - ay;
-		var tocx = cx - bx;
-		var tocy = cy - by;
-		var todx = dx - cx;
-		var tody = dy - cy;
-		var step = 1 / nsegments;
-		var _g = 1;
-		var _g1 = nsegments;
-		while(_g < _g1) {
-			var i = _g++;
-			var d = i * step;
-			var px = ax + d * tobx;
-			var py = ay + d * toby;
-			var qx = bx + d * tocx;
-			var qy = by + d * tocy;
-			var rx = cx + d * todx;
-			var ry = cy + d * tody;
-			var toqx = qx - px;
-			var toqy = qy - py;
-			var torx = rx - qx;
-			var tory = ry - qy;
-			var sx = px + d * toqx;
-			var sy = py + d * toqy;
-			var tx = qx + d * torx;
-			var ty = qy + d * tory;
-			var totx = tx - sx;
-			var toty = ty - sy;
-			var x = sx + d * totx;
-			var y = sy + d * toty;
-			this.addVertex(x,y,this.curR,this.curG,this.curB,this.curA,x * this.ma + y * this.mc + this.mx,x * this.mb + y * this.md + this.my);
-		}
-		this.addVertex(dx,dy,this.curR,this.curG,this.curB,this.curA,dx * this.ma + dy * this.mc + this.mx,dx * this.mb + dy * this.md + this.my);
-	}
-	,lineTo: function(x,y) {
-		this.addVertex(x,y,this.curR,this.curG,this.curB,this.curA,x * this.ma + y * this.mc + this.mx,x * this.mb + y * this.md + this.my);
-	}
-	,addVertex: function(x,y,r,g,b,a,u,v) {
-		if(v == null) {
-			v = 0.;
-		}
-		if(u == null) {
-			u = 0.;
-		}
-		if(x < this.xMin) {
-			this.xMin = x;
-		}
-		if(y < this.yMin) {
-			this.yMin = y;
-		}
-		if(x > this.xMax) {
-			this.xMax = x;
-		}
-		if(y > this.yMax) {
-			this.yMax = y;
-		}
-		if(this.doFill) {
-			var _this = this.content;
-			var this1 = _this.tmp;
-			if(this1.pos == this1.array.length) {
-				var newSize = this1.array.length << 1;
-				if(newSize < 128) {
-					newSize = 128;
-				}
-				var newArray = new Float32Array(newSize);
-				newArray.set(this1.array);
-				this1.array = newArray;
-			}
-			this1.array[this1.pos++] = x;
-			var this1 = _this.tmp;
-			if(this1.pos == this1.array.length) {
-				var newSize = this1.array.length << 1;
-				if(newSize < 128) {
-					newSize = 128;
-				}
-				var newArray = new Float32Array(newSize);
-				newArray.set(this1.array);
-				this1.array = newArray;
-			}
-			this1.array[this1.pos++] = y;
-			var this1 = _this.tmp;
-			if(this1.pos == this1.array.length) {
-				var newSize = this1.array.length << 1;
-				if(newSize < 128) {
-					newSize = 128;
-				}
-				var newArray = new Float32Array(newSize);
-				newArray.set(this1.array);
-				this1.array = newArray;
-			}
-			this1.array[this1.pos++] = u;
-			var this1 = _this.tmp;
-			if(this1.pos == this1.array.length) {
-				var newSize = this1.array.length << 1;
-				if(newSize < 128) {
-					newSize = 128;
-				}
-				var newArray = new Float32Array(newSize);
-				newArray.set(this1.array);
-				this1.array = newArray;
-			}
-			this1.array[this1.pos++] = v;
-			var this1 = _this.tmp;
-			if(this1.pos == this1.array.length) {
-				var newSize = this1.array.length << 1;
-				if(newSize < 128) {
-					newSize = 128;
-				}
-				var newArray = new Float32Array(newSize);
-				newArray.set(this1.array);
-				this1.array = newArray;
-			}
-			this1.array[this1.pos++] = r;
-			var this1 = _this.tmp;
-			if(this1.pos == this1.array.length) {
-				var newSize = this1.array.length << 1;
-				if(newSize < 128) {
-					newSize = 128;
-				}
-				var newArray = new Float32Array(newSize);
-				newArray.set(this1.array);
-				this1.array = newArray;
-			}
-			this1.array[this1.pos++] = g;
-			var this1 = _this.tmp;
-			if(this1.pos == this1.array.length) {
-				var newSize = this1.array.length << 1;
-				if(newSize < 128) {
-					newSize = 128;
-				}
-				var newArray = new Float32Array(newSize);
-				newArray.set(this1.array);
-				this1.array = newArray;
-			}
-			this1.array[this1.pos++] = b;
-			var this1 = _this.tmp;
-			if(this1.pos == this1.array.length) {
-				var newSize = this1.array.length << 1;
-				if(newSize < 128) {
-					newSize = 128;
-				}
-				var newArray = new Float32Array(newSize);
-				newArray.set(this1.array);
-				this1.array = newArray;
-			}
-			this1.array[this1.pos++] = a;
-			_this.bufferDirty = true;
-		}
-		var gp = new h2d_GPoint();
-		gp.load(x,y,this.lineR,this.lineG,this.lineB,this.lineA);
-		this.tmpPoints.push(gp);
-	}
-	,draw: function(ctx) {
-		if(!ctx.beginDrawObject(this,this.tile.innerTex)) {
-			return;
-		}
-		this.content.render(ctx.engine);
-	}
-	,sync: function(ctx) {
-		h2d_Drawable.prototype.sync.call(this,ctx);
-		this.flush();
-		var _this = this.content;
-		if(_this.buffer == null || _this.buffer.isDisposed()) {
-			_this.alloc(h3d_Engine.CURRENT);
-		} else {
-			if(_this.bufferDirty) {
-				_this.buffer.dispose();
-				_this.buffer = h3d_Buffer.ofFloats(_this.tmp,8,[h3d_BufferFlag.RawFormat]);
-				_this.bufferDirty = false;
-			}
-			if(_this.indexDirty) {
-				_this.indexes.dispose();
-				_this.indexes = h3d_Indexes.alloc(_this.index);
-				_this.indexDirty = false;
-			}
-		}
-	}
-	,__class__: h2d_Graphics
-});
 var hxd_Interactive = function() { };
 hxd_Interactive.__name__ = "hxd.Interactive";
 hxd_Interactive.__isInterface__ = true;
@@ -14136,6 +12136,9 @@ h3d_anim_AnimatedObject.prototype = {
 	}
 	,__class__: h3d_anim_AnimatedObject
 };
+var hxd_impl__$Serializable_NoSerializeSupport = function() { };
+hxd_impl__$Serializable_NoSerializeSupport.__name__ = "hxd.impl._Serializable.NoSerializeSupport";
+hxd_impl__$Serializable_NoSerializeSupport.__isInterface__ = true;
 var h3d_anim_Animation = function(name,frameCount,sampling) {
 	this.name = name;
 	this.frameCount = frameCount;
@@ -27202,6 +25205,78 @@ h3d_pass_SortByMaterial.prototype = {
 	}
 	,__class__: h3d_pass_SortByMaterial
 };
+var h3d_prim_Primitive = function() {
+	this.refCount = 0;
+};
+h3d_prim_Primitive.__name__ = "h3d.prim.Primitive";
+h3d_prim_Primitive.__interfaces__ = [hxd_impl__$Serializable_NoSerializeSupport];
+h3d_prim_Primitive.prototype = {
+	triCount: function() {
+		if(this.indexes != null) {
+			return this.indexes.count / 3 | 0;
+		} else if(this.buffer == null) {
+			return 0;
+		} else {
+			return this.buffer.totalVertices() / 3 | 0;
+		}
+	}
+	,vertexCount: function() {
+		return 0;
+	}
+	,getCollider: function() {
+		throw haxe_Exception.thrown("not implemented for " + Std.string(this));
+	}
+	,getBounds: function() {
+		throw haxe_Exception.thrown("not implemented for " + Std.string(this));
+	}
+	,incref: function() {
+		this.refCount++;
+	}
+	,decref: function() {
+		this.refCount--;
+		if(this.refCount <= 0) {
+			this.refCount = 0;
+			this.dispose();
+		}
+	}
+	,alloc: function(engine) {
+		throw haxe_Exception.thrown("not implemented");
+	}
+	,selectMaterial: function(material) {
+	}
+	,buildNormalsDisplay: function() {
+		throw haxe_Exception.thrown("not implemented for " + Std.string(this));
+	}
+	,render: function(engine) {
+		if(this.buffer == null || this.buffer.isDisposed()) {
+			this.alloc(engine);
+		}
+		if(this.indexes == null) {
+			if((this.buffer.flags & 1 << h3d_BufferFlag.Quads._hx_index) != 0) {
+				engine.renderBuffer(this.buffer,engine.mem.quadIndexes,2,0,-1);
+			} else {
+				engine.renderBuffer(this.buffer,engine.mem.triIndexes,3,0,-1);
+			}
+		} else {
+			engine.renderIndexed(this.buffer,this.indexes);
+		}
+	}
+	,dispose: function() {
+		if(this.buffer != null) {
+			this.buffer.dispose();
+			this.buffer = null;
+		}
+		if(this.indexes != null) {
+			this.indexes.dispose();
+			this.indexes = null;
+		}
+	}
+	,toString: function() {
+		var c = js_Boot.getClass(this);
+		return c.__name__.split(".").pop();
+	}
+	,__class__: h3d_prim_Primitive
+};
 var h3d_prim_BigPrimitive = function(stride,isRaw) {
 	if(isRaw == null) {
 		isRaw = false;
@@ -34960,6 +33035,364 @@ h3d_shader_VolumeDecal.prototype = $extend(hxsl_Shader.prototype,{
 	}
 	,__class__: h3d_shader_VolumeDecal
 });
+var h3d_shader_pbr_DecalOverlay = function() {
+	this.emissive__ = 0;
+	this.fadeEnd__ = 0;
+	this.fadeStart__ = 0;
+	this.fadePower__ = 0;
+	this.maxAngle__ = 0;
+	hxsl_Shader.call(this);
+};
+h3d_shader_pbr_DecalOverlay.__name__ = "h3d.shader.pbr.DecalOverlay";
+h3d_shader_pbr_DecalOverlay.__super__ = hxsl_Shader;
+h3d_shader_pbr_DecalOverlay.prototype = $extend(hxsl_Shader.prototype,{
+	get_CENTERED: function() {
+		return this.CENTERED__;
+	}
+	,set_CENTERED: function(_v) {
+		this.constModified = true;
+		return this.CENTERED__ = _v;
+	}
+	,get_GAMMA_CORRECT: function() {
+		return this.GAMMA_CORRECT__;
+	}
+	,set_GAMMA_CORRECT: function(_v) {
+		this.constModified = true;
+		return this.GAMMA_CORRECT__ = _v;
+	}
+	,get_maxAngle: function() {
+		return this.maxAngle__;
+	}
+	,set_maxAngle: function(_v) {
+		return this.maxAngle__ = _v;
+	}
+	,get_fadePower: function() {
+		return this.fadePower__;
+	}
+	,set_fadePower: function(_v) {
+		return this.fadePower__ = _v;
+	}
+	,get_fadeStart: function() {
+		return this.fadeStart__;
+	}
+	,set_fadeStart: function(_v) {
+		return this.fadeStart__ = _v;
+	}
+	,get_fadeEnd: function() {
+		return this.fadeEnd__;
+	}
+	,set_fadeEnd: function(_v) {
+		return this.fadeEnd__ = _v;
+	}
+	,get_emissive: function() {
+		return this.emissive__;
+	}
+	,set_emissive: function(_v) {
+		return this.emissive__ = _v;
+	}
+	,get_colorTexture: function() {
+		return this.colorTexture__;
+	}
+	,set_colorTexture: function(_v) {
+		return this.colorTexture__ = _v;
+	}
+	,updateConstants: function(globals) {
+		this.constBits = 0;
+		if(this.CENTERED__) {
+			this.constBits |= 1;
+		}
+		if(this.GAMMA_CORRECT__) {
+			this.constBits |= 2;
+		}
+		this.updateConstantsFinal(globals);
+	}
+	,getParamValue: function(index) {
+		switch(index) {
+		case 0:
+			return this.CENTERED__;
+		case 1:
+			return this.GAMMA_CORRECT__;
+		case 2:
+			return this.maxAngle__;
+		case 3:
+			return this.fadePower__;
+		case 4:
+			return this.fadeStart__;
+		case 5:
+			return this.fadeEnd__;
+		case 6:
+			return this.emissive__;
+		case 7:
+			return this.colorTexture__;
+		default:
+		}
+		return null;
+	}
+	,getParamFloatValue: function(index) {
+		switch(index) {
+		case 2:
+			return this.maxAngle__;
+		case 3:
+			return this.fadePower__;
+		case 4:
+			return this.fadeStart__;
+		case 5:
+			return this.fadeEnd__;
+		case 6:
+			return this.emissive__;
+		default:
+		}
+		return 0.;
+	}
+	,clone: function() {
+		var s = Object.create(h3d_shader_pbr_DecalOverlay.prototype);
+		s.shader = this.shader;
+		s.CENTERED__ = this.CENTERED__;
+		s.GAMMA_CORRECT__ = this.GAMMA_CORRECT__;
+		s.maxAngle__ = this.maxAngle__;
+		s.fadePower__ = this.fadePower__;
+		s.fadeStart__ = this.fadeStart__;
+		s.fadeEnd__ = this.fadeEnd__;
+		s.emissive__ = this.emissive__;
+		s.colorTexture__ = this.colorTexture__;
+		return s;
+	}
+	,__class__: h3d_shader_pbr_DecalOverlay
+});
+var h3d_shader_pbr_DecalPBR = function() {
+	this.fadeEnd__ = 0;
+	this.fadeStart__ = 0;
+	this.fadePower__ = 0;
+	this.maxAngle__ = 0;
+	this.maxBound__ = new h3d_Vector();
+	this.minBound__ = new h3d_Vector();
+	this.tangent__ = new h3d_Vector();
+	this.normal__ = new h3d_Vector();
+	this.pbrStrength__ = 0;
+	this.normalStrength__ = 0;
+	this.albedoStrength__ = 0;
+	hxsl_Shader.call(this);
+	this.constModified = true;
+	this.CENTERED__ = true;
+};
+h3d_shader_pbr_DecalPBR.__name__ = "h3d.shader.pbr.DecalPBR";
+h3d_shader_pbr_DecalPBR.__super__ = hxsl_Shader;
+h3d_shader_pbr_DecalPBR.prototype = $extend(hxsl_Shader.prototype,{
+	get_CENTERED: function() {
+		return this.CENTERED__;
+	}
+	,set_CENTERED: function(_v) {
+		this.constModified = true;
+		return this.CENTERED__ = _v;
+	}
+	,get_USE_ALBEDO: function() {
+		return this.USE_ALBEDO__;
+	}
+	,set_USE_ALBEDO: function(_v) {
+		this.constModified = true;
+		return this.USE_ALBEDO__ = _v;
+	}
+	,get_USE_NORMAL: function() {
+		return this.USE_NORMAL__;
+	}
+	,set_USE_NORMAL: function(_v) {
+		this.constModified = true;
+		return this.USE_NORMAL__ = _v;
+	}
+	,get_USE_PBR: function() {
+		return this.USE_PBR__;
+	}
+	,set_USE_PBR: function(_v) {
+		this.constModified = true;
+		return this.USE_PBR__ = _v;
+	}
+	,get_albedoStrength: function() {
+		return this.albedoStrength__;
+	}
+	,set_albedoStrength: function(_v) {
+		return this.albedoStrength__ = _v;
+	}
+	,get_normalStrength: function() {
+		return this.normalStrength__;
+	}
+	,set_normalStrength: function(_v) {
+		return this.normalStrength__ = _v;
+	}
+	,get_pbrStrength: function() {
+		return this.pbrStrength__;
+	}
+	,set_pbrStrength: function(_v) {
+		return this.pbrStrength__ = _v;
+	}
+	,get_normal: function() {
+		return this.normal__;
+	}
+	,set_normal: function(_v) {
+		return this.normal__ = _v;
+	}
+	,get_tangent: function() {
+		return this.tangent__;
+	}
+	,set_tangent: function(_v) {
+		return this.tangent__ = _v;
+	}
+	,get_minBound: function() {
+		return this.minBound__;
+	}
+	,set_minBound: function(_v) {
+		return this.minBound__ = _v;
+	}
+	,get_maxBound: function() {
+		return this.maxBound__;
+	}
+	,set_maxBound: function(_v) {
+		return this.maxBound__ = _v;
+	}
+	,get_maxAngle: function() {
+		return this.maxAngle__;
+	}
+	,set_maxAngle: function(_v) {
+		return this.maxAngle__ = _v;
+	}
+	,get_fadePower: function() {
+		return this.fadePower__;
+	}
+	,set_fadePower: function(_v) {
+		return this.fadePower__ = _v;
+	}
+	,get_fadeStart: function() {
+		return this.fadeStart__;
+	}
+	,set_fadeStart: function(_v) {
+		return this.fadeStart__ = _v;
+	}
+	,get_fadeEnd: function() {
+		return this.fadeEnd__;
+	}
+	,set_fadeEnd: function(_v) {
+		return this.fadeEnd__ = _v;
+	}
+	,get_albedoTexture: function() {
+		return this.albedoTexture__;
+	}
+	,set_albedoTexture: function(_v) {
+		return this.albedoTexture__ = _v;
+	}
+	,get_normalTexture: function() {
+		return this.normalTexture__;
+	}
+	,set_normalTexture: function(_v) {
+		return this.normalTexture__ = _v;
+	}
+	,get_pbrTexture: function() {
+		return this.pbrTexture__;
+	}
+	,set_pbrTexture: function(_v) {
+		return this.pbrTexture__ = _v;
+	}
+	,updateConstants: function(globals) {
+		this.constBits = 0;
+		if(this.CENTERED__) {
+			this.constBits |= 1;
+		}
+		if(this.USE_ALBEDO__) {
+			this.constBits |= 2;
+		}
+		if(this.USE_NORMAL__) {
+			this.constBits |= 4;
+		}
+		if(this.USE_PBR__) {
+			this.constBits |= 8;
+		}
+		this.updateConstantsFinal(globals);
+	}
+	,getParamValue: function(index) {
+		switch(index) {
+		case 0:
+			return this.CENTERED__;
+		case 1:
+			return this.USE_ALBEDO__;
+		case 2:
+			return this.USE_NORMAL__;
+		case 3:
+			return this.USE_PBR__;
+		case 4:
+			return this.albedoStrength__;
+		case 5:
+			return this.normalStrength__;
+		case 6:
+			return this.pbrStrength__;
+		case 7:
+			return this.normal__;
+		case 8:
+			return this.tangent__;
+		case 9:
+			return this.minBound__;
+		case 10:
+			return this.maxBound__;
+		case 11:
+			return this.maxAngle__;
+		case 12:
+			return this.fadePower__;
+		case 13:
+			return this.fadeStart__;
+		case 14:
+			return this.fadeEnd__;
+		case 15:
+			return this.albedoTexture__;
+		case 16:
+			return this.normalTexture__;
+		case 17:
+			return this.pbrTexture__;
+		default:
+		}
+		return null;
+	}
+	,getParamFloatValue: function(index) {
+		switch(index) {
+		case 4:
+			return this.albedoStrength__;
+		case 5:
+			return this.normalStrength__;
+		case 6:
+			return this.pbrStrength__;
+		case 11:
+			return this.maxAngle__;
+		case 12:
+			return this.fadePower__;
+		case 13:
+			return this.fadeStart__;
+		case 14:
+			return this.fadeEnd__;
+		default:
+		}
+		return 0.;
+	}
+	,clone: function() {
+		var s = Object.create(h3d_shader_pbr_DecalPBR.prototype);
+		s.shader = this.shader;
+		s.CENTERED__ = this.CENTERED__;
+		s.USE_ALBEDO__ = this.USE_ALBEDO__;
+		s.USE_NORMAL__ = this.USE_NORMAL__;
+		s.USE_PBR__ = this.USE_PBR__;
+		s.albedoStrength__ = this.albedoStrength__;
+		s.normalStrength__ = this.normalStrength__;
+		s.pbrStrength__ = this.pbrStrength__;
+		s.normal__ = this.normal__;
+		s.tangent__ = this.tangent__;
+		s.minBound__ = this.minBound__;
+		s.maxBound__ = this.maxBound__;
+		s.maxAngle__ = this.maxAngle__;
+		s.fadePower__ = this.fadePower__;
+		s.fadeStart__ = this.fadeStart__;
+		s.fadeEnd__ = this.fadeEnd__;
+		s.albedoTexture__ = this.albedoTexture__;
+		s.normalTexture__ = this.normalTexture__;
+		s.pbrTexture__ = this.pbrTexture__;
+		return s;
+	}
+	,__class__: h3d_shader_pbr_DecalPBR
+});
 var haxe_IMap = function() { };
 haxe_IMap.__name__ = "haxe.IMap";
 haxe_IMap.__isInterface__ = true;
@@ -39920,1069 +38353,6 @@ var hxd_DisplayMode = $hxEnums["hxd.DisplayMode"] = { __ename__ : true, __constr
 	,FullscreenResize: {_hx_index:3,__enum__:"hxd.DisplayMode",toString:$estr}
 };
 hxd_DisplayMode.__empty_constructs__ = [hxd_DisplayMode.Windowed,hxd_DisplayMode.Borderless,hxd_DisplayMode.Fullscreen,hxd_DisplayMode.FullscreenResize];
-var hxd_earcut_EarNode = function() {
-};
-hxd_earcut_EarNode.__name__ = "hxd.earcut.EarNode";
-hxd_earcut_EarNode.prototype = {
-	__class__: hxd_earcut_EarNode
-};
-var hxd_earcut_Earcut = function() {
-};
-hxd_earcut_Earcut.__name__ = "hxd.earcut.Earcut";
-hxd_earcut_Earcut.prototype = {
-	triangulate_h2d_GPoint: function(points,holes) {
-		var hasHoles = holes != null && holes.length > 0;
-		var outerLen = hasHoles ? holes[0] : points.length;
-		if(outerLen < 3) {
-			return [];
-		}
-		var root = this.setLinkedList_triangulate_T(points,0,outerLen,true);
-		if(holes != null) {
-			root = this.eliminateHoles_triangulate_T(points,holes,root);
-		}
-		return this.triangulateNode(root,points.length > 80);
-	}
-	,eliminateHoles_triangulate_T: function(points,holes,root) {
-		var queue = [];
-		var _g = 0;
-		var _g1 = holes.length;
-		while(_g < _g1) {
-			var i = _g++;
-			var s = holes[i];
-			var e = i == holes.length - 1 ? points.length : holes[i + 1];
-			var node = this.setLinkedList_eliminateHoles_T(points,s,e,false);
-			if(node == node.next) {
-				node.steiner = true;
-			}
-			queue.push(this.getLeftmost(node));
-		}
-		queue.sort($bind(this,this.compareX));
-		var _g = 0;
-		while(_g < queue.length) {
-			var q = queue[_g];
-			++_g;
-			this.eliminateHole(q,root);
-			root = this.filterPoints(root,root.next);
-		}
-		return root;
-	}
-	,setLinkedList_eliminateHoles_T: function(points,start,end,clockwise) {
-		var sum = 0.;
-		var j = end - 1;
-		var _g = start;
-		var _g1 = end;
-		while(_g < _g1) {
-			var i = _g++;
-			sum += (points[j].x - points[i].x) * (points[i].y + points[j].y);
-			j = i;
-		}
-		var last = null;
-		var n = this.cache;
-		if(n == null) {
-			n = new hxd_earcut_EarNode();
-			n.allocNext = this.allocated;
-			this.allocated = n;
-		} else {
-			this.cache = n.next;
-		}
-		n.i = -1;
-		n.z = -1;
-		n.x = 0;
-		n.y = 0;
-		n.next = null;
-		n.prev = last;
-		n.steiner = false;
-		n.prevZ = null;
-		n.nextZ = null;
-		if(last != null) {
-			last.next = n;
-		}
-		var node = n;
-		var first = node;
-		if(clockwise == sum > 0) {
-			var _g = start;
-			var _g1 = end;
-			while(_g < _g1) {
-				var i = _g++;
-				var p = points[i];
-				var x = p.x;
-				var y = p.y;
-				var n = this.cache;
-				if(n == null) {
-					n = new hxd_earcut_EarNode();
-					n.allocNext = this.allocated;
-					this.allocated = n;
-				} else {
-					this.cache = n.next;
-				}
-				n.i = i;
-				n.z = -1;
-				n.x = x;
-				n.y = y;
-				n.next = null;
-				n.prev = node;
-				n.steiner = false;
-				n.prevZ = null;
-				n.nextZ = null;
-				if(node != null) {
-					node.next = n;
-				}
-				node = n;
-			}
-		} else {
-			var i = end - 1;
-			while(i >= start) {
-				var p = points[i];
-				var x = p.x;
-				var y = p.y;
-				var n = this.cache;
-				if(n == null) {
-					n = new hxd_earcut_EarNode();
-					n.allocNext = this.allocated;
-					this.allocated = n;
-				} else {
-					this.cache = n.next;
-				}
-				n.i = i;
-				n.z = -1;
-				n.x = x;
-				n.y = y;
-				n.next = null;
-				n.prev = node;
-				n.steiner = false;
-				n.prevZ = null;
-				n.nextZ = null;
-				if(node != null) {
-					node.next = n;
-				}
-				node = n;
-				--i;
-			}
-		}
-		node.next = first.next;
-		node.next.prev = node;
-		return node;
-	}
-	,setLinkedList_triangulate_T: function(points,start,end,clockwise) {
-		var sum = 0.;
-		var j = end - 1;
-		var _g = start;
-		var _g1 = end;
-		while(_g < _g1) {
-			var i = _g++;
-			sum += (points[j].x - points[i].x) * (points[i].y + points[j].y);
-			j = i;
-		}
-		var last = null;
-		var n = this.cache;
-		if(n == null) {
-			n = new hxd_earcut_EarNode();
-			n.allocNext = this.allocated;
-			this.allocated = n;
-		} else {
-			this.cache = n.next;
-		}
-		n.i = -1;
-		n.z = -1;
-		n.x = 0;
-		n.y = 0;
-		n.next = null;
-		n.prev = last;
-		n.steiner = false;
-		n.prevZ = null;
-		n.nextZ = null;
-		if(last != null) {
-			last.next = n;
-		}
-		var node = n;
-		var first = node;
-		if(clockwise == sum > 0) {
-			var _g = start;
-			var _g1 = end;
-			while(_g < _g1) {
-				var i = _g++;
-				var p = points[i];
-				var x = p.x;
-				var y = p.y;
-				var n = this.cache;
-				if(n == null) {
-					n = new hxd_earcut_EarNode();
-					n.allocNext = this.allocated;
-					this.allocated = n;
-				} else {
-					this.cache = n.next;
-				}
-				n.i = i;
-				n.z = -1;
-				n.x = x;
-				n.y = y;
-				n.next = null;
-				n.prev = node;
-				n.steiner = false;
-				n.prevZ = null;
-				n.nextZ = null;
-				if(node != null) {
-					node.next = n;
-				}
-				node = n;
-			}
-		} else {
-			var i = end - 1;
-			while(i >= start) {
-				var p = points[i];
-				var x = p.x;
-				var y = p.y;
-				var n = this.cache;
-				if(n == null) {
-					n = new hxd_earcut_EarNode();
-					n.allocNext = this.allocated;
-					this.allocated = n;
-				} else {
-					this.cache = n.next;
-				}
-				n.i = i;
-				n.z = -1;
-				n.x = x;
-				n.y = y;
-				n.next = null;
-				n.prev = node;
-				n.steiner = false;
-				n.prevZ = null;
-				n.nextZ = null;
-				if(node != null) {
-					node.next = n;
-				}
-				node = n;
-				--i;
-			}
-		}
-		node.next = first.next;
-		node.next.prev = node;
-		return node;
-	}
-	,triangulateNode: function(root,useZOrder) {
-		this.triangles = [];
-		root = this.filterPoints(root);
-		if(useZOrder && root != null) {
-			var maxX = root.x;
-			this.minX = maxX;
-			var maxY = root.y;
-			this.minY = maxY;
-			var p = root.next;
-			while(p != root) {
-				var x = p.x;
-				var y = p.y;
-				if(x < this.minX) {
-					this.minX = x;
-				}
-				if(y < this.minY) {
-					this.minY = y;
-				}
-				if(x > maxX) {
-					maxX = x;
-				}
-				if(y > maxY) {
-					maxY = y;
-				}
-				p = p.next;
-			}
-			var a = maxX - this.minX;
-			var b = maxY - this.minY;
-			this.size = a < b ? b : a;
-			this.hasSize = true;
-		} else {
-			this.hasSize = false;
-		}
-		this.earcutLinked(root);
-		var result = this.triangles;
-		this.triangles = null;
-		var n = this.allocated;
-		if(this.cache != null) {
-			while(n != this.cache) n = n.allocNext;
-			n = n.allocNext;
-		}
-		while(n != null) {
-			n.next = this.cache;
-			this.cache = n;
-			n = n.allocNext;
-		}
-		return result;
-	}
-	,eliminateHole: function(hole,root) {
-		root = this.findHoleBridge(hole,root);
-		if(root != null) {
-			var b = this.splitPolygon(root,hole);
-			this.filterPoints(b,b.next);
-		}
-	}
-	,findHoleBridge: function(hole,root) {
-		var p = root;
-		var hx = hole.x;
-		var hy = hole.y;
-		var qx = -Infinity;
-		var m = null;
-		while(true) {
-			if(hy <= p.y && hy >= p.next.y) {
-				var x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
-				if(x <= hx && x > qx) {
-					qx = x;
-					m = p.x < p.next.x ? p : p.next;
-				}
-			}
-			p = p.next;
-			if(!(p != root)) {
-				break;
-			}
-		}
-		if(m == null) {
-			return null;
-		}
-		var stop = m;
-		var tanMin = Infinity;
-		var tan;
-		p = m.next;
-		while(p != stop) {
-			var tmp;
-			if(hx >= p.x && p.x >= m.x) {
-				var ax = hy < m.y ? hx : qx;
-				var bx = m.x;
-				var by = m.y;
-				var cx = hy < m.y ? qx : hx;
-				var px = p.x;
-				var py = p.y;
-				tmp = (cx - px) * (hy - py) - (ax - px) * (hy - py) >= 0 && (ax - px) * (by - py) - (bx - px) * (hy - py) >= 0 && (bx - px) * (hy - py) - (cx - px) * (by - py) >= 0;
-			} else {
-				tmp = false;
-			}
-			if(tmp) {
-				var f = hy - p.y;
-				tan = (f < 0 ? -f : f) / (hx - p.x);
-				var tmp1;
-				if(tan < tanMin || tan == tanMin && p.x > m.x) {
-					var p1 = p.prev;
-					var r = p.next;
-					if((p.y - p1.y) * (r.x - p.x) - (p.x - p1.x) * (r.y - p.y) < 0) {
-						var r1 = p.next;
-						if((hole.y - p.y) * (r1.x - hole.x) - (hole.x - p.x) * (r1.y - hole.y) >= 0) {
-							var q = p.prev;
-							tmp1 = (q.y - p.y) * (hole.x - q.x) - (q.x - p.x) * (hole.y - q.y) >= 0;
-						} else {
-							tmp1 = false;
-						}
-					} else {
-						var r2 = p.prev;
-						if(!((hole.y - p.y) * (r2.x - hole.x) - (hole.x - p.x) * (r2.y - hole.y) < 0)) {
-							var q1 = p.next;
-							tmp1 = (q1.y - p.y) * (hole.x - q1.x) - (q1.x - p.x) * (hole.y - q1.y) < 0;
-						} else {
-							tmp1 = true;
-						}
-					}
-				} else {
-					tmp1 = false;
-				}
-				if(tmp1) {
-					m = p;
-					tanMin = tan;
-				}
-			}
-			p = p.next;
-		}
-		return m;
-	}
-	,getLeftmost: function(node) {
-		var p = node;
-		var leftmost = node;
-		while(true) {
-			if(p.x < leftmost.x) {
-				leftmost = p;
-			}
-			p = p.next;
-			if(!(p != node)) {
-				break;
-			}
-		}
-		return leftmost;
-	}
-	,compareX: function(a,b) {
-		if(a.x - b.x > 0) {
-			return 1;
-		} else {
-			return -1;
-		}
-	}
-	,equals: function(p1,p2) {
-		if(p1.x == p2.x) {
-			return p1.y == p2.y;
-		} else {
-			return false;
-		}
-	}
-	,area: function(p,q,r) {
-		return (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-	}
-	,intersects: function(p1,q1,p2,q2) {
-		if((q1.y - p1.y) * (p2.x - q1.x) - (q1.x - p1.x) * (p2.y - q1.y) > 0 != (q1.y - p1.y) * (q2.x - q1.x) - (q1.x - p1.x) * (q2.y - q1.y) > 0) {
-			return (q2.y - p2.y) * (p1.x - q2.x) - (q2.x - p2.x) * (p1.y - q2.y) > 0 != (q2.y - p2.y) * (q1.x - q2.x) - (q2.x - p2.x) * (q1.y - q2.y) > 0;
-		} else {
-			return false;
-		}
-	}
-	,locallyInside: function(a,b) {
-		var p = a.prev;
-		var r = a.next;
-		if((a.y - p.y) * (r.x - a.x) - (a.x - p.x) * (r.y - a.y) < 0) {
-			var r = a.next;
-			if((b.y - a.y) * (r.x - b.x) - (b.x - a.x) * (r.y - b.y) >= 0) {
-				var q = a.prev;
-				return (q.y - a.y) * (b.x - q.x) - (q.x - a.x) * (b.y - q.y) >= 0;
-			} else {
-				return false;
-			}
-		} else {
-			var r = a.prev;
-			if(!((b.y - a.y) * (r.x - b.x) - (b.x - a.x) * (r.y - b.y) < 0)) {
-				var q = a.next;
-				return (q.y - a.y) * (b.x - q.x) - (q.x - a.x) * (b.y - q.y) < 0;
-			} else {
-				return true;
-			}
-		}
-	}
-	,filterPoints: function(start,end) {
-		if(start == null) {
-			return start;
-		}
-		if(end == null) {
-			end = start;
-		}
-		var p = start;
-		var again;
-		while(true) {
-			again = false;
-			var tmp;
-			if(!p.steiner) {
-				var p2 = p.next;
-				if(!(p.x == p2.x && p.y == p2.y)) {
-					var p1 = p.prev;
-					var r = p.next;
-					tmp = (p.y - p1.y) * (r.x - p.x) - (p.x - p1.x) * (r.y - p.y) == 0;
-				} else {
-					tmp = true;
-				}
-			} else {
-				tmp = false;
-			}
-			if(tmp) {
-				p.next.prev = p.prev;
-				p.prev.next = p.next;
-				if(p.prevZ != null) {
-					p.prevZ.nextZ = p.nextZ;
-				}
-				if(p.nextZ != null) {
-					p.nextZ.prevZ = p.prevZ;
-				}
-				end = p.prev;
-				p = end;
-				if(p == p.next) {
-					return null;
-				}
-				again = true;
-			} else {
-				p = p.next;
-			}
-			if(!(again || p != end)) {
-				break;
-			}
-		}
-		return end;
-	}
-	,removeNode: function(p) {
-		p.next.prev = p.prev;
-		p.prev.next = p.next;
-		if(p.prevZ != null) {
-			p.prevZ.nextZ = p.nextZ;
-		}
-		if(p.nextZ != null) {
-			p.nextZ.prevZ = p.prevZ;
-		}
-	}
-	,allocNode: function(i,x,y,last) {
-		var n = this.cache;
-		if(n == null) {
-			n = new hxd_earcut_EarNode();
-			n.allocNext = this.allocated;
-			this.allocated = n;
-		} else {
-			this.cache = n.next;
-		}
-		n.i = i;
-		n.z = -1;
-		n.x = x;
-		n.y = y;
-		n.next = null;
-		n.prev = last;
-		n.steiner = false;
-		n.prevZ = null;
-		n.nextZ = null;
-		if(last != null) {
-			last.next = n;
-		}
-		return n;
-	}
-	,earcutLinked: function(ear,pass) {
-		if(pass == null) {
-			pass = 0;
-		}
-		if(ear == null) {
-			return;
-		}
-		if(pass == 0 && this.hasSize) {
-			this.indexCurve(ear);
-		}
-		var stop = ear;
-		var prev;
-		var next;
-		while(ear.prev != ear.next) {
-			prev = ear.prev;
-			next = ear.next;
-			if(this.hasSize ? this.isEarHashed(ear) : this.isEar(ear)) {
-				this.triangles.push(prev.i);
-				this.triangles.push(ear.i);
-				this.triangles.push(next.i);
-				ear.next.prev = ear.prev;
-				ear.prev.next = ear.next;
-				if(ear.prevZ != null) {
-					ear.prevZ.nextZ = ear.nextZ;
-				}
-				if(ear.nextZ != null) {
-					ear.nextZ.prevZ = ear.prevZ;
-				}
-				ear = next.next;
-				stop = next.next;
-				continue;
-			}
-			ear = next;
-			if(ear == stop) {
-				switch(pass) {
-				case 0:
-					this.earcutLinked(this.filterPoints(ear),1);
-					break;
-				case 1:
-					ear = this.cureLocalIntersections(ear);
-					this.earcutLinked(ear,2);
-					break;
-				case 2:
-					this.splitEarcut(ear);
-					break;
-				}
-				break;
-			}
-		}
-	}
-	,isEar: function(ear) {
-		var a = ear.prev;
-		var b = ear;
-		var c = ear.next;
-		if((b.y - a.y) * (c.x - b.x) - (b.x - a.x) * (c.y - b.y) >= 0) {
-			return false;
-		}
-		var p = ear.next.next;
-		while(p != ear.prev) {
-			var tmp;
-			var ax = a.x;
-			var ay = a.y;
-			var bx = b.x;
-			var by = b.y;
-			var cx = c.x;
-			var cy = c.y;
-			var px = p.x;
-			var py = p.y;
-			if((cx - px) * (ay - py) - (ax - px) * (cy - py) >= 0 && (ax - px) * (by - py) - (bx - px) * (ay - py) >= 0 && (bx - px) * (cy - py) - (cx - px) * (by - py) >= 0) {
-				var p1 = p.prev;
-				var r = p.next;
-				tmp = (p.y - p1.y) * (r.x - p.x) - (p.x - p1.x) * (r.y - p.y) >= 0;
-			} else {
-				tmp = false;
-			}
-			if(tmp) {
-				return false;
-			}
-			p = p.next;
-		}
-		return true;
-	}
-	,isEarHashed: function(ear) {
-		var a = ear.prev;
-		var b = ear;
-		var c = ear.next;
-		if((b.y - a.y) * (c.x - b.x) - (b.x - a.x) * (c.y - b.y) >= 0) {
-			return false;
-		}
-		var minTX = a.x < b.x ? a.x < c.x ? a.x : c.x : b.x < c.x ? b.x : c.x;
-		var minTY = a.y < b.y ? a.y < c.y ? a.y : c.y : b.y < c.y ? b.y : c.y;
-		var maxTX = a.x > b.x ? a.x > c.x ? a.x : c.x : b.x > c.x ? b.x : c.x;
-		var maxTY = a.y > b.y ? a.y > c.y ? a.y : c.y : b.y > c.y ? b.y : c.y;
-		var x = 32767 * (minTX - this.minX) / this.size | 0;
-		var y = 32767 * (minTY - this.minY) / this.size | 0;
-		x = (x | x << 8) & 16711935;
-		x = (x | x << 4) & 252645135;
-		x = (x | x << 2) & 858993459;
-		x = (x | x << 1) & 1431655765;
-		y = (y | y << 8) & 16711935;
-		y = (y | y << 4) & 252645135;
-		y = (y | y << 2) & 858993459;
-		y = (y | y << 1) & 1431655765;
-		var minZ = x | y << 1;
-		var x = 32767 * (maxTX - this.minX) / this.size | 0;
-		var y = 32767 * (maxTY - this.minY) / this.size | 0;
-		x = (x | x << 8) & 16711935;
-		x = (x | x << 4) & 252645135;
-		x = (x | x << 2) & 858993459;
-		x = (x | x << 1) & 1431655765;
-		y = (y | y << 8) & 16711935;
-		y = (y | y << 4) & 252645135;
-		y = (y | y << 2) & 858993459;
-		y = (y | y << 1) & 1431655765;
-		var maxZ = x | y << 1;
-		var p = ear.nextZ;
-		while(p != null && p.z <= maxZ) {
-			var tmp;
-			var tmp1;
-			if(p != ear.prev && p != ear.next) {
-				var ax = a.x;
-				var ay = a.y;
-				var bx = b.x;
-				var by = b.y;
-				var cx = c.x;
-				var cy = c.y;
-				var px = p.x;
-				var py = p.y;
-				tmp1 = (cx - px) * (ay - py) - (ax - px) * (cy - py) >= 0 && (ax - px) * (by - py) - (bx - px) * (ay - py) >= 0 && (bx - px) * (cy - py) - (cx - px) * (by - py) >= 0;
-			} else {
-				tmp1 = false;
-			}
-			if(tmp1) {
-				var p1 = p.prev;
-				var r = p.next;
-				tmp = (p.y - p1.y) * (r.x - p.x) - (p.x - p1.x) * (r.y - p.y) >= 0;
-			} else {
-				tmp = false;
-			}
-			if(tmp) {
-				return false;
-			}
-			p = p.nextZ;
-		}
-		p = ear.prevZ;
-		while(p != null && p.z >= minZ) {
-			var tmp;
-			var tmp1;
-			if(p != ear.prev && p != ear.next) {
-				var ax = a.x;
-				var ay = a.y;
-				var bx = b.x;
-				var by = b.y;
-				var cx = c.x;
-				var cy = c.y;
-				var px = p.x;
-				var py = p.y;
-				tmp1 = (cx - px) * (ay - py) - (ax - px) * (cy - py) >= 0 && (ax - px) * (by - py) - (bx - px) * (ay - py) >= 0 && (bx - px) * (cy - py) - (cx - px) * (by - py) >= 0;
-			} else {
-				tmp1 = false;
-			}
-			if(tmp1) {
-				var p1 = p.prev;
-				var r = p.next;
-				tmp = (p.y - p1.y) * (r.x - p.x) - (p.x - p1.x) * (r.y - p.y) >= 0;
-			} else {
-				tmp = false;
-			}
-			if(tmp) {
-				return false;
-			}
-			p = p.prevZ;
-		}
-		return true;
-	}
-	,cureLocalIntersections: function(start) {
-		var p = start;
-		while(true) {
-			var a = p.prev;
-			var b = p.next.next;
-			var tmp;
-			var tmp1;
-			var p2 = p.next;
-			if((p.y - a.y) * (p2.x - p.x) - (p.x - a.x) * (p2.y - p.y) > 0 != (p.y - a.y) * (b.x - p.x) - (p.x - a.x) * (b.y - p.y) > 0 && (b.y - p2.y) * (a.x - b.x) - (b.x - p2.x) * (a.y - b.y) > 0 != (b.y - p2.y) * (p.x - b.x) - (b.x - p2.x) * (p.y - b.y) > 0) {
-				var p1 = a.prev;
-				var r = a.next;
-				if((a.y - p1.y) * (r.x - a.x) - (a.x - p1.x) * (r.y - a.y) < 0) {
-					var r1 = a.next;
-					if((b.y - a.y) * (r1.x - b.x) - (b.x - a.x) * (r1.y - b.y) >= 0) {
-						var q = a.prev;
-						tmp1 = (q.y - a.y) * (b.x - q.x) - (q.x - a.x) * (b.y - q.y) >= 0;
-					} else {
-						tmp1 = false;
-					}
-				} else {
-					var r2 = a.prev;
-					if(!((b.y - a.y) * (r2.x - b.x) - (b.x - a.x) * (r2.y - b.y) < 0)) {
-						var q1 = a.next;
-						tmp1 = (q1.y - a.y) * (b.x - q1.x) - (q1.x - a.x) * (b.y - q1.y) < 0;
-					} else {
-						tmp1 = true;
-					}
-				}
-			} else {
-				tmp1 = false;
-			}
-			if(tmp1) {
-				var p3 = b.prev;
-				var r3 = b.next;
-				if((b.y - p3.y) * (r3.x - b.x) - (b.x - p3.x) * (r3.y - b.y) < 0) {
-					var r4 = b.next;
-					if((a.y - b.y) * (r4.x - a.x) - (a.x - b.x) * (r4.y - a.y) >= 0) {
-						var q2 = b.prev;
-						tmp = (q2.y - b.y) * (a.x - q2.x) - (q2.x - b.x) * (a.y - q2.y) >= 0;
-					} else {
-						tmp = false;
-					}
-				} else {
-					var r5 = b.prev;
-					if(!((a.y - b.y) * (r5.x - a.x) - (a.x - b.x) * (r5.y - a.y) < 0)) {
-						var q3 = b.next;
-						tmp = (q3.y - b.y) * (a.x - q3.x) - (q3.x - b.x) * (a.y - q3.y) < 0;
-					} else {
-						tmp = true;
-					}
-				}
-			} else {
-				tmp = false;
-			}
-			if(tmp) {
-				this.triangles.push(a.i);
-				this.triangles.push(p.i);
-				this.triangles.push(b.i);
-				p.next.prev = p.prev;
-				p.prev.next = p.next;
-				if(p.prevZ != null) {
-					p.prevZ.nextZ = p.nextZ;
-				}
-				if(p.nextZ != null) {
-					p.nextZ.prevZ = p.prevZ;
-				}
-				var p4 = p.next;
-				p4.next.prev = p4.prev;
-				p4.prev.next = p4.next;
-				if(p4.prevZ != null) {
-					p4.prevZ.nextZ = p4.nextZ;
-				}
-				if(p4.nextZ != null) {
-					p4.nextZ.prevZ = p4.prevZ;
-				}
-				start = b;
-				p = start;
-			}
-			p = p.next;
-			if(!(p != start)) {
-				break;
-			}
-		}
-		return p;
-	}
-	,splitEarcut: function(start) {
-		var a = start;
-		while(true) {
-			var b = a.next.next;
-			while(b != a.prev) {
-				if(a.i != b.i && this.isValidDiagonal(a,b)) {
-					var c = this.splitPolygon(a,b);
-					a = this.filterPoints(a,a.next);
-					c = this.filterPoints(c,c.next);
-					this.earcutLinked(a);
-					this.earcutLinked(c);
-					return;
-				}
-				b = b.next;
-			}
-			a = a.next;
-			if(!(a != start)) {
-				break;
-			}
-		}
-	}
-	,splitPolygon: function(a,b) {
-		var i = a.i;
-		var x = a.x;
-		var y = a.y;
-		var last = null;
-		var n = this.cache;
-		if(n == null) {
-			n = new hxd_earcut_EarNode();
-			n.allocNext = this.allocated;
-			this.allocated = n;
-		} else {
-			this.cache = n.next;
-		}
-		n.i = i;
-		n.z = -1;
-		n.x = x;
-		n.y = y;
-		n.next = null;
-		n.prev = last;
-		n.steiner = false;
-		n.prevZ = null;
-		n.nextZ = null;
-		if(last != null) {
-			last.next = n;
-		}
-		var a2 = n;
-		var i = b.i;
-		var x = b.x;
-		var y = b.y;
-		var last = null;
-		var n = this.cache;
-		if(n == null) {
-			n = new hxd_earcut_EarNode();
-			n.allocNext = this.allocated;
-			this.allocated = n;
-		} else {
-			this.cache = n.next;
-		}
-		n.i = i;
-		n.z = -1;
-		n.x = x;
-		n.y = y;
-		n.next = null;
-		n.prev = last;
-		n.steiner = false;
-		n.prevZ = null;
-		n.nextZ = null;
-		if(last != null) {
-			last.next = n;
-		}
-		var b2 = n;
-		var an = a.next;
-		var bp = b.prev;
-		a.next = b;
-		b.prev = a;
-		a2.next = an;
-		an.prev = a2;
-		b2.next = a2;
-		a2.prev = b2;
-		bp.next = b2;
-		b2.prev = bp;
-		return b2;
-	}
-	,pointInTriangle: function(ax,ay,bx,by,cx,cy,px,py) {
-		if((cx - px) * (ay - py) - (ax - px) * (cy - py) >= 0 && (ax - px) * (by - py) - (bx - px) * (ay - py) >= 0) {
-			return (bx - px) * (cy - py) - (cx - px) * (by - py) >= 0;
-		} else {
-			return false;
-		}
-	}
-	,isValidDiagonal: function(a,b) {
-		if(!(a.x == b.x && a.y == b.y)) {
-			var tmp;
-			var tmp1;
-			if(a.next.i != b.i && a.prev.i != b.i && !this.intersectsPolygon(a,b)) {
-				var p = a.prev;
-				var r = a.next;
-				if((a.y - p.y) * (r.x - a.x) - (a.x - p.x) * (r.y - a.y) < 0) {
-					var r = a.next;
-					if((b.y - a.y) * (r.x - b.x) - (b.x - a.x) * (r.y - b.y) >= 0) {
-						var q = a.prev;
-						tmp1 = (q.y - a.y) * (b.x - q.x) - (q.x - a.x) * (b.y - q.y) >= 0;
-					} else {
-						tmp1 = false;
-					}
-				} else {
-					var r = a.prev;
-					if(!((b.y - a.y) * (r.x - b.x) - (b.x - a.x) * (r.y - b.y) < 0)) {
-						var q = a.next;
-						tmp1 = (q.y - a.y) * (b.x - q.x) - (q.x - a.x) * (b.y - q.y) < 0;
-					} else {
-						tmp1 = true;
-					}
-				}
-			} else {
-				tmp1 = false;
-			}
-			if(tmp1) {
-				var p = b.prev;
-				var r = b.next;
-				if((b.y - p.y) * (r.x - b.x) - (b.x - p.x) * (r.y - b.y) < 0) {
-					var r = b.next;
-					if((a.y - b.y) * (r.x - a.x) - (a.x - b.x) * (r.y - a.y) >= 0) {
-						var q = b.prev;
-						tmp = (q.y - b.y) * (a.x - q.x) - (q.x - b.x) * (a.y - q.y) >= 0;
-					} else {
-						tmp = false;
-					}
-				} else {
-					var r = b.prev;
-					if(!((a.y - b.y) * (r.x - a.x) - (a.x - b.x) * (r.y - a.y) < 0)) {
-						var q = b.next;
-						tmp = (q.y - b.y) * (a.x - q.x) - (q.x - b.x) * (a.y - q.y) < 0;
-					} else {
-						tmp = true;
-					}
-				}
-			} else {
-				tmp = false;
-			}
-			if(tmp) {
-				return this.middleInside(a,b);
-			} else {
-				return false;
-			}
-		} else {
-			return true;
-		}
-	}
-	,middleInside: function(a,b) {
-		var p = a;
-		var inside = false;
-		var px = (a.x + b.x) / 2;
-		var py = (a.y + b.y) / 2;
-		while(true) {
-			if(p.y > py != p.next.y > py && px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x) {
-				inside = !inside;
-			}
-			p = p.next;
-			if(!(p != a)) {
-				break;
-			}
-		}
-		return inside;
-	}
-	,intersectsPolygon: function(a,b) {
-		var p = a;
-		while(true) {
-			var tmp;
-			if(p.i != a.i && p.next.i != a.i && p.i != b.i && p.next.i != b.i) {
-				var q1 = p.next;
-				tmp = (q1.y - p.y) * (a.x - q1.x) - (q1.x - p.x) * (a.y - q1.y) > 0 != (q1.y - p.y) * (b.x - q1.x) - (q1.x - p.x) * (b.y - q1.y) > 0 && (b.y - a.y) * (p.x - b.x) - (b.x - a.x) * (p.y - b.y) > 0 != (b.y - a.y) * (q1.x - b.x) - (b.x - a.x) * (q1.y - b.y) > 0;
-			} else {
-				tmp = false;
-			}
-			if(tmp) {
-				return true;
-			}
-			p = p.next;
-			if(!(p != a)) {
-				break;
-			}
-		}
-		return false;
-	}
-	,zOrder: function(px,py) {
-		var x = 32767 * (px - this.minX) / this.size | 0;
-		var y = 32767 * (py - this.minY) / this.size | 0;
-		x = (x | x << 8) & 16711935;
-		x = (x | x << 4) & 252645135;
-		x = (x | x << 2) & 858993459;
-		x = (x | x << 1) & 1431655765;
-		y = (y | y << 8) & 16711935;
-		y = (y | y << 4) & 252645135;
-		y = (y | y << 2) & 858993459;
-		y = (y | y << 1) & 1431655765;
-		return x | y << 1;
-	}
-	,indexCurve: function(start) {
-		var p = start;
-		while(true) {
-			if(p.z < 0) {
-				var x = 32767 * (p.x - this.minX) / this.size | 0;
-				var y = 32767 * (p.y - this.minY) / this.size | 0;
-				x = (x | x << 8) & 16711935;
-				x = (x | x << 4) & 252645135;
-				x = (x | x << 2) & 858993459;
-				x = (x | x << 1) & 1431655765;
-				y = (y | y << 8) & 16711935;
-				y = (y | y << 4) & 252645135;
-				y = (y | y << 2) & 858993459;
-				y = (y | y << 1) & 1431655765;
-				p.z = x | y << 1;
-			}
-			p.prevZ = p.prev;
-			p.nextZ = p.next;
-			p = p.next;
-			if(!(p != start)) {
-				break;
-			}
-		}
-		p.prevZ.nextZ = null;
-		p.prevZ = null;
-		this.sortLinked(p);
-	}
-	,sortLinked: function(list) {
-		var p;
-		var q;
-		var e;
-		var tail;
-		var numMerges;
-		var pSize;
-		var qSize;
-		var inSize = 1;
-		while(true) {
-			p = list;
-			list = null;
-			tail = null;
-			numMerges = 0;
-			while(p != null) {
-				++numMerges;
-				q = p;
-				pSize = 0;
-				var _g = 0;
-				var _g1 = inSize;
-				while(_g < _g1) {
-					var i = _g++;
-					++pSize;
-					q = q.nextZ;
-					if(q == null) {
-						break;
-					}
-				}
-				qSize = inSize;
-				while(pSize > 0 || qSize > 0 && q != null) {
-					if(pSize == 0) {
-						e = q;
-						q = q.nextZ;
-						--qSize;
-					} else if(qSize == 0 || q == null) {
-						e = p;
-						p = p.nextZ;
-						--pSize;
-					} else if(p.z <= q.z) {
-						e = p;
-						p = p.nextZ;
-						--pSize;
-					} else {
-						e = q;
-						q = q.nextZ;
-						--qSize;
-					}
-					if(tail != null) {
-						tail.nextZ = e;
-					} else {
-						list = e;
-					}
-					e.prevZ = tail;
-					tail = e;
-				}
-				p = q;
-			}
-			tail.nextZ = null;
-			inSize *= 2;
-			if(!(numMerges > 1)) {
-				break;
-			}
-		}
-		return list;
-	}
-	,__class__: hxd_earcut_Earcut
-};
 var hxd_fmt_hmd_GeometryDataFormat = {};
 hxd_fmt_hmd_GeometryDataFormat._new = function(v) {
 	var this1 = v;
@@ -42799,77 +40169,6 @@ hxd_impl_UncheckedBytes.set = function(this1,i,v) {
 hxd_impl_UncheckedBytes.fromBytes = function(b) {
 	var this1 = b.b;
 	return this1;
-};
-var hxd_poly2tri_Edge = function(p1,p2) {
-	if(p1 == null || p2 == null) {
-		throw haxe_Exception.thrown("Edge::new p1 or p2 is null");
-	}
-	var swap = false;
-	if(p1.y > p2.y) {
-		swap = true;
-	} else if(p1.y == p2.y) {
-		if(p1.x == p2.x) {
-			throw haxe_Exception.thrown("Edge::repeat points " + Std.string(p1));
-		}
-		swap = p1.x > p2.x;
-	}
-	if(swap) {
-		this.q = p1;
-		this.p = p2;
-	} else {
-		this.p = p1;
-		this.q = p2;
-	}
-	this.q.get_edge_list().push(this);
-};
-hxd_poly2tri_Edge.__name__ = "hxd.poly2tri.Edge";
-hxd_poly2tri_Edge.prototype = {
-	toString: function() {
-		return "Edge(" + Std.string(this.p) + ", " + Std.string(this.q) + ")";
-	}
-	,__class__: hxd_poly2tri_Edge
-};
-var hxd_poly2tri_Point = function(x,y) {
-	this.x = x;
-	this.y = y;
-	this.id = hxd_poly2tri_Point.C_ID;
-	hxd_poly2tri_Point.C_ID++;
-};
-hxd_poly2tri_Point.__name__ = "hxd.poly2tri.Point";
-hxd_poly2tri_Point.sortPoints = function(points) {
-	points.sort(hxd_poly2tri_Point.cmpPoints);
-};
-hxd_poly2tri_Point.cmpPoints = function(l,r) {
-	var ret = l.y - r.y;
-	if(ret == 0) {
-		ret = l.x - r.x;
-	}
-	if(ret < 0) {
-		return -1;
-	}
-	if(ret > 0) {
-		return 1;
-	}
-	return 0;
-};
-hxd_poly2tri_Point.prototype = {
-	get_edge_list: function() {
-		if(this.edge_list == null) {
-			this.edge_list = [];
-		}
-		return this.edge_list;
-	}
-	,equals: function(that) {
-		if(this.x == that.x) {
-			return this.y == that.y;
-		} else {
-			return false;
-		}
-	}
-	,toString: function() {
-		return "Point(" + this.x + ", " + this.y + ")";
-	}
-	,__class__: hxd_poly2tri_Point
 };
 var hxd_res__$Any_SingleFileSystem = function(path,bytes) {
 	hxd_fs_BytesFileSystem.call(this);
@@ -57945,6 +55244,546 @@ js_html__$CanvasElement_CanvasUtil.getContextWebGL = function(canvas,attribs) {
 	return null;
 };
 Math.__name__ = "Math";
+var support_color_Color = function() { };
+support_color_Color.__name__ = "support.color.Color";
+support_color_Color.__isInterface__ = true;
+support_color_Color.prototype = {
+	__class__: support_color_Color
+};
+var support_color_HSL = function(h,s,l,a) {
+	if(a == null) {
+		a = 1.0;
+	}
+	if(l == null) {
+		l = 0.5;
+	}
+	if(s == null) {
+		s = 1.0;
+	}
+	if(h == null) {
+		h = 0.0;
+	}
+	this.set_hue(h);
+	this.set_saturation(s);
+	this.set_lightness(l);
+	this.set_alpha(a);
+};
+support_color_HSL.__name__ = "support.color.HSL";
+support_color_HSL.__interfaces__ = [support_color_Color];
+support_color_HSL.prototype = {
+	toRGBA: function() {
+		var C = this.saturation * (1.0 - Math.abs(2.0 * this.lightness - 1));
+		var H = this.hue / 60.0;
+		var X = C * (1 - Math.abs(H % 2.0 - 1));
+		var triple = H >= 0 && H < 1 ? { r : C, g : X, b : 0} : H >= 1 && H < 2 ? { r : X, g : C, b : 0} : H >= 2 && H < 3 ? { r : 0, g : C, b : X} : H >= 3 && H < 4 ? { r : 0, g : X, b : C} : H >= 4 && H < 5 ? { r : X, g : 0, b : C} : H >= 5 && H < 6 ? { r : C, g : 0, b : X} : { r : 0, g : 0, b : 0};
+		var m = this.lightness - C / 2.0;
+		return new support_color_RGBA(triple.r + m,triple.g + m,triple.b + m,this.alpha);
+	}
+	,clamp: function(x,min,max) {
+		if(max == null) {
+			max = 1;
+		}
+		if(min == null) {
+			min = 0;
+		}
+		if(x <= min) {
+			return min;
+		} else if(x >= max) {
+			return max;
+		} else {
+			return x;
+		}
+	}
+	,set_hue: function(h) {
+		var modded = h % 360;
+		if(modded < 0) {
+			return this.hue = 360 + modded;
+		} else {
+			return this.hue = modded;
+		}
+	}
+	,set_saturation: function(s) {
+		return this.saturation = this.clamp(s);
+	}
+	,set_lightness: function(l) {
+		return this.lightness = this.clamp(l);
+	}
+	,set_alpha: function(a) {
+		return this.alpha = this.clamp(a,0,1);
+	}
+	,__class__: support_color_HSL
+};
+var support_color_RGBA = function(r,g,b,a) {
+	if(a == null) {
+		a = 1.0;
+	}
+	if(b == null) {
+		b = 1.0;
+	}
+	if(g == null) {
+		g = 1.0;
+	}
+	if(r == null) {
+		r = 1.0;
+	}
+	this.r = r;
+	this.g = g;
+	this.b = b;
+	this.a = a;
+};
+support_color_RGBA.__name__ = "support.color.RGBA";
+support_color_RGBA.__interfaces__ = [support_color_Color];
+support_color_RGBA.prototype = {
+	toARGBInt: function() {
+		var ri = Math.floor(this.r * 255);
+		var gi = Math.floor(this.g * 255);
+		var bi = Math.floor(this.b * 255);
+		var ai = Math.floor(this.a * 255);
+		return ai << 24 | ri << 16 | gi << 8 | bi;
+	}
+	,toRGBA: function() {
+		return this;
+	}
+	,clone: function() {
+		return new support_color_RGBA(this.r,this.g,this.b,this.a);
+	}
+	,toString: function() {
+		return "RGBA(" + this.r + ", " + this.g + ", " + this.b + ", " + this.a + ")";
+	}
+	,__class__: support_color_RGBA
+};
+var support_h2d_FastQuads = function(parent) {
+	h2d_Drawable.call(this,parent);
+	this.quads = new support_h3d_prim_QuadsPrimitive();
+	this.white = h3d_mat_Texture.fromColor(16777215,1.0);
+};
+support_h2d_FastQuads.__name__ = "support.h2d.FastQuads";
+support_h2d_FastQuads.__super__ = h2d_Drawable;
+support_h2d_FastQuads.prototype = $extend(h2d_Drawable.prototype,{
+	clear: function() {
+		this.quads.reset();
+	}
+	,addQuad: function(quad,color) {
+		this.quads.push(quad,color);
+	}
+	,newTurtle: function() {
+		return new support_h2d__$FastQuads_FastQuadsTurtle(this);
+	}
+	,draw: function(ctx) {
+		if(!ctx.beginDrawObject(this,this.white)) {
+			return;
+		}
+		this.quads.render(ctx.engine);
+	}
+	,__class__: support_h2d_FastQuads
+});
+var support_turtle_Turtle = function() { };
+support_turtle_Turtle.__name__ = "support.turtle.Turtle";
+support_turtle_Turtle.__isInterface__ = true;
+support_turtle_Turtle.prototype = {
+	__class__: support_turtle_Turtle
+};
+var support_h2d__$FastQuads_FastQuadsTurtle = function(fastQuads) {
+	this.color = new support_color_RGBA();
+	this.lineWidth = 1.0;
+	this.position = new support_linAlg2d_Vec(0,0);
+	this.fastQuads = fastQuads;
+};
+support_h2d__$FastQuads_FastQuadsTurtle.__name__ = "support.h2d._FastQuads.FastQuadsTurtle";
+support_h2d__$FastQuads_FastQuadsTurtle.__interfaces__ = [support_turtle_Turtle];
+support_h2d__$FastQuads_FastQuadsTurtle.prototype = {
+	moveTo: function(x,y) {
+		this.get_position().x = x;
+		this.get_position().y = y;
+		return this;
+	}
+	,lineTo: function(x,y) {
+		this.lineToQuad(new support_linAlg2d_Line(this.get_position(),new support_linAlg2d_Vec(x,y)));
+		this.moveTo(x,y);
+		return this;
+	}
+	,lineToQuad: function(line) {
+		var tmp = this.fastQuads;
+		var half_width = this.get_lineWidth() / 2;
+		var _this = line.end;
+		var mainAxis_x = _this.x;
+		var mainAxis_y = _this.y;
+		var v = line.start;
+		mainAxis_x -= v.x;
+		mainAxis_y -= v.y;
+		var v_x = mainAxis_x;
+		var v_y = mainAxis_y;
+		var tempX = v_x;
+		v_x = -v_y;
+		v_y = tempX;
+		var len = Math.sqrt(v_x * v_x + v_y * v_y);
+		var s = 1.0 / len;
+		v_x *= s;
+		v_y *= s;
+		v_x *= half_width;
+		v_y *= half_width;
+		var _this = line.start;
+		var _this1 = new support_linAlg2d_Vec(_this.x,_this.y);
+		_this1.x += v_x;
+		_this1.y += v_y;
+		var topLeft = _this1;
+		var _this = line.start;
+		var _this1 = new support_linAlg2d_Vec(_this.x,_this.y);
+		v_x *= -1;
+		v_y *= -1;
+		_this1.x += v_x;
+		_this1.y += v_y;
+		var bottomLeft = _this1;
+		var _this = new support_linAlg2d_Vec(topLeft.x,topLeft.y);
+		_this.x += mainAxis_x;
+		_this.y += mainAxis_y;
+		var topRight = _this;
+		var _this = new support_linAlg2d_Vec(bottomLeft.x,bottomLeft.y);
+		_this.x += mainAxis_x;
+		_this.y += mainAxis_y;
+		var bottomRight = _this;
+		tmp.addQuad(new support_linAlg2d_Quad(topLeft,topRight,bottomLeft,bottomRight),this.get_color().toRGBA());
+	}
+	,get_position: function() {
+		return this.position;
+	}
+	,set_position: function(p) {
+		return this.position = p;
+	}
+	,get_lineWidth: function() {
+		return this.lineWidth;
+	}
+	,set_lineWidth: function(w) {
+		return this.lineWidth = w;
+	}
+	,get_color: function() {
+		return this.color;
+	}
+	,set_color: function(c) {
+		return this.color = c;
+	}
+	,__class__: support_h2d__$FastQuads_FastQuadsTurtle
+};
+var support_h2d_FullscreenButton = function(parent) {
+	h2d_Drawable.call(this,parent);
+	this.fastQuads = new support_h2d_FastQuads(this);
+	this.clickable = new h2d_Interactive(1,1,this);
+	this.clickable.onClick = $bind(this,this.onClick);
+	this.window = hxd_Window.getInstance();
+	this.window.addResizeEvent($bind(this,this.onResize));
+	this.onResize();
+	this.render();
+};
+support_h2d_FullscreenButton.__name__ = "support.h2d.FullscreenButton";
+support_h2d_FullscreenButton.__super__ = h2d_Drawable;
+support_h2d_FullscreenButton.prototype = $extend(h2d_Drawable.prototype,{
+	updateDimensions: function() {
+		var size = Math.max(Math.min(this.window.get_width(),this.window.get_height()) / 24,24);
+		this.dimensions = { size : size, lineSize : Math.max(size / 24,1.0), offset : Math.max(size / 6,2.0)};
+	}
+	,onResize: function() {
+		this.updateDimensions();
+		this.clickable.width = this.dimensions.size;
+		this.clickable.height = this.dimensions.size;
+		var v = this.window.get_width();
+		this.posChanged = true;
+		this.x = v - this.dimensions.size * 2;
+		var v = this.window.get_height();
+		this.posChanged = true;
+		this.y = v - this.dimensions.size * 2;
+		var _this = this.fastQuads;
+		_this.posChanged = true;
+		_this.x = this.dimensions.size / 2;
+		var _this = this.fastQuads;
+		_this.posChanged = true;
+		_this.y = this.dimensions.size / 2;
+		this.render();
+	}
+	,onClick: function(e) {
+		var tmp = this.window;
+		var tmp1;
+		switch(this.window.get_displayMode()._hx_index) {
+		case 0:
+			tmp1 = hxd_DisplayMode.Fullscreen;
+			break;
+		case 2:
+			tmp1 = hxd_DisplayMode.Windowed;
+			break;
+		default:
+			tmp1 = hxd_DisplayMode.Windowed;
+		}
+		tmp.set_displayMode(tmp1);
+	}
+	,render: function() {
+		this.fastQuads.clear();
+		this.fastQuads.addQuad(support_linAlg2d_Quad.aligned(-this.dimensions.size / 2,-this.dimensions.size / 2,this.dimensions.size / 2,this.dimensions.size / 2),new support_color_RGBA(1,1,1,0.3));
+		var offset = this.dimensions.offset;
+		var top = -this.dimensions.size / 2 + offset;
+		var left = -this.dimensions.size / 2 + offset;
+		var bottom = this.dimensions.size / 2 - offset;
+		var right = this.dimensions.size / 2 - offset;
+		var lines = this.fastQuads.newTurtle();
+		lines.set_lineWidth(this.dimensions.lineSize);
+		lines.moveTo(offset,offset).lineTo(right,bottom);
+		lines.moveTo(-offset,offset).lineTo(left,bottom);
+		lines.moveTo(offset,-offset).lineTo(right,top);
+		lines.moveTo(-offset,-offset).lineTo(left,top);
+		lines.moveTo(left,top).lineTo(-offset,top);
+		lines.moveTo(left,top).lineTo(left,-offset);
+		lines.moveTo(right,top).lineTo(offset,top);
+		lines.moveTo(right,top).lineTo(right,-offset);
+		lines.moveTo(left,bottom).lineTo(-offset,bottom);
+		lines.moveTo(left,bottom).lineTo(left,offset);
+		lines.moveTo(right,bottom).lineTo(offset,bottom);
+		lines.moveTo(right,bottom).lineTo(right,offset);
+	}
+	,__class__: support_h2d_FullscreenButton
+});
+var support_h3d_prim_QuadsPrimitive = function() {
+	h3d_prim_Primitive.call(this);
+	var this1 = hxd__$FloatBuffer_Float32Expand._new(0);
+	this.vertices = this1;
+	this.dirty = true;
+};
+support_h3d_prim_QuadsPrimitive.__name__ = "support.h3d.prim.QuadsPrimitive";
+support_h3d_prim_QuadsPrimitive.__super__ = h3d_prim_Primitive;
+support_h3d_prim_QuadsPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
+	push: function(quad,color) {
+		this.pushVertex(quad.bottomLeft,0,0,color);
+		this.pushVertex(quad.topLeft,0,1,color);
+		this.pushVertex(quad.bottomRight,1,0,color);
+		this.pushVertex(quad.topRight,1,1,color);
+	}
+	,reset: function() {
+		var this1 = hxd__$FloatBuffer_Float32Expand._new(0);
+		this.vertices = this1;
+		this.disposeGPUBuffer();
+	}
+	,alloc: function(engine) {
+		this.disposeGPUBuffer();
+		this.buffer = h3d_Buffer.ofFloats(this.vertices,8,[h3d_BufferFlag.Quads,h3d_BufferFlag.RawFormat]);
+	}
+	,render: function(engine) {
+		if(this.buffer == null || this.buffer.isDisposed() || this.dirty == true) {
+			this.alloc(engine);
+		}
+		engine.renderBuffer(this.buffer,engine.mem.quadIndexes,2,0,-1);
+	}
+	,disposeGPUBuffer: function() {
+		if(this.buffer != null && !this.buffer.isDisposed()) {
+			this.buffer.dispose();
+			this.buffer = null;
+		}
+	}
+	,pushVertex: function(p,u,v,color) {
+		this.dirty = true;
+		var this1 = this.vertices;
+		var v1 = p.x;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v1;
+		var this1 = this.vertices;
+		var v1 = p.y;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v1;
+		var this1 = this.vertices;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = u;
+		var this1 = this.vertices;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+		var this1 = this.vertices;
+		var v = color.r;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+		var this1 = this.vertices;
+		var v = color.g;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+		var this1 = this.vertices;
+		var v = color.b;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+		var this1 = this.vertices;
+		var v = color.a;
+		if(this1.pos == this1.array.length) {
+			var newSize = this1.array.length << 1;
+			if(newSize < 128) {
+				newSize = 128;
+			}
+			var newArray = new Float32Array(newSize);
+			newArray.set(this1.array);
+			this1.array = newArray;
+		}
+		this1.array[this1.pos++] = v;
+	}
+	,__class__: support_h3d_prim_QuadsPrimitive
+});
+var support_linAlg2d_Line = function(start,end) {
+	this.start = start;
+	this.end = end;
+};
+support_linAlg2d_Line.__name__ = "support.linAlg2d.Line";
+support_linAlg2d_Line.prototype = {
+	toQuad: function(width) {
+		var half_width = width / 2;
+		var _this = this.end;
+		var mainAxis_x = _this.x;
+		var mainAxis_y = _this.y;
+		var v = this.start;
+		mainAxis_x -= v.x;
+		mainAxis_y -= v.y;
+		var v_x = mainAxis_x;
+		var v_y = mainAxis_y;
+		var tempX = v_x;
+		v_x = -v_y;
+		v_y = tempX;
+		var len = Math.sqrt(v_x * v_x + v_y * v_y);
+		var s = 1.0 / len;
+		v_x *= s;
+		v_y *= s;
+		v_x *= half_width;
+		v_y *= half_width;
+		var _this = this.start;
+		var _this1 = new support_linAlg2d_Vec(_this.x,_this.y);
+		_this1.x += v_x;
+		_this1.y += v_y;
+		var topLeft = _this1;
+		var _this = this.start;
+		var _this1 = new support_linAlg2d_Vec(_this.x,_this.y);
+		v_x *= -1;
+		v_y *= -1;
+		_this1.x += v_x;
+		_this1.y += v_y;
+		var bottomLeft = _this1;
+		var _this = new support_linAlg2d_Vec(topLeft.x,topLeft.y);
+		_this.x += mainAxis_x;
+		_this.y += mainAxis_y;
+		var topRight = _this;
+		var _this = new support_linAlg2d_Vec(bottomLeft.x,bottomLeft.y);
+		_this.x += mainAxis_x;
+		_this.y += mainAxis_y;
+		var bottomRight = _this;
+		return new support_linAlg2d_Quad(topLeft,topRight,bottomLeft,bottomRight);
+	}
+	,__class__: support_linAlg2d_Line
+};
+var support_linAlg2d_Quad = function(topLeft,topRight,bottomLeft,bottomRight) {
+	this.topLeft = topLeft;
+	this.topRight = topRight;
+	this.bottomLeft = bottomLeft;
+	this.bottomRight = bottomRight;
+};
+support_linAlg2d_Quad.__name__ = "support.linAlg2d.Quad";
+support_linAlg2d_Quad.aligned = function(top,left,bottom,right) {
+	return new support_linAlg2d_Quad(new support_linAlg2d_Vec(left,top),new support_linAlg2d_Vec(right,top),new support_linAlg2d_Vec(left,bottom),new support_linAlg2d_Vec(right,bottom));
+};
+support_linAlg2d_Quad.prototype = {
+	__class__: support_linAlg2d_Quad
+};
+var support_linAlg2d_Vec = function(x,y) {
+	this.x = x;
+	this.y = y;
+};
+support_linAlg2d_Vec.__name__ = "support.linAlg2d.Vec";
+support_linAlg2d_Vec.of = function(x,y) {
+	return new support_linAlg2d_Vec(x,y);
+};
+support_linAlg2d_Vec.prototype = {
+	rot90: function() {
+		var tempX = this.x;
+		this.x = -this.y;
+		this.y = tempX;
+		return this;
+	}
+	,sub: function(v) {
+		this.x -= v.x;
+		this.y -= v.y;
+		return this;
+	}
+	,add: function(v) {
+		this.x += v.x;
+		this.y += v.y;
+		return this;
+	}
+	,len: function() {
+		return Math.sqrt(this.x * this.x + this.y * this.y);
+	}
+	,norm: function() {
+		var len = Math.sqrt(this.x * this.x + this.y * this.y);
+		var s = 1.0 / len;
+		this.x *= s;
+		this.y *= s;
+		return this;
+	}
+	,scale: function(s) {
+		this.x *= s;
+		this.y *= s;
+		return this;
+	}
+	,clone: function() {
+		return new support_linAlg2d_Vec(this.x,this.y);
+	}
+	,toString: function() {
+		return "Vec(" + this.x + ", " + this.y + ")";
+	}
+	,__class__: support_linAlg2d_Vec
+};
 function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;
@@ -58169,6 +56008,8 @@ h3d_shader_Texture.SRC = "HXSLEmgzZC5zaGFkZXIuVGV4dHVyZQsBBWlucHV0DQEBAgJ1dgUKAQ
 h3d_shader_UVDelta.SRC = "HXSLEmgzZC5zaGFkZXIuVVZEZWx0YQQBB3V2RGVsdGEFCgIAAAIHdXZTY2FsZQUKAgAAAwxjYWxjdWxhdGVkVVYFCgQAAAQGdmVydGV4DgYAAAEABAAABQEGBAIDBQoGAAYBAgMFCgICBQoFCgIBBQoFCgUKAA";
 h3d_shader_VertexColorAlpha.SRC = "HXSLG2gzZC5zaGFkZXIuVmVydGV4Q29sb3JBbHBoYQQBBWlucHV0DQEBAgVjb2xvcgUMAQEAAQAAAwpwaXhlbENvbG9yBQwEAAAECGFkZGl0aXZlAgIAAQAAAAAABQhmcmFnbWVudA4GAAABAQUAAAUBCwIEAgaAAgMFDAICBQwFDAaBAgMFDAICBQwFDAAA";
 h3d_shader_VolumeDecal.SRC = "HXSLFmgzZC5zaGFkZXIuVm9sdW1lRGVjYWwYAQZjYW1lcmENAQoCBHZpZXcHAAEAAwRwcm9qBwABAAQIcG9zaXRpb24FCwABAAUIcHJvakZsaXADAAEABghwcm9qRGlhZwULAAEABwh2aWV3UHJvagcAAQAID2ludmVyc2VWaWV3UHJvagcAAQAJBXpOZWFyAwABAAoEekZhcgMAAQALA2RpcgULAwEAAAAADAZnbG9iYWwNAgQNBHRpbWUDAAwADglwaXhlbFNpemUFCgAMAA8JbW9kZWxWaWV3BwAMAQMQEG1vZGVsVmlld0ludmVyc2UHAAwBAwAAABEFaW5wdXQNAwISCHBvc2l0aW9uBQsBEQATBm5vcm1hbAULAREAAQAAFAZvdXRwdXQNBAUVCHBvc2l0aW9uBQwEFAAWBWNvbG9yBQwEFAAXBWRlcHRoAwQUABgGbm9ybWFsBQsEFAAZCXdvcmxkRGlzdAMEFAAEAAAaEHJlbGF0aXZlUG9zaXRpb24FCwQAABsTdHJhbnNmb3JtZWRQb3NpdGlvbgULBAAAHBhwaXhlbFRyYW5zZm9ybWVkUG9zaXRpb24FCwQAAB0RdHJhbnNmb3JtZWROb3JtYWwFCwQAAB4RcHJvamVjdGVkUG9zaXRpb24FDAQAAB8KcGl4ZWxDb2xvcgUMBAAAIAVkZXB0aAMEAAAhCHNjcmVlblVWBQoEAAAiCXNwZWNQb3dlcgMEAAAjCXNwZWNDb2xvcgULBAAAJAl3b3JsZERpc3QDBAAAJQhkZXB0aE1hcBEBAAAAJgVzY2FsZQUKAgAAJwZub3JtYWwFCwIAACgHdGFuZ2VudAULAgAAKQppc0NlbnRlcmVkAgIAAQAAAAAAKgxjYWxjdWxhdGVkVVYFCgQAACsSdHJhbnNmb3JtZWRUYW5nZW50BQwEAAAsDl9faW5pdF9fdmVydGV4DgYAAC0IZnJhZ21lbnQOBgAAAgIsAAAFAgYEAh0FCwkDHw4BBAYBAicFCwkDMg4BAg8HBgULBQsFCwULBgQCKwUMCQMqDgIJAx8OAQQGAQIoBQsJAzIOAQIPBwYFCwULBQsBAwAAAAAAAPA/AwUMBQwAAS0AAAUJCC4GbWF0cml4BwQAAAYBAggHAhAHBwAILwlzY3JlZW5Qb3MFCgQAAAYCCgIeBQwRAAUKCgIeBQwMAAMFCgAIMANydXYFDAQAAAkDKg4DAi8FCgkDPw4CAiURAQkDOg4BAi8FCgUKAwEDAAAAAAAA8D8DBQwACDEEd3BvcwUMBAAABgECMAUMAi4HBQwACDIEcHBvcwUMBAAABgECMAUMAggHBQwABgQCHAULBgIKAjIFDJIABQsKAjIFDAwAAwULBQsGBAIqBQoGAQImBQoEBgIKAjEFDBEABQoKAjEFDAwAAwUKBQoFCgUKCwIpAgaAAioFCgEDAAAAAAAA4D8DBQoAAAsGCQkDFQ4CCQMVDgIKAioFCgAAAwoCKgUKBAADAwkDFQ4CBgMBAwAAAAAAAPA/AwoCKgUKAAADAwYDAQMAAAAAAADwPwMKAioFCgQAAwMDAwEDAAAAAAAAAAADAgwAAAAA";
+h3d_shader_pbr_DecalOverlay.SRC = "HXSLG2gzZC5zaGFkZXIucGJyLkRlY2FsT3ZlcmxheRMBBmdsb2JhbA0BBAIEdGltZQMAAQADCXBpeGVsU2l6ZQUKAAEABAltb2RlbFZpZXcHAAEBAwUQbW9kZWxWaWV3SW52ZXJzZQcAAQEDAAAABgZjYW1lcmENAgoHBHZpZXcHAAYACARwcm9qBwAGAAkIcG9zaXRpb24FCwAGAAoIcHJvakZsaXADAAYACwhwcm9qRGlhZwULAAYADAh2aWV3UHJvagcABgAND2ludmVyc2VWaWV3UHJvagcABgAOBXpOZWFyAwAGAA8EekZhcgMABgAQA2RpcgULAwYAAAAAEQZvdXRwdXQNAwESBWNvbG9yBQwEEQAEAAATCENFTlRFUkVEAgIAAQAAAAAAFA1HQU1NQV9DT1JSRUNUAgIAAQAAAAAAFQhkZXB0aE1hcBEBAAAAFghtYXhBbmdsZQMCAAAXCWZhZGVQb3dlcgMCAAAYCWZhZGVTdGFydAMCAAAZB2ZhZGVFbmQDAgAAGghlbWlzc2l2ZQMCAAAbDGNvbG9yVGV4dHVyZQoCAAAcDGNhbGN1bGF0ZWRVVgUKBAAAHQpwaXhlbENvbG9yBQwEAAAeGHBpeGVsVHJhbnNmb3JtZWRQb3NpdGlvbgULBAAAHxFwcm9qZWN0ZWRQb3NpdGlvbgUMBAAAIAhsb2NhbFBvcwULBAAAIQ1vdXRzaWRlQm91bmRzDgYAACIIZnJhZ21lbnQOBgAAAgMhAAIFAQ0EBg8GDwYPBg8GDwYHCgIgBQsAAAMBAwAAAAAAAOA/AwIGCQoCIAULAAADAQMAAAAAAADgvwMCAgYHCgIgBQsEAAMBAwAAAAAAAOA/AwICBgkKAiAFCwQAAwEDAAAAAAAA4L8DAgIGBwoCIAULCAADAQMAAAAAAADgPwMCAgYJCgIgBQsIAAMBAwAAAAAAAOC/AwICAgAAASIAAAURCCMGbWF0cml4BwQAAAYBAg0HAgUHBwAIJAlzY3JlZW5Qb3MFCgQAAAYCCgIfBQwRAAUKCgIfBQwMAAMFCgAIJQVkZXB0aAMEAAAJAz8OAgIVEQEJAzoOAQIkBQoFCgMACCYDcnV2BQwEAAAJAyoOAwIkBQoCJQMBAwAAAAAAAPA/AwUMAAgnBHdwb3MFDAQAAAYBAiYFDAIjBwUMAAgoBHBwb3MFDAQAAAYBAiYFDAINBwUMAAYEAh4FCwYCCgIoBQySAAULCgIoBQwMAAMFCwULBgQCIAULBAYCCgInBQySAAULCgInBQwMAAMFCwULBQsGBAIcBQoKAiAFCxEABQoFCggpCmZhZGVGYWN0b3IDBAAABgMBAwAAAAAAAPA/AwkDFw4DCQMIDgIGAgkDFg4CAQMAAAAAAAAAAAMGAwkDDw4BBgEKAiAFCwgAAwEDAAAAAAAAAEADAwMCGAMDAwQGAwIZAwIYAwMDAwIXAwMBAwAAAAAAAAAAAwEDAAAAAAAA8D8DAwMACwITAgaAAhwFCgEDAAAAAAAA4D8DBQoAAAsJAiEOAAIMAAAACCoFY29sb3IFDAQAAAkDIQ4CAhsKAhwFCgUMAAaBCgIdBQySAAULCgIqBQySAAULBQsLAhQCBoEKAh0FDJIABQsKAh0FDJIABQsFCwAABoAKAh0FDJIABQsGAQoCHQUMkgAFCwIaAwULBQsGBAoCHQUMDAADBgEJAxcOAwkDFg4CCQMWDgIKAh0FDAAAAwoCHQUMBAADAwoCHQUMCAADAwEDAAAAAAAAAAADAQMAAAAAAADwPwMDAikDAwMA";
+h3d_shader_pbr_DecalPBR.SRC = "HXSLF2gzZC5zaGFkZXIucGJyLkRlY2FsUEJSJQEGZ2xvYmFsDQEEAgR0aW1lAwABAAMJcGl4ZWxTaXplBQoAAQAECW1vZGVsVmlldwcAAQEDBRBtb2RlbFZpZXdJbnZlcnNlBwABAQMAAAAGBmNhbWVyYQ0CCgcEdmlldwcABgAIBHByb2oHAAYACQhwb3NpdGlvbgULAAYACghwcm9qRmxpcAMABgALCHByb2pEaWFnBQsABgAMCHZpZXdQcm9qBwAGAA0PaW52ZXJzZVZpZXdQcm9qBwAGAA4Fek5lYXIDAAYADwR6RmFyAwAGABADZGlyBQsDBgAAAAARBm91dHB1dA0DCBIFY29sb3IFDAQRABMGbm9ybWFsBQsEEQAUCW1ldGFsbmVzcwMEEQAVCXJvdWdobmVzcwMEEQAWCW9jY2x1c2lvbgMEEQAXDmFsYmVkb1N0cmVuZ3RoAwQRABgObm9ybWFsU3RyZW5ndGgDBBEAGQtwYnJTdHJlbmd0aAMEEQAEAAAaCENFTlRFUkVEAgIAAQAAAAAAGwpVU0VfQUxCRURPAgIAAQAAAAAAHApVU0VfTk9STUFMAgIAAQAAAAAAHQdVU0VfUEJSAgIAAQAAAAAAHg5hbGJlZG9TdHJlbmd0aAMCAAAfDm5vcm1hbFN0cmVuZ3RoAwIAACALcGJyU3RyZW5ndGgDAgAAIQhkZXB0aE1hcBEBAAAAIgZub3JtYWwFCwIAACMHdGFuZ2VudAULAgAAJAhtaW5Cb3VuZAULAgAAJQhtYXhCb3VuZAULAgAAJghtYXhBbmdsZQMCAAAnCWZhZGVQb3dlcgMCAAAoCWZhZGVTdGFydAMCAAApB2ZhZGVFbmQDAgAAKg1hbGJlZG9UZXh0dXJlCgIAACsNbm9ybWFsVGV4dHVyZQoCAAAsCnBiclRleHR1cmUKAgAALQxjYWxjdWxhdGVkVVYFCgQAAC4SdHJhbnNmb3JtZWRUYW5nZW50BQwEAAAvEXRyYW5zZm9ybWVkTm9ybWFsBQsEAAAwGHBpeGVsVHJhbnNmb3JtZWRQb3NpdGlvbgULBAAAMRFwcm9qZWN0ZWRQb3NpdGlvbgUMBAAAMgpwaXhlbENvbG9yBQwEAAAzCXByYlZhbHVlcwUMBAAANAhzdHJlbmd0aAUMBAAANQhsb2NhbFBvcwULBAAANgVhbHBoYQMEAAA3Dl9faW5pdF9fdmVydGV4DgYAADgQX19pbml0X19mcmFnbWVudA4GAAA5CmdldFdvcmxQb3MOBgAAOg1vdXRzaWRlQm91bmRzDgYAADsIZnJhZ21lbnQOBgAABQI3AAAFAgYEAi8FCwkDHw4BBAYBAiIFCwkDMg4BAgQHBgULBQsFCwULBgQCLgUMCQMqDgIJAx8OAQQGAQIjBQsJAzIOAQIEBwYFCwULBQsBAwAAAAAAAPA/AwUMBQwAAjgAAAUAAAM5ATwDcG9zBQoEAAAFCwUFCD0FZGVwdGgDBAAACgkDPw4CAiERAQkDOg4BAjwFCgUKAwAAAwAIPgNydXYFDAQAAAkDKg4DAjwFCgI9AwEDAAAAAAAA8D8DBQwACD8Ed3BvcwUMBAAABgECPgUMAg0HBQwACEAGcmVzdWx0BQsEAAAEBgIKAj8FDJIABQsKAj8FDAwAAwULBQsADQJABQsAAAM6AAIFAQ0EBg8GDwYPBg8GDwYHCgI1BQsAAAMBAwAAAAAAAOA/AwIGCQoCNQULAAADAQMAAAAAAADgvwMCAgYHCgI1BQsEAAMBAwAAAAAAAOA/AwICBgkKAjUFCwQAAwEDAAAAAAAA4L8DAgIGBwoCNQULCAADAQMAAAAAAADgPwMCAgYJCgI1BQsIAAMBAwAAAAAAAOC/AwICAgAAATsAAAUZCEEGbWF0cml4BwQAAAYBAg0HAgUHBwAIQglzY3JlZW5Qb3MFCgQAAAYCCgIxBQwRAAUKCgIxBQwMAAMFCgAIQwVkZXB0aAMEAAAJAz8OAgIhEQEJAzoOAQJCBQoFCgMACEQDcnV2BQwEAAAJAyoOAwJCBQoCQwMBAwAAAAAAAPA/AwUMAAhFBHdwb3MFDAQAAAYBAkQFDAJBBwUMAAhGBHBwb3MFDAQAAAYBAkQFDAINBwUMAAYEAjYDAQMAAAAAAADwPwMDBgQCMAULBgIKAkYFDJIABQsKAkYFDAwAAwULBQsGBAI1BQsEBgIKAkUFDJIABQsKAkUFDAwAAwULBQsFCwYEAi0FCgoCNQULEQAFCgUKCEcKZmFkZUZhY3RvcgMEAAAGAwEDAAAAAAAA8D8DCQMXDgMJAwgOAgYCCQMWDgIBAwAAAAAAAAAAAwYDCQMPDgEGAQoCNQULCAADAQMAAAAAAAAAQAMDAwIoAwMDBAYDAikDAigDAwMDAicDAwEDAAAAAAAAAAADAQMAAAAAAADwPwMDAwALAhoCBoACLQUKAQMAAAAAAADgPwMFCgAACwkCOg4AAgwAAAAGBAI0BQwJAyoOBAEDAAAAAAAAAAADAQMAAAAAAAAAAAMBAwAAAAAAAAAAAwEDAAAAAAAAAAADBQwFDAYEAjMFDAkDKg4EAQMAAAAAAAAAAAMBAwAAAAAAAAAAAwEDAAAAAAAAAAADAQMAAAAAAAAAAAMFDAUMCwIbAgUECEgGYWxiZWRvBQwEAAAJAyEOAgIqCgItBQoFDAAGBAoCNAUMAAADBgECHgMKAkgFDAwAAwMDBgQCNgMKAkgFDAwAAwMGBAIyBQwCSAUMBQwAAAALAhwCBQwISQh3b3JsZFBvcwULBAAACQI5DgECQgUKBQsACEoDZGR4BQsEAAAGAwJJBQsJAjkOAQYAAkIFCgkDKA4CCgIDBQoAAAMBAwAAAAAAAAAAAwUKBQoFCwULAAhLA2RkeQULBAAABgMCSQULCQI5DgEGAAJCBQoJAygOAgEDAAAAAAAAAAADCgIDBQoEAAMFCgUKBQsFCwAITAt3b3JsZE5vcm1hbAULBAAACQMfDgEJAx4OAgJLBQsCSgULBQsFCwAITQx3b3JsZFRhbmdlbnQFCwQAAAkDHg4CAkwFCwkDKQ4DAQMAAAAAAAAAAAMBAwAAAAAAAPA/AwEDAAAAAAAAAAADBQsFCwAITgZub3JtYWwFDAQAAAoJAyEOAgIrCgItBQoFDJMDBQwACE8BbgULBAAAAkwFCwAIUAJuZgULBAAACQM5DgECTgUMBQsACFEEdGFuWAULBAAACQMfDgEKAk0FC5IABQsFCwAIUgR0YW5ZBQsEAAAGAQkDHg4CAk8FCwJRBQsFCwEDAAAAAAAA8L8DBQsABgQCLwULCQMfDgEEBgAGAAYBCgJQBQsAAAMCUQULBQsGAQoCUAULBAADAlIFCwULBQsGAQoCUAULCAADAk8FCwULBQsFCwULBQsGBAoCNAUMBAADBgECHwMCNgMDAwAAAAsCHQIFBQhTA3BicgUMBAAACgkDIQ4CAiwKAi0FCgUMkwMFDAAGBAoCMwUMAAADCgJTBQwAAAMDBgQKAjMFDAQAAwYDAQMAAAAAAADwPwMGAQoCUwUMBAADCgJTBQwEAAMDAwMGBAoCMwUMCAADCgJTBQwIAAMDBgQKAjQFDAgAAwYBAiADAjYDAwMAAAAGBAITBQsCLwULBQsGBAIUAwoCMwUMAAADAwYEAhUDCgIzBQwEAAMDBgQCFgMKAjMFDAgAAwMGBAIXAwYBCgI0BQwAAAMCRwMDAwYEAhgDBgEKAjQFDAQAAwJHAwMDBgQCGQMGAQoCNAUMCAADAkcDAwMA";
 haxe_EntryPoint.pending = [];
 haxe_EntryPoint.threadCount = 0;
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -58338,7 +56179,6 @@ hxd_fmt_hmd_Reader.BLEND = h2d_BlendMode.__empty_constructs__.slice();
 hxd_fmt_hmd_Reader.CULLING = h3d_mat_Face.__empty_constructs__.slice();
 hxd_impl_BufferFlags.Dynamic = 0;
 hxd_impl_BufferFlags.UniformDynamic = 1;
-hxd_poly2tri_Point.C_ID = 0;
 hxd_res_Resource.LIVE_UPDATE = false;
 hxd_res_ImageFormat.Jpg = 0;
 hxd_res_ImageFormat.Png = 1;
