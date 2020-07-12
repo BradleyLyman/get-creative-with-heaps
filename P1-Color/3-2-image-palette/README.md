@@ -1,20 +1,17 @@
-# Palette From Image
+# [Image Palette](http://bradlyman.github.io/get-creative-with-heaps/P1-Color/3-2-image-palette/)
 
-![Demo Screenshot](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P1-Color/3-2-image-palette/NoFilter.png)
+<a href="http://bradlyman.github.io/get-creative-with-heaps/P1-Color/3-2-image-palette/"
+   title="Live Demo" >
+  ![demoscreenshot](https://bradlyman.github.io/get-creative-with-heaps/P1-Color/3-2-image-palette/Screenshot.png)
+</a>
 
-![Demo Screenshot](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P1-Color/3-2-image-palette/OrderByHue.png)
-
-![Demo Screenshot](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P1-Color/3-2-image-palette/OrderBySaturation.png)
-
-![Demo Screenshot](https://github.com/BradLyman/get-creative-with-heaps/blob/master/P1-Color/3-2-image-palette/OrderByValue.png)
-
-# Run The Demo 
+## Run The Demo
 
 ```
 > haxe ./build.hxml
 ```
 
-**Usage**
+## Usage
 
 * Click the mouse anywhere on the screen to cycle to the next image
 * Press a number key to select the pixel order:
@@ -22,27 +19,3 @@
   * `2` orders pixels by saturation
   * `3` orders pixels by value (lightness)
   * any other key resets the pixels to their original order
-
-# Overview
-
-Every picture has a secret color palette. One way to tease it out is to reorganize the picture 
-according to the color properties of it's parts. This deconstruction can help the eye to 
-see the *color* pattern instead of the shape of the picture itself.
-
-## Implementation Notes
-
-**Sorting Pixels**
-
-Sorting pixels is a super weird operation. It's certainly not a *common* need for a game engine.
-
-This demo provides a way to sort pixels in the `PixelTools.hx`. This demonstrates a fun feature of
-the haxe programming language: [static extensions](https://haxe.org/manual/lf-static-extension.html).
-In the `Main.hx` demo source, look for a place where `toSorted` is called on an instance of `hxd.Pixels`!
-
-**Reading Images**
-
-Heaps.io provides *amazing* support for reading resources out of the `res` directory. They can be accessed
-with the `hxd.Res.` prefix, look for it in the code!
-
-
-
