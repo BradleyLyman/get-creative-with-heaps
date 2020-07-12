@@ -1,5 +1,6 @@
 import support.h2d.Plot;
 import support.h2d.FullscreenButton;
+import support.linAlg2d.Vec;
 import support.linAlg2d.Interval;
 
 class Main extends hxd.App {
@@ -15,7 +16,8 @@ class Main extends hxd.App {
 
     plot.xAxis = new Interval(-1, 1);
     plot.yAxis = new Interval(-1, 1);
-    tvals = domain.subdivide(101);
+    plot.turtle.lineWidth = 2;
+    tvals = domain.subdivide(501);
 
     onResize();
   }
@@ -30,17 +32,26 @@ class Main extends hxd.App {
   override function update(dt: Float) {
     final speed = 0.5 * (Math.PI / 4);
     time += dt*speed;
-    final xSignal = (t: Float) -> Math.cos(time + t*2.1);
-    final ySignal = (t: Float) -> Math.sin(time + t*1.3);
+    final signal = (t: Float) -> {
+      return 1/3.0 * (
+        Math.cos(time + t) +
+        Math.cos(time + t*3) +
+        Math.cos(time + t*8)
+      );
+    }
+
+    final map = (t) -> {
+      final angle = t;
+      final radius = signal(t);
+      return new Vec(Math.cos(angle) * radius, Math.sin(angle)*radius);
+    };
 
     plot.clear();
-    final maxLenTurtle = new MaxLengthTurtle(plot.turtle, 0.5);
-    for (i in tvals) {
-      for (j in tvals) {
-        maxLenTurtle
-          .moveTo(xSignal(i), ySignal(i))
-          .lineTo(xSignal(j), ySignal(j));
-      }
+    final s = map(tvals[0]);
+    plot.turtle.moveTo(s.x, s.y);
+    for (t in tvals) {
+      final p = map(t);
+      plot.turtle.lineTo(p.x, p.y);
     }
   }
 
