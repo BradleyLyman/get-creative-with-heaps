@@ -12,7 +12,7 @@ class RGBA implements Color {
   public var a : Float;
 
   /* Create a new rgba color. Defaults to white. */
-  public function new(
+  public inline function new(
     r: Float = 1.0,
     g: Float = 1.0,
     b: Float = 1.0,
@@ -30,7 +30,7 @@ class RGBA implements Color {
       for a color integer.
       @return Int - a 32 bit integer packed with the ARGB color components
   **/
-  public function toARGBInt() : Int {
+  public inline function toARGBInt() : Int {
     final ri = Math.floor((r * 0xFF));
     final gi = Math.floor((g * 0xFF));
     final bi = Math.floor((b * 0xFF));
@@ -44,7 +44,7 @@ class RGBA implements Color {
   }
 
   /* A new RGBA instance with the exact same rgba values */
-  public function clone() : RGBA {
+  public inline function clone() : RGBA {
     return new RGBA(r, g, b, a);
   }
 
