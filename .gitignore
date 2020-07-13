@@ -1,5 +1,6 @@
 *.hl
 *.js
+*.tmp
 
 /_site/
 _site/
