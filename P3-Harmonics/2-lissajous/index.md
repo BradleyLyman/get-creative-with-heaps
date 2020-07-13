@@ -7,4 +7,4 @@ section: P3 Harmonics
 
 ## Usage
 
-This demo is not interactive. Yet.
+Controls are available in a panel on the top left of the screen.
