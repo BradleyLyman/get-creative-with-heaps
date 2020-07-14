@@ -4,9 +4,22 @@ package support.linAlg2d;
     Objects of this type represent a 2-dimensional vector.
     Operations favor mutating the vector without a new allocation.
 **/
-class Vec {
-  public var x: Float;
-  public var y: Float;
+abstract Vec(haxe.ds.Vector<Float>)
+  from haxe.ds.Vector<Float>
+  to haxe.ds.Vector<Float>
+{
+  public var x(get, set): Float;
+  public var y(get, set): Float;
+
+  @:from
+  static public inline function fromArray(a: Array<Float>) {
+    return new Vec(a[0], a[1]);
+  }
+
+  @:from
+  static public inline function fromIntArray(a: Array<Int>) {
+    return new Vec(a[0], a[1]);
+  }
 
   /* Create a new vector. Just a convenience method. */
   static public inline function of(x: Float, y: Float) {
@@ -15,35 +28,27 @@ class Vec {
 
   /* Create a new vector */
   public inline function new(x: Float, y: Float) {
-    this.x = x;
-    this.y = y;
+    this = new haxe.ds.Vector(2);
+    this[0] = x;
+    this[1] = y;
   }
 
   /* Rotate the vector 90 degrees */
   public inline function rot90(): Vec {
-    final tempX = this.x;
-    this.x = -this.y;
-    this.y = tempX;
+    final tempX = x;
+    x = -y;
+    y = tempX;
     return this;
   }
 
-  /* Subtract another vector from this one */
-  public inline function sub(v: Vec): Vec {
-    this.x -= v.x;
-    this.y -= v.y;
-    return this;
-  }
-
-  /* Add this vector to another */
-  public inline function add(v: Vec): Vec {
-    this.x += v.x;
-    this.y += v.y;
-    return this;
-  }
-
-  /* Comput this vector's length */
+  /* Compute this vector's length */
   public inline function len(): Float {
-    return Math.sqrt(x*x + y*y);
+    return Math.sqrt(sqrLen());
+  }
+
+  /* Compute the square of this vector's length */
+  public inline function sqrLen(): Float {
+    return x*x + y*y;
   }
 
   /* Normalize this vector so it has length=1 */
@@ -52,16 +57,50 @@ class Vec {
     return scale(1.0/len);
   }
 
-  /* Scale this vector by a scalar amount */
-  public inline function scale(s: Float): Vec {
-    this.x *= s;
-    this.y *= s;
-    return this;
-  }
-
   /* Clone this vector into a new object */
   public inline function clone() {
     return new Vec(x, y);
+  }
+
+  /**
+      Return a new vector which is the sum of this and another. The original
+      is not modified.
+  **/
+  @:op(A + B)
+  public inline function cloneAdd(rhs: Vec) : Vec {
+    return clone().add(rhs);
+  }
+
+  @:op(A - B)
+  public inline function cloneSub(rhs: Vec) : Vec {
+    return clone().sub(rhs);
+  }
+
+  @:op(A * B)
+  @:commutative
+  public inline function cloneScale(s: Float) : Vec {
+    return clone().scale(s);
+  }
+
+  /* Subtract another vector from this one */
+  public inline function sub(v: Vec): Vec {
+    x -= v.x;
+    y -= v.y;
+    return this;
+  }
+
+  /* Add this vector to another */
+  public inline function add(v: Vec): Vec {
+    x += v.x;
+    y += v.y;
+    return this;
+  }
+
+  /* Scale this vector by a scalar amount */
+  public inline function scale(s: Float): Vec {
+    x *= s;
+    y *= s;
+    return this;
   }
 
   /**
@@ -72,4 +111,9 @@ class Vec {
   public inline function toString(): String {
     return "Vec(" + x + ", " + y + ")";
   }
+
+  private function get_x() { return this[0]; }
+  private function set_x(x) { return this[0] = x; }
+  private function get_y() { return this[1]; }
+  private function set_y(y) { return this[1] = y; }
 }

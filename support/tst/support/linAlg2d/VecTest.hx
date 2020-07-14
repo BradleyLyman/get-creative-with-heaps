@@ -1,41 +1,51 @@
 package support.linAlg2d;
 
-import h3d.shader.ParticleShader;
-import h3d.shader.Displacement;
-import h3d.Vector;
 import utest.Assert;
 using support.linAlg2d.AssertVec;
 
 class VecTest extends utest.Test {
   public function testAdd() {
     final v = new Vec(1, 2).add(new Vec(3, 4));
-    Assert.vecEquals(
-      new Vec(4, 6), v, "the original vector should hold the sum"
-    );
+    Assert.vecEquals([4, 6], v, "the original vector should hold the sum");
+  }
+
+  public function testCloneAdd() {
+    final b: Vec = [2, 3];
+    final c: Vec = b + [3, 4];
+    Assert.vecEquals([5, 7], c, "the sum should be correct");
+    Assert.vecEquals([2, 3], b, "the original should not be mutated");
   }
 
   public function testSub() {
     final v = new Vec(1, 2).sub(new Vec(3, 4));
-    Assert.vecEquals(
-      new Vec(-2, -2), v, "the original vector should hold the difference"
-    );
+    Assert.vecEquals([-2, -2], v, "the original should hold the difference");
+  }
+
+  public function testCloneSub() {
+    final a: Vec = [1, 2];
+    final b: Vec = a - [3, 8];
+    Assert.vecEquals([1, 2], a, "the original should not be modified");
+    Assert.vecEquals([-2, -6], b, "the difference should be correct");
   }
 
   public function testScale() {
     final v = new Vec(2, 2).scale(0.5);
-    Assert.vecEquals(
-      new Vec(1, 1), v,
-      "The vector should be scaled in place"
-    );
+    Assert.vecEquals([1, 1], v, "The vector should be scaled in place");
+  }
+
+  public function testCloneScale() {
+    final a: Vec = [2, 2];
+    final b: Vec = a * 0.5;
+    final c: Vec = 0.5 * a;
+    Assert.vecEquals([2, 2], a, "The original shouldn't be modified");
+    Assert.vecEquals([1, 1], b, "The scale should be computed correctly");
+    Assert.vecEquals([1, 1], c, "Scaling should commute");
   }
 
   public function testNorm() {
     final v = new Vec(5, 0).norm();
     Assert.floatEquals(1.0, v.len());
-    Assert.vecEquals(
-        new Vec(1, 0), v,
-        "The vector should be rescaled in place."
-    );
+    Assert.vecEquals([1, 0], v, "The vector should be rescaled in place.");
   }
 
   public function testLen() {
@@ -45,24 +55,14 @@ class VecTest extends utest.Test {
 
   public function testRot90() {
     final v = new Vec(-1, 1).rot90();
-    final rotated = new Vec(-1, -1);
-    Assert.vecEquals(
-      rotated, v,
-      "The vector should be rotated in place"
-    );
+    Assert.vecEquals([-1, -1], v, "The vector should be rotated in place");
   }
 
   public function testClone() {
     final v = new Vec(1, 1);
     final clonned = v.clone();
     v.add(new Vec(3, 5));
-    Assert.vecEquals(
-      new Vec(4, 6), v,
-      "The original vector should be modified in place"
-    );
-    Assert.vecEquals(
-      new Vec(1, 1), clonned,
-      "The clonned vector should not be modified"
-    );
+    Assert.vecEquals([4, 6], v, "The original should be modified");
+    Assert.vecEquals([1, 1], clonned, "The clone should not be modifieb");
   }
 }
