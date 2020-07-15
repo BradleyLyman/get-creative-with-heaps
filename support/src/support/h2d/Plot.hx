@@ -1,9 +1,6 @@
 package support.h2d;
 
-import h3d.shader.Emissive;
-import h3d.shader.FixedColor;
-import support.linAlg2d.Line;
-import h3d.shader.GenTexture;
+import hxd.Window;
 import support.turtle.Turtle;
 import support.color.Color;
 import support.color.RGBA;
@@ -80,6 +77,18 @@ class Plot extends Object {
     else {
       fastQuads.addQuad(transformed, new RGBA());
     }
+  }
+
+  /**
+      The mouse's position with coords relative to the in the plot's X and Y
+      axis.
+      Assumes that the plot is not rotated or scaled using h2d.Object
+      properties.
+  **/
+  public function mousePos(): Vec {
+    final w = Window.getInstance();
+    final mouse: Vec = [w.mouseX, w.mouseY];
+    return space.invMap(mouse - [x, y]);
   }
 
   /**
