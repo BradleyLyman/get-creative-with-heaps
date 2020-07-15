@@ -15,4 +15,4 @@ Install Haxe and HashLink for compiling and running the demos.
 # Additional Reading
 
 * Generative Design (ISBN-13: 978-1616890773)
-  * Is a delightful book which covers the subject using the Processing framework for creative coding.
+* https://natureofcode.com/book/
