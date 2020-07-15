@@ -63,6 +63,19 @@ abstract Vec(haxe.ds.Vector<Float>)
   }
 
   /**
+      Limit the vector's length to some maximum scale.
+      @param s - the maximum length
+      @return this vector, rescaled if it is longer than s
+  **/
+  public inline function limit(s: Float): Vec {
+    if (sqrLen() > s*s) {
+      norm();
+      scale(s);
+    }
+    return this;
+  }
+
+  /**
       Return a new vector which is the sum of this and another. The original
       is not modified.
   **/

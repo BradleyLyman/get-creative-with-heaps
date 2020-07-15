@@ -70,4 +70,11 @@ class VecTest extends utest.Test {
     Assert.vecEquals([4, 6], v, "The original should be modified");
     Assert.vecEquals([1, 1], clonned, "The clone should not be modifieb");
   }
+
+  public function testLimit() {
+    Assert.vecEquals([1, 0], Vec.of(2, 0).limit(1));
+    Assert.vecEquals([0, -3], Vec.of(0, -3.1).limit(3));
+    Assert.vecEquals([2, 4], Vec.of(2, 4).limit(200));
+    Assert.vecEquals([0, 0.1], Vec.of(0, 0.2).limit(0.1));
+  }
 }
