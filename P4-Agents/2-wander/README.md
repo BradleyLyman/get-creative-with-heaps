@@ -1,4 +1,4 @@
-# [Follow Me!](http://bradlyman.github.io/get-creative-with-heaps/P4-Agents/2-wander)
+# [Wandering Critters](http://bradlyman.github.io/get-creative-with-heaps/P4-Agents/2-wander)
 
 <a href="http://bradlyman.github.io/get-creative-with-heaps/P4-Agents/2-wander/"
    title="Live Demo" >
