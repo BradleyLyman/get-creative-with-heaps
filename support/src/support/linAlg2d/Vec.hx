@@ -21,6 +21,11 @@ abstract Vec(haxe.ds.Vector<Float>)
     return new Vec(a[0], a[1]);
   }
 
+  /* Create a new vector using the polar coordinates */
+  static public inline function ofPolar(angle: Float, radius: Float) {
+    return new Vec(Math.cos(angle)*radius, Math.sin(angle)*radius);
+  }
+
   /* Create a new vector. Just a convenience method. */
   static public inline function of(x: Float, y: Float) {
     return new Vec(x, y);
@@ -54,7 +59,8 @@ abstract Vec(haxe.ds.Vector<Float>)
   /* Normalize this vector so it has length=1 */
   public inline function norm(): Vec {
     final len = len();
-    return scale(1.0/len);
+    if (len != 0) { return scale(1/len); }
+    else { return this; }
   }
 
   /* Clone this vector into a new object */
