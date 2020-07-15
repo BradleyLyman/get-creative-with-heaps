@@ -29,12 +29,32 @@ class Node {
   public function integrate(dt: Float) {
     acc.limit(MAX_ACC);
     vel.limit(MAX_VEL);
-    pos.x = X_BOUND.clamp(pos.x);
-    pos.y = Y_BOUND.clamp(pos.y);
 
     vel += acc*dt;
     pos += vel*dt;
     acc *= 0.0;
+
+    pos.x = X_BOUND.clamp(pos.x);
+    pos.y = Y_BOUND.clamp(pos.y);
+  }
+
+  /**
+      Seek away from the screen's boundaries.
+  **/
+  public function bounds() {
+    if (pos.x <= X_BOUND.lerp(0.05)) {
+      seek([X_BOUND.end, pos.y], MAX_VEL);
+    }
+    else if (pos.x >= X_BOUND.lerp(0.95)) {
+      seek([X_BOUND.start, pos.y], MAX_VEL);
+    }
+
+    if (pos.y <= Y_BOUND.lerp(0.05)) {
+      seek([pos.x, Y_BOUND.end], MAX_VEL);
+    }
+    else if (pos.y >= Y_BOUND.lerp(0.95)) {
+      seek([pos.x, Y_BOUND.start], MAX_VEL);
+    }
   }
 
   /**
