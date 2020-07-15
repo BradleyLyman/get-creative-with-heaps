@@ -91,10 +91,10 @@ class Main extends hxd.App {
   }
 
   private function pointToSeek(node: Node, speed: Float, radius: Float): Vec {
-    final angle = Math.random() * Math.PI*2;
+    node.whiskerAngle += (Math.random()*2 - 1)*Math.PI/8;
     final look = node.vel.clone().norm();
     final posOffset = look*speed + node.pos;
-    final target = posOffset + Vec.ofPolar(angle, radius);
+    final target = posOffset + Vec.ofPolar(node.whiskerAngle, radius);
     plot.turtle
       .moveToVec(node.pos)
       .lineToVec(posOffset)

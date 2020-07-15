@@ -17,6 +17,7 @@ class Node {
   public var pos : Vec = [0, 0];
   public var vel : Vec = [0, 0];
   public var acc : Vec = [0, 0];
+  public var whiskerAngle: Float = Math.random()*Math.PI*2;
 
   public inline function new() {};
 
