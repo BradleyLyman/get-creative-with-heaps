@@ -1,11 +1,13 @@
 package support.linAlg2d;
 
+import format.abc.Data.ABCData;
 import utest.Assert;
 using support.linAlg2d.AssertVec;
 
 class VecTest extends utest.Test {
   public function testAdd() {
-    final v = new Vec(1, 2).add(new Vec(3, 4));
+    var v = new Vec(1, 2);
+    v.add([3, 4]);
     Assert.vecEquals([4, 6], v, "the original vector should hold the sum");
   }
 
@@ -17,7 +19,8 @@ class VecTest extends utest.Test {
   }
 
   public function testSub() {
-    final v = new Vec(1, 2).sub(new Vec(3, 4));
+    var v: Vec = [1, 2];
+    v.sub([3, 4]);
     Assert.vecEquals([-2, -2], v, "the original should hold the difference");
   }
 
@@ -29,7 +32,8 @@ class VecTest extends utest.Test {
   }
 
   public function testScale() {
-    final v = new Vec(2, 2).scale(0.5);
+    var v: Vec = [2, 2];
+    v.scale(0.5);
     Assert.vecEquals([1, 1], v, "The vector should be scaled in place");
   }
 
@@ -43,7 +47,8 @@ class VecTest extends utest.Test {
   }
 
   public function testNorm() {
-    final v = new Vec(5, 0).norm();
+    var v: Vec = [5, 0];
+    v.norm();
     Assert.floatEquals(1.0, v.len());
     Assert.vecEquals([1, 0], v, "The vector should be rescaled in place.");
   }
