@@ -1,7 +1,7 @@
 ---
 layout: demo
 section: P4 Agents
-title: Wiggling Criters
+title: Wiggling Critters
 order: 2
 ---
 
