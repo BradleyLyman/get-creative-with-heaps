@@ -19,8 +19,8 @@ class Main extends hxd.App {
   var size: NamedSlider;
 
   var whisker: NamedSlider;
-  var speed: NamedSlider;
-  var radius: NamedSlider;
+  var wiggle: NamedSlider;
+  var length: NamedSlider;
 
   override function init() {
     plot = new Plot(s2d);
@@ -32,18 +32,21 @@ class Main extends hxd.App {
 
     final cp = new BasicControls(s2d, Res.fonts.NotoSans32.toFont());
     cp.backgroundColor = new HSL(240, 0.4, 0.75, 0.25);
+
     cp.addText("== critter properties ==");
-    size = cp.addSlider("critter size", 2, 32);
-    force = cp.addSlider("force", 0, 500);
+    size = cp.addSlider("size", 2, 32);
+    force = cp.addSlider("crawl speed", 0, 500);
+
+    cp.addSpacing(1);
 
     cp.addText("== whisker properties ==");
     whisker = cp.addSlider("visibility", 0, 1);
-    radius = cp.addSlider("wiggle", 0, 100);
-    speed = cp.addSlider("length", 0, 100);
+    wiggle = cp.addSlider("wiggle", 0, Math.PI/4);
+    length = cp.addSlider("length", 0, 100);
 
     force.value = 250;
-    speed.value = 50;
-    radius.value = 40;
+    length.value = 50;
+    wiggle.value = Math.PI/8;
     size.value = 8;
     whisker.value = 0.25;
 
@@ -83,7 +86,7 @@ class Main extends hxd.App {
 
   private function stepAgents(dt: Float) {
     for (node in nodes) {
-      final p = pointToSeek(node, speed.value, radius.value);
+      final p = pointToSeek(node, length.value, length.value * 0.75);
       node.seek(p, force.value, 50);
       node.bounds();
       node.integrate(dt);
@@ -91,7 +94,7 @@ class Main extends hxd.App {
   }
 
   private function pointToSeek(node: Node, speed: Float, radius: Float): Vec {
-    node.whiskerAngle += (Math.random()*2 - 1)*Math.PI/8;
+    node.whiskerAngle += (Math.random()*2 - 1)*wiggle.value;
     final look = node.vel.clone().norm();
     final posOffset = look*speed + node.pos;
     final target = posOffset + Vec.ofPolar(node.whiskerAngle, radius);
