@@ -112,8 +112,8 @@ abstract Vec(haxe.ds.Vector<Float>)
     return "Vec(" + x + ", " + y + ")";
   }
 
-  private function get_x() { return this[0]; }
-  private function set_x(x) { return this[0] = x; }
-  private function get_y() { return this[1]; }
-  private function set_y(y) { return this[1] = y; }
+  private inline function get_x() { return this[0]; }
+  private inline function set_x(x) { return this[0] = x; }
+  private inline function get_y() { return this[1]; }
+  private inline function set_y(y) { return this[1] = y; }
 }
