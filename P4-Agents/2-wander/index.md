@@ -1,7 +1,7 @@
 ---
 layout: demo
 section: P4 Agents
-title: Wandering Criters
+title: Wiggling Criters
 order: 2
 ---
 

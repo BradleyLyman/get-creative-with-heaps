@@ -316,15 +316,16 @@ Main.prototype = $extend(hxd_App.prototype,{
 		var cp1 = new support_h2d_ui_BasicControls(cp,this1.loadCache("fonts/NotoSans32.fnt",hxd_res_BitmapFont).toFont());
 		cp1.set_backgroundColor(new support_color_HSL(240,0.4,0.75,0.25));
 		cp1.addText("== critter properties ==");
-		this.size = cp1.addSlider("critter size",2,32);
-		this.force = cp1.addSlider("force",0,500);
+		this.size = cp1.addSlider("size",2,32);
+		this.force = cp1.addSlider("crawl speed",0,500);
+		cp1.addSpacing(1);
 		cp1.addText("== whisker properties ==");
 		this.whisker = cp1.addSlider("visibility",0,1);
-		this.radius = cp1.addSlider("wiggle",0,100);
-		this.speed = cp1.addSlider("length",0,100);
+		this.wiggle = cp1.addSlider("wiggle",0,Math.PI / 4);
+		this.length = cp1.addSlider("length",0,100);
 		this.force.set_value(250);
-		this.speed.set_value(50);
-		this.radius.set_value(40);
+		this.length.set_value(50);
+		this.wiggle.set_value(Math.PI / 8);
 		this.size.set_value(8);
 		this.whisker.set_value(0.25);
 		new support_h2d_FullscreenButton(this.s2d);
@@ -392,14 +393,14 @@ Main.prototype = $extend(hxd_App.prototype,{
 		while(_g < _g1.length) {
 			var node = _g1[_g];
 			++_g;
-			var p = this.pointToSeek(node,this.speed.get_value(),this.radius.get_value());
+			var p = this.pointToSeek(node,this.length.get_value(),this.length.get_value() * 0.75);
 			node.seek(p,this.force.get_value(),50);
 			node.bounds();
 			node.integrate(dt);
 		}
 	}
 	,pointToSeek: function(node,speed,radius) {
-		var angle = Math.random() * Math.PI * 2;
+		node.whiskerAngle += (Math.random() * 2 - 1) * this.wiggle.get_value();
 		var this1 = node.vel;
 		var this2 = new Array(2);
 		var this3 = this2;
@@ -433,6 +434,7 @@ Main.prototype = $extend(hxd_App.prototype,{
 		this1[0] += rhs[0];
 		this1[1] += rhs[1];
 		var posOffset = this1;
+		var angle = node.whiskerAngle;
 		var x = Math.cos(angle) * radius;
 		var y = Math.sin(angle) * radius;
 		var this1 = new Array(2);
@@ -499,6 +501,7 @@ support_linAlg2d_Interval.prototype = {
 	,__class__: support_linAlg2d_Interval
 };
 var Node = function() {
+	this.whiskerAngle = Math.random() * Math.PI * 2;
 	var a_0 = 0;
 	var a_1 = 0;
 	var this1 = new Array(2);
