@@ -63,21 +63,52 @@ class Main extends hxd.App {
 
   override function update(dt:Float) {
     plot.clear();
-    stepAgents(dt);
+    stepNodes(dt);
+    drawNodes();
+    integrateNodes(dt);
+  }
+
+  private function stepNodes(dt:Float) {
+    for (node in index) {
+      node.bounds();
+      final friends = index.nearestNeighbors(node, 100);
+      node.align(friends, 200);
+      node.avoid(friends, 500, 20);
+      node.seek(center(friends), 100, 20);
+    }
+  }
+
+  private function center(friends:Array<Node>):Vec {
+    var count = 0;
+    var center:Vec = [0, 0];
+    for (node in friends) {
+      count++;
+      center.add(node.pos);
+    }
+    if (count > 0) {
+      center *= (1.0 / count);
+    }
+    return center;
+  }
+
+  private function integrateNodes(dt:Float) {
+    for (node in index) {
+      node.integrate(dt);
+    }
+  }
+
+  private function drawNodes() {
     plot.turtle.lineWidth = 3;
     for (node in index) {
       node.draw(plot.turtle, 4);
     }
-
-    debugIndex();
+    if (selected != null) {
+      drawSelected();
+    }
   }
 
-  private function debugIndex() {
-    if (selected == null) {
-      return;
-    }
-
-    final radius = 200;
+  private function drawSelected() {
+    final radius = 100;
     plot.turtle.lineWidth = 2;
     drawCircle(plot.turtle, selected.pos, radius);
     final nearby = index.nearestNeighbors(selected, radius);
@@ -88,18 +119,17 @@ class Main extends hxd.App {
     for (node in nearby) {
       node.draw(plot.turtle, 4.5);
     }
-    plot.turtle.color = oldColor;
-  }
 
-  private function stepAgents(dt:Float) {
-    for (node in index) {
-      node.bounds();
-      node.integrate(dt);
-    }
+    plot.turtle.color = new HSL(200);
+    drawCircle(plot.turtle, center(nearby), 10);
+
+    plot.turtle.color = oldColor;
+
+    selected.drawDebug(plot.turtle);
   }
 
   private function drawCircle(turtle:Turtle, at:Vec, radius:Float) {
-    final segments = 16;
+    final segments = 32;
     final start = at + Vec.ofPolar(0, radius);
     turtle.moveToVec(start);
     for (i in 0...segments) {

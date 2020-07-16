@@ -1,6 +1,7 @@
 import support.linAlg2d.Interval;
 import support.turtle.Turtle;
 import support.linAlg2d.Vec;
+import support.color.HSL;
 
 using support.turtle.VecTurtle;
 
@@ -21,6 +22,9 @@ class BruteForce implements NodeIndex {
 
   public function insert(node:Node) {
     nodes.push(node);
+    if (nodes.length > 250) {
+      nodes.remove(nodes[0]);
+    }
   }
 
   public function nearestNeighbors(node:Node, distance:Float):Array<Node> {
@@ -91,6 +95,37 @@ class Node {
     }
   }
 
+  public function align(friends:Array<Node>, rate:Float = 200) {
+    var avg:Vec = [0, 0];
+    for (friend in friends) {
+      avg += friend.vel;
+    }
+    if (friends.length > 0) {
+      avg.scale(1.0 / friends.length);
+    }
+    acc += avg.norm().scale(rate);
+  }
+
+  public function avoid(
+    friends:Array<Node>,
+    rate:Float = 200,
+    dist:Float = 50
+  ) {
+    for (friend in friends) {
+      final diff = (friend.pos - pos);
+      final sqrdist = diff.sqrLen();
+      if (sqrdist > dist * dist) {
+        continue;
+      }
+
+      final len = Math.sqrt(sqrdist);
+
+      final desired = diff * (-1 / len) * (dist / len) * rate;
+      final steerForce = desired - vel;
+      acc += steerForce;
+    }
+  }
+
   /**
     Add to the node's acceleration vector to cause the node to move towards
     the provided point.
@@ -122,5 +157,19 @@ class Node {
       .lineToVec(center)
       .lineToVec(left)
       .lineToVec(right);
+  }
+
+  public function drawDebug(turtle:Turtle, scale:Float = 1) {
+    final ogColor = turtle.color;
+
+    turtle.color = new HSL(240, 1, 0.5, 1);
+    turtle.lineWidth = 4;
+    turtle.moveToVec(pos).lineToVec(pos + vel);
+
+    turtle.color = new HSL(0, 1, 0.5, 1);
+    turtle.lineWidth = 2;
+    turtle.moveToVec(pos).lineToVec(pos + acc);
+
+    turtle.color = ogColor;
   }
 }
