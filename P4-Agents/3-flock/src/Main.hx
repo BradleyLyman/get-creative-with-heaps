@@ -1,3 +1,4 @@
+import hxd.Window;
 import support.color.HSL;
 import support.turtle.Turtle;
 import Node.BruteForce;
@@ -13,7 +14,7 @@ class Main extends hxd.App {
   var plot:Plot;
   var plotInteractive:Interactive;
 
-  var first:Node;
+  var selected:Node;
   var index:NodeIndex = new BruteForce();
 
   override function init() {
@@ -22,9 +23,15 @@ class Main extends hxd.App {
     plot.xAxis = Node.X_BOUND;
     plot.yAxis = Node.Y_BOUND;
     plotInteractive = new Interactive(1, 1, plot);
-    plotInteractive.onClick = (_) -> addNode();
+    plotInteractive.onClick = (_) -> selectNode();
 
     new support.h2d.FullscreenButton(s2d);
+
+    Window.getInstance().addEventTarget((e:hxd.Event) -> {
+      if (e.kind == EKeyDown) {
+        addNode();
+      }
+    });
 
     onResize();
   }
@@ -34,8 +41,15 @@ class Main extends hxd.App {
     n.pos = plot.mousePos() + [0.1, 0.1];
     n.vel = Vec.ofPolar(Math.random() * Math.PI * 2, 200);
     index.insert(n);
-    if (first == null) {
-      first = n;
+  }
+
+  function selectNode() {
+    selected = null;
+    final n = new Node();
+    n.pos = plot.mousePos();
+    final nearby = index.nearestNeighbors(n, 20);
+    if (nearby.length >= 1) {
+      selected = nearby[0];
     }
   }
 
@@ -59,14 +73,14 @@ class Main extends hxd.App {
   }
 
   private function debugIndex() {
-    if (first == null) {
+    if (selected == null) {
       return;
     }
 
     final radius = 200;
     plot.turtle.lineWidth = 2;
-    drawCircle(plot.turtle, first.pos, radius);
-    final nearby = index.nearestNeighbors(first, radius);
+    drawCircle(plot.turtle, selected.pos, radius);
+    final nearby = index.nearestNeighbors(selected, radius);
 
     final oldColor = plot.turtle.color;
     plot.turtle.color = new HSL(120, 1, 0.5, 1);
