@@ -4,11 +4,11 @@ import support.linAlg2d.Vec;
 import support.linAlg2d.Interval;
 
 class Main extends hxd.App {
-  final domain: Interval = new Interval(0, Math.PI*2);
+  final domain:Interval = new Interval(0, Math.PI * 2);
 
-  var plot: Plot;
-  var tvals: haxe.ds.Vector<Float>;
-  var time: Float = 0.0;
+  var plot:Plot;
+  var tvals:haxe.ds.Vector<Float>;
+  var time:Float = 0.0;
 
   override function init() {
     plot = new Plot(s2d);
@@ -29,21 +29,19 @@ class Main extends hxd.App {
     plot.y = (s2d.height - side) / 2.0;
   }
 
-  override function update(dt: Float) {
+  override function update(dt:Float) {
     final speed = 0.5 * (Math.PI / 4);
-    time += dt*speed;
-    final signal = (t: Float) -> {
-      return 1/3.0 * (
-        Math.cos(time + t) +
-        Math.cos(time + t*3) +
-        Math.cos(time + t*8)
-      );
+    time += dt * speed;
+    final signal = (t:Float) -> {
+      return 1 / 3.0 * (Math.cos(time + t)
+        + Math.cos(time + t * 3)
+        + Math.cos(time + t * 8));
     }
 
     final map = (t) -> {
       final angle = t;
       final radius = signal(t);
-      return new Vec(Math.cos(angle) * radius, Math.sin(angle)*radius);
+      return new Vec(Math.cos(angle) * radius, Math.sin(angle) * radius);
     };
 
     plot.clear();
@@ -55,5 +53,7 @@ class Main extends hxd.App {
     }
   }
 
-  static function main() { new Main(); }
+  static function main() {
+    new Main();
+  }
 }

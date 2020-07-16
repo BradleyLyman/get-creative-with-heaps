@@ -5,30 +5,30 @@ import support.linAlg2d.Quad;
 import support.linAlg2d.Vec;
 
 /**
-    Objects of this type represent a collection of quads which can all be
-    rendered with the exact same texture/material.
+  Objects of this type represent a collection of quads which can all be
+  rendered with the exact same texture/material.
 
-    The assumption with this primitive is that *typically* push() will be called
-    a bunch of times in a row to generate a ton of geometry.
+  The assumption with this primitive is that *typically* push() will be called
+  a bunch of times in a row to generate a ton of geometry.
 **/
 class QuadsPrimitive extends h3d.prim.Primitive {
-  var vertices: hxd.FloatBuffer;
-  var dirty: Bool;
+  var vertices:hxd.FloatBuffer;
+  var dirty:Bool;
 
-	/* Create a new instance of the primitive. */
-	public function new() {
+  /* Create a new instance of the primitive. */
+  public function new() {
     this.vertices = new hxd.FloatBuffer();
     this.dirty = true;
   }
 
   /**
-      Add a quad to the primitive.
+    Add a quad to the primitive.
 
-      Each vertex is pushed into internal buffers in the correct order and
-      layout. The GPU buffer is marked for an update on the next frame.
-      @param quad the Quad object to actually render
+    Each vertex is pushed into internal buffers in the correct order and
+    layout. The GPU buffer is marked for an update on the next frame.
+    @param quad the Quad object to actually render
   **/
-  public function push(quad: Quad, color: RGBA) {
+  public function push(quad:Quad, color:RGBA) {
     pushVertex(quad.bottomLeft, 0, 0, color);
     pushVertex(quad.topLeft, 0, 1, color);
     pushVertex(quad.bottomRight, 1, 0, color);
@@ -36,7 +36,7 @@ class QuadsPrimitive extends h3d.prim.Primitive {
   }
 
   /**
-      Resize the vertex buffer and dispose the GPU buffer.
+    Resize the vertex buffer and dispose the GPU buffer.
   **/
   public function reset() {
     vertices = new hxd.FloatBuffer();
@@ -44,30 +44,31 @@ class QuadsPrimitive extends h3d.prim.Primitive {
   }
 
   /**
-      Allocate the GPU buffer and stuff it full of our vertices.
+    Allocate the GPU buffer and stuff it full of our vertices.
   **/
-  override function alloc(engine: h3d.Engine) {
+  override function alloc(engine:h3d.Engine) {
     disposeGPUBuffer();
     buffer = h3d.Buffer.ofFloats(vertices, 8, [Quads, RawFormat]);
   }
 
-	/**
-      Render all quads in a single draw call.
+  /**
+    Render all quads in a single draw call.
 
-      Assumes that the engine has been properly configured via some render
-      context.
-	**/
-	override function render(engine: h3d.Engine) {
-		if( buffer == null || buffer.isDisposed() || dirty == true ) alloc(engine);
-		engine.renderQuadBuffer(buffer);
+    Assumes that the engine has been properly configured via some render
+    context.
+  **/
+  override function render(engine:h3d.Engine) {
+    if (buffer == null || buffer.isDisposed() || dirty == true)
+      alloc(engine);
+    engine.renderQuadBuffer(buffer);
   }
 
   /**
-      Dispose the internal buffer.
+    Dispose the internal buffer.
 
-      It'll be reallocated on the next render. It's debatable if this is faster
-      or slower than attempting to reuse the GPU buffer. It probably depends
-      on the target platform and the engine implementation.
+    It'll be reallocated on the next render. It's debatable if this is faster
+    or slower than attempting to reuse the GPU buffer. It probably depends
+    on the target platform and the engine implementation.
   **/
   private function disposeGPUBuffer() {
     if (buffer != null && !buffer.isDisposed()) {
@@ -77,22 +78,22 @@ class QuadsPrimitive extends h3d.prim.Primitive {
   }
 
   /**
-      Add a new vertex to the internal buffer.
-      Marks the vertices as dirty so the next render call will update the
-      h3d.Buffer with the new data.
+    Add a new vertex to the internal buffer.
+    Marks the vertices as dirty so the next render call will update the
+    h3d.Buffer with the new data.
   **/
-  private function pushVertex(p: Vec, u: Float, v: Float, color: RGBA) {
+  private function pushVertex(p:Vec, u:Float, v:Float, color:RGBA) {
     dirty = true;
 
-		vertices.push( p.x );  // xy
-    vertices.push( p.y );
+    vertices.push(p.x); // xy
+    vertices.push(p.y);
 
-    vertices.push( u ); // uv
-    vertices.push( v );
+    vertices.push(u); // uv
+    vertices.push(v);
 
-    vertices.push( color.r ); // rgba
-    vertices.push( color.g );
-    vertices.push( color.b );
-    vertices.push( color.a );
+    vertices.push(color.r); // rgba
+    vertices.push(color.g);
+    vertices.push(color.b);
+    vertices.push(color.a);
   }
 }

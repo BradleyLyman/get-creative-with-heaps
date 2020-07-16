@@ -8,32 +8,32 @@ import h2d.Text;
 import hxd.res.DefaultFont;
 
 /**
-    Objects of this type represent a slider with a label and value display.
+  Objects of this type represent a slider with a label and value display.
 **/
 class NamedSlider extends Flow {
-  private final text : Text;
-  private final valText : Text;
-  private final control : Slider;
+  private final text:Text;
+  private final valText:Text;
+  private final control:Slider;
 
   /* The value represented by the slider */
-  public var value(get, set) : Float;
+  public var value(get, set):Float;
 
   /* The slider's text label */
-  @:isVar public var label(get, set) : String;
+  @:isVar public var label(get, set):String;
 
   /* A function to call when the slider's value changes */
-  public var onChange: () -> Void = () -> {};
+  public var onChange:() -> Void = () -> {};
 
   /**
-      Create a new labeled slider. Falls back to the default font if one is not
-      provided.
+    Create a new labeled slider. Falls back to the default font if one is not
+    provided.
 
-      @param parent the parent of this named slider
-      @param min the minimum slider value
-      @param max the maximum slider value
-      @param font optionally specify a font, falls back to the heaps default
+    @param parent the parent of this named slider
+    @param min the minimum slider value
+    @param max the maximum slider value
+    @param font optionally specify a font, falls back to the heaps default
   **/
-  public function new(parent: Object, min: Float, max: Float, ?font: Font) {
+  public function new(parent:Object, min:Float, max:Float, ?font:Font) {
     font = font != null ? font : DefaultFont.get();
     super(parent);
 
@@ -70,7 +70,7 @@ class NamedSlider extends Flow {
     onChange();
   }
 
-  private function set_label(label: String) : String {
+  private function set_label(label:String):String {
     text.text = label + " ";
     this.needReflow = true;
     return label;
@@ -79,11 +79,18 @@ class NamedSlider extends Flow {
   private function updateValText() {
     final val = '${hxd.Math.fmt(control.value)}';
     valText.text = " = " + val;
+
     this.needReflow = true;
   }
 
-  private function get_label() { return label; }
-  private function get_value() { return control.value; }
+  private function get_label() {
+    return label;
+  }
+
+  private function get_value() {
+    return control.value;
+  }
+
   private function set_value(v) {
     control.value = v;
     control.onChange();

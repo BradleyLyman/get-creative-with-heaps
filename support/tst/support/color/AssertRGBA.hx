@@ -3,27 +3,28 @@ package support.color;
 import utest.Assert;
 
 class AssertRGBA {
-
   /**
-      Assert that two RGBA colors are the same.
-      @param assert
-        the utest Assert class which will have this method as a static extension
-      @param expected The expected color
-      @param actual The actual color
-      @param approx The floating point approximation tolerance
-      @param msg The error message
-      @param pos Autopopulated by the compiler to make readable output
+    Assert that two RGBA colors are the same.
+    @param assert
+      the utest Assert class which will have this method as a static extension
+    @param expected The expected color
+    @param actual The actual color
+    @param approx The floating point approximation tolerance
+    @param msg The error message
+    @param pos Autopopulated by the compiler to make readable output
   **/
   public static function rgbaEquals(
-    assert: Class<Assert>,
-    expected: RGBA,
-    actual: RGBA,
-    ?approx: Float = 1e-5,
-    ?msg: String,
-    ?pos: haxe.PosInfos
-  ) : Void {
+    assert:Class<Assert>,
+    expected:RGBA,
+    actual:RGBA,
+    ?approx:Float = 1e-5,
+    ?msg:String,
+    ?pos:haxe.PosInfos
+  ):Void {
     var matchMsg = "Expected " + expected + " but got " + actual + ". ";
-    if (msg != null) { matchMsg = msg + " - " + matchMsg; }
+    if (msg != null) {
+      matchMsg = msg + " - " + matchMsg;
+    }
     Assert.floatEquals(
       expected.r,
       actual.r,

@@ -3,13 +3,12 @@ import support.color.HSL;
 import support.h2d.FastQuads;
 
 class Main extends hxd.App {
-
   /* Quickly draw a lot of quads on screen */
-  var quads : FastQuads;
+  var quads:FastQuads;
 
   /* How many rows and columns to divide the screen into. */
-  var columnCount : Int = 3;
-  var rowCount : Int = 3;
+  var columnCount:Int = 3;
+  var rowCount:Int = 3;
 
   /* Initialize the demo. Called automatically by Heaps. */
   override function init() {
@@ -18,20 +17,20 @@ class Main extends hxd.App {
   }
 
   /* Update the screen. Called before each frame. */
-  override function update(dt: Float) {
+  override function update(dt:Float) {
     quads.clear();
     updateSteps();
     drawSpectrumGrid();
   }
 
   /**
-      Use the mouse coordinates to calculate new horizontal and vertical
-      step values. These are used to divide the screen into rows and columns.
+    Use the mouse coordinates to calculate new horizontal and vertical
+    step values. These are used to divide the screen into rows and columns.
   **/
   private function updateSteps() {
     final normalized = {
-        x: s2d.mouseX / s2d.width,
-        y: s2d.mouseY / s2d.height
+      x: s2d.mouseX / s2d.width,
+      y: s2d.mouseY / s2d.height
     };
 
     // the number of columns can range from [3, 360]
@@ -42,9 +41,9 @@ class Main extends hxd.App {
   }
 
   /**
-      Draw the spectrum grid by dividing the screen into rows and colums.
-      Each column is a different hue. Each row is a different value, aka
-      brightness.
+    Draw the spectrum grid by dividing the screen into rows and colums.
+    Each column is a different hue. Each row is a different value, aka
+    brightness.
   **/
   private function drawSpectrumGrid() {
     final width = s2d.width / columnCount;
@@ -78,5 +77,7 @@ class Main extends hxd.App {
     }
   }
 
-  static function main() { new Main(); }
+  static function main() {
+    new Main();
+  }
 }

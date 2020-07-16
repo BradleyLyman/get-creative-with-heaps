@@ -1,15 +1,14 @@
 class RollingAverage {
   private final MAX_FRAMES = 60;
-  private var times : Array<Float> = [];
-  private var current : Int = 0;
+  private var times:Array<Float> = [];
+  private var current:Int = 0;
 
   public function new() {}
 
-  public function push(time: Float) {
+  public function push(time:Float) {
     if (times.length < MAX_FRAMES) {
       times.push(time);
-    }
-    else {
+    } else {
       times[current] = time;
     }
     next();
@@ -23,9 +22,10 @@ class RollingAverage {
     }
   }
 
-  public function average() : Float {
+  public function average():Float {
     var sum = 0.0;
-    for (time in times) sum += time;
+    for (time in times)
+      sum += time;
     return sum / times.length;
   }
 }

@@ -1,8 +1,8 @@
 import drawable.FastLines;
 
 class Main extends hxd.App {
-  var turtle : Turtle;
-  var frames : RollingAverage;
+  var turtle:Turtle;
+  var frames:RollingAverage;
   var time = 0.0;
 
   override function init() {
@@ -13,7 +13,7 @@ class Main extends hxd.App {
     turtle.lineWidth = 10;
   }
 
-  override function update(dt: Float) {
+  override function update(dt:Float) {
     final start = haxe.Timer.stamp();
     timedUpdate(dt);
     final end = haxe.Timer.stamp();
@@ -25,9 +25,12 @@ class Main extends hxd.App {
     final count = Math.round(65000 / 4);
     turtle.lines.clear();
     for (i in 0...count) {
-      final x = Math.random()*(s2d.width - 10);
-      final y = (1.0 + Math.sin((time + x/s2d.width)*(Math.PI*2)))/2 * (s2d.height-10);
-      turtle.moveTo(x, y).lineTo(x, y+1);
+      final x = Math.random() * (s2d.width - 10);
+      final y = (1.0
+        + Math.sin(
+          (time + x / s2d.width) * (Math.PI * 2)
+        )) / 2 * (s2d.height - 10);
+      turtle.moveTo(x, y).lineTo(x, y + 1);
     }
   }
 

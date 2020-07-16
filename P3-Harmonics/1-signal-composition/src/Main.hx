@@ -1,29 +1,27 @@
 import support.h2d.Plot;
 import support.linAlg2d.Interval;
 import support.color.RGBA;
-
 import hxd.Key;
 import h2d.Flow;
 
 class Main extends hxd.App {
-
   /**
-      Flows are useful for automatically organizing and aligning elements on the
-      screen.
+    Flows are useful for automatically organizing and aligning elements on the
+    screen.
   **/
-  var flow: Flow;
+  var flow:Flow;
 
   /* A plot to show the total sum of all signals in the harmonic plots */
-  var total: Plot;
+  var total:Plot;
 
   /**
-      A collection of signals and their plots, used to generate the total and
-      show how a complex signal can be built from simple components.
+    A collection of signals and their plots, used to generate the total and
+    show how a complex signal can be built from simple components.
   **/
-  var harmonics: Array<{plot: Plot, signal: Signal}> = [];
+  var harmonics:Array<{plot:Plot, signal:Signal}> = [];
 
   /**
-      Create the flow and plots.
+    Create the flow and plots.
   **/
   override function init() {
     flow = new Flow(s2d);
@@ -36,7 +34,7 @@ class Main extends hxd.App {
 
     total = new Plot(flow);
     total.yAxis = new Interval(-1.1, 1.1);
-    total.xAxis = new Interval(0, Math.PI*4);
+    total.xAxis = new Interval(0, Math.PI * 4);
     total.turtle.lineWidth = 2;
     total.backgroundColor = new RGBA(1.0, 1.0, 1.0, 0.1);
 
@@ -49,30 +47,36 @@ class Main extends hxd.App {
   }
 
   /* handle a window event, add and remove plots on key release */
-  function onKeyUp(e: hxd.Event) {
-    if (e.kind != EKeyUp) { return; }
+  function onKeyUp(e:hxd.Event) {
+    if (e.kind != EKeyUp) {
+      return;
+    }
     switch (e.keyCode) {
-      case Key.UP: addHarmonic();
-      case Key.DOWN: removeHarmonic();
+      case Key.UP:
+        addHarmonic();
+      case Key.DOWN:
+        removeHarmonic();
       default: //
     }
   }
 
   /* Add a new harmonic component to the total. */
   function addHarmonic() {
-    if (harmonics.length > 10) { return; } // skip if we already have 10
+    if (harmonics.length > 10) {
+      return;
+    } // skip if we already have 10
 
     // create the plot, set the scale and visual properties
     final plot = new Plot(flow);
-    plot.xAxis = new Interval(0, Math.PI*4);
+    plot.xAxis = new Interval(0, Math.PI * 4);
     plot.yAxis = new Interval(-1.1, 1.1);
     plot.turtle.lineWidth = 2;
     plot.backgroundColor = new RGBA(1.0, 1.0, 1.0, 0.1);
 
     // create a new signal with some randomized fields
     final signal = new Signal(
-      Math.random()*Math.PI*2,
-      1 + Math.random()*(harmonics.length + 1)
+      Math.random() * Math.PI * 2,
+      1 + Math.random() * (harmonics.length + 1)
     );
 
     harmonics.push({plot: plot, signal: signal});
@@ -81,7 +85,9 @@ class Main extends hxd.App {
 
   /* Remove the last harmonic component from the total */
   function removeHarmonic() {
-    if (harmonics.length == 0) { return; } // skip if there's nothing to remove
+    if (harmonics.length == 0) {
+      return;
+    } // skip if there's nothing to remove
 
     // Remove the visual plot from the flow
     final harmonic = harmonics.pop();
@@ -92,8 +98,8 @@ class Main extends hxd.App {
   }
 
   /**
-      Update flow bounds and flag the contents to be reflowed, resize each
-      plot so there's enough space for each of them on screen.
+    Update flow bounds and flag the contents to be reflowed, resize each
+    plot so there's enough space for each of them on screen.
   **/
   override function onResize() {
     flow.maxWidth = flow.minWidth = s2d.width;
@@ -102,7 +108,7 @@ class Main extends hxd.App {
 
     final plotWidth = s2d.width * 0.9;
     final totalHeight = s2d.height / 4;
-    total.resize(plotWidth, totalHeight );
+    total.resize(plotWidth, totalHeight);
 
     final count = (harmonics.length + 2);
     final harmonicHeight = (s2d.height - totalHeight) / count;
@@ -112,11 +118,11 @@ class Main extends hxd.App {
   }
 
   /**
-      Plot each signal. Each plot's xAxis advances with time to give a view
-      of how each signal changes with time.
+    Plot each signal. Each plot's xAxis advances with time to give a view
+    of how each signal changes with time.
   **/
-  override function update(dt: Float) {
-    final rdt = dt * Math.PI/2; // advance 1/4 of cycle per second
+  override function update(dt:Float) {
+    final rdt = dt * Math.PI / 2; // advance 1/4 of cycle per second
     for (harmonic in harmonics) {
       harmonic.signal.offset += rdt;
       plotFunction(harmonic.plot, harmonic.signal.eval);
@@ -125,7 +131,7 @@ class Main extends hxd.App {
     plotFunction(total, composedSignal);
   }
 
-  private function plotFunction(plot: Plot, f: (x: Float) -> Float) {
+  private function plotFunction(plot:Plot, f:(x:Float) -> Float) {
     plot.clear();
     plot.turtle.moveTo(plot.xAxis.start, f(plot.xAxis.start));
     for (x in plot.xAxis.subdivide(500)) {
@@ -134,18 +140,20 @@ class Main extends hxd.App {
   }
 
   /**
-      The composed signal is just the sum of all contributing signals at each
-      point.
+    The composed signal is just the sum of all contributing signals at each
+    point.
   **/
-  function composedSignal(x: Float): Float {
+  function composedSignal(x:Float):Float {
     final len = harmonics.length;
     var sum = 0.0;
     for (harmonic in harmonics) {
       // scale each signal to the sum still has max in the range [-1, 1]
-      sum += (1.0/len) * harmonic.signal.eval(x);
+      sum += (1.0 / len) * harmonic.signal.eval(x);
     }
     return sum;
   }
 
-  static function main() { new Main(); }
+  static function main() {
+    new Main();
+  }
 }

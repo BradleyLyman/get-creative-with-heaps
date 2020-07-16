@@ -10,24 +10,24 @@ import support.h2d.Plot;
 using support.turtle.VecTurtle;
 
 class Main extends hxd.App {
-  var plot: Plot;
-  var plotInteractive: Interactive;
+  var plot:Plot;
+  var plotInteractive:Interactive;
 
-  var nodes: Array<Node> = [];
+  var nodes:Array<Node> = [];
 
-  var force: NamedSlider;
-  var size: NamedSlider;
+  var force:NamedSlider;
+  var size:NamedSlider;
 
-  var whisker: NamedSlider;
-  var wiggle: NamedSlider;
-  var length: NamedSlider;
+  var whisker:NamedSlider;
+  var wiggle:NamedSlider;
+  var length:NamedSlider;
 
   override function init() {
     plot = new Plot(s2d);
     plot.turtle.lineWidth = 2;
     plot.xAxis = Node.X_BOUND;
     plot.yAxis = Node.Y_BOUND;
-		plotInteractive = new Interactive(1, 1, plot);
+    plotInteractive = new Interactive(1, 1, plot);
     plotInteractive.onClick = (_) -> addNode();
 
     final cp = new BasicControls(s2d, Res.fonts.NotoSans32.toFont());
@@ -41,12 +41,12 @@ class Main extends hxd.App {
 
     cp.addText("== whisker properties ==");
     whisker = cp.addSlider("visibility", 0, 1);
-    wiggle = cp.addSlider("wiggle", 0, Math.PI/4);
+    wiggle = cp.addSlider("wiggle", 0, Math.PI / 4);
     length = cp.addSlider("length", 0, 100);
 
     force.value = 250;
     length.value = 50;
-    wiggle.value = Math.PI/8;
+    wiggle.value = Math.PI / 8;
     size.value = 8;
     whisker.value = 0.25;
 
@@ -58,7 +58,7 @@ class Main extends hxd.App {
   function addNode() {
     final n = new Node();
     n.pos = plot.mousePos() + [0.1, 0.1];
-    n.vel = Vec.ofPolar(Math.random()*Math.PI*2, force.value);
+    n.vel = Vec.ofPolar(Math.random() * Math.PI * 2, force.value);
     nodes.push(n);
   }
 
@@ -70,7 +70,7 @@ class Main extends hxd.App {
     plot.y = (s2d.height - size) / 2;
   }
 
-  override function update(dt: Float) {
+  override function update(dt:Float) {
     plot.clear();
     final c = plot.turtle.color;
     plot.turtle.color = new HSL(200, 1, 0.7, whisker.value);
@@ -84,7 +84,7 @@ class Main extends hxd.App {
     }
   }
 
-  private function stepAgents(dt: Float) {
+  private function stepAgents(dt:Float) {
     for (node in nodes) {
       final p = pointToSeek(node, length.value, length.value * 0.75);
       node.seek(p, force.value, 50);
@@ -93,15 +93,12 @@ class Main extends hxd.App {
     }
   }
 
-  private function pointToSeek(node: Node, speed: Float, radius: Float): Vec {
-    node.whiskerAngle += (Math.random()*2 - 1)*wiggle.value;
+  private function pointToSeek(node:Node, speed:Float, radius:Float):Vec {
+    node.whiskerAngle += (Math.random() * 2 - 1) * wiggle.value;
     final look = node.vel.clone().norm();
-    final posOffset = look*speed + node.pos;
+    final posOffset = look * speed + node.pos;
     final target = posOffset + Vec.ofPolar(node.whiskerAngle, radius);
-    plot.turtle
-      .moveToVec(node.pos)
-      .lineToVec(posOffset)
-      .lineToVec(target);
+    plot.turtle.moveToVec(node.pos).lineToVec(posOffset).lineToVec(target);
     return target;
   }
 

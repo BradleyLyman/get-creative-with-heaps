@@ -7,20 +7,19 @@ import support.h2d.Plot;
 using support.turtle.VecTurtle;
 
 class Main extends hxd.App {
-  var plot: Plot;
-  var plotInteractive: Interactive;
+  var plot:Plot;
+  var plotInteractive:Interactive;
 
-  var nodes: Array<Node> = [];
-  var cp: BasicControls;
-  var force: NamedSlider;
+  var nodes:Array<Node> = [];
+  var cp:BasicControls;
+  var force:NamedSlider;
 
   override function init() {
-
     plot = new Plot(s2d);
     plot.turtle.lineWidth = 2;
     plot.xAxis = Node.X_BOUND;
     plot.yAxis = Node.Y_BOUND;
-		plotInteractive = new Interactive(1, 1, plot);
+    plotInteractive = new Interactive(1, 1, plot);
     plotInteractive.onClick = (_) -> addNode();
 
     cp = new BasicControls(s2d, Res.fonts.NotoSans32.toFont());
@@ -46,8 +45,9 @@ class Main extends hxd.App {
     plot.y = (s2d.height - size) / 2;
   }
 
-  override function update(dt: Float) {
-    if (!cp.visible) stepAgents(dt);
+  override function update(dt:Float) {
+    if (!cp.visible)
+      stepAgents(dt);
 
     plot.clear();
     for (node in nodes) {
@@ -55,7 +55,7 @@ class Main extends hxd.App {
     }
   }
 
-  private function stepAgents(dt: Float) {
+  private function stepAgents(dt:Float) {
     final mouse = plot.mousePos();
     for (node in nodes) {
       node.seek(mouse, force.value, 100);

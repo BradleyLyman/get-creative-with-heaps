@@ -7,12 +7,12 @@ class Main extends hxd.App {
   var time = 0.0;
 
   /* Used for drawing 2d shapes on screen. */
-  var graphics : h2d.Graphics;
-  var canvas : Canvas;
+  var graphics:h2d.Graphics;
+  var canvas:Canvas;
 
   /**
-      Initialize the demo. This is automatically called by Heaps when
-      the window is ready.
+    Initialize the demo. This is automatically called by Heaps when
+    the window is ready.
   **/
   override function init() {
     canvas = new Canvas(s2d);
@@ -24,16 +24,19 @@ class Main extends hxd.App {
   }
 
   /**
-      Update the contents of the screen.
-      This is automatically called by Heaps before each frame.
+    Update the contents of the screen.
+    This is automatically called by Heaps before each frame.
   **/
-  override function update(dt: Float) {
+  override function update(dt:Float) {
     time += dt;
 
     graphics.clear();
     graphics.beginFill(colorFor(time), 0.5);
     graphics.drawCircle(
-      s2d.mouseX, s2d.mouseY, 10 + (s2d.mouseX / s2d.width) * 90, 80
+      s2d.mouseX,
+      s2d.mouseY,
+      10 + (s2d.mouseX / s2d.width) * 90,
+      80
     );
     graphics.endFill();
 
@@ -42,14 +45,14 @@ class Main extends hxd.App {
   }
 
   /**
-      A function which transforms a color represented as hue, saturation,
-      and brightness to a packed 32-bit RGB Int.
+    A function which transforms a color represented as hue, saturation,
+    and brightness to a packed 32-bit RGB Int.
   **/
   private function colorFor(
-      hue: Float,
-      saturation: Float = 0.8,
-      brightness: Float = 0.5
-  ) : Int {
+    hue:Float,
+    saturation:Float = 0.8,
+    brightness:Float = 0.5
+  ):Int {
     final vec = new h3d.Vector();
     vec.makeColor(hue, saturation, brightness);
     return vec.toColor();

@@ -6,36 +6,35 @@ import support.color.Color;
 import h2d.Flow;
 import h2d.Tile;
 import h2d.Font;
-
 import support.color.HSL;
 
 /**
-    Objects of this type represent a fullscreen panel which can host simple
-    controls for demo parameters.
+  Objects of this type represent a fullscreen panel which can host simple
+  controls for demo parameters.
 
-    Controls take the form of buttons and sliders which can be added with their
-    respective methods.
+  Controls take the form of buttons and sliders which can be added with their
+  respective methods.
 
-    This class is 'basic' because it does not support the heaps domkit, css,
-    or any scenarios where there are more controls than trivially fit on a
-    single screen.
+  This class is 'basic' because it does not support the heaps domkit, css,
+  or any scenarios where there are more controls than trivially fit on a
+  single screen.
 **/
 class BasicControls extends Flow {
-  private final MARGIN : Float = 0.1;
-  private final font : Font;
-  private final showHide : TextButton;
-  private final sliders : Array<NamedSlider> = [];
+  private final MARGIN:Float = 0.1;
+  private final font:Font;
+  private final showHide:TextButton;
+  private final sliders:Array<NamedSlider> = [];
 
-  public var backgroundColor(null, set): Color;
+  public var backgroundColor(null, set):Color;
 
   /**
-      Create a new control panel.
-      @param parent the scene
-      @param font
-        A font to use for text and buttons, falls back to the default if
-        unspecified.
+    Create a new control panel.
+    @param parent the scene
+    @param font
+      A font to use for text and buttons, falls back to the default if
+      unspecified.
   **/
-  public function new(parent: h2d.Scene, ?font: Font) {
+  public function new(parent:h2d.Scene, ?font:Font) {
     super(parent);
 
     this.visible = false;
@@ -59,14 +58,16 @@ class BasicControls extends Flow {
   }
 
   /* Add spacing to the flow. Units are relative to the font height. */
-  public override function addSpacing(em: Float) {
+  public override function addSpacing(em:Float) {
     super.addSpacing(Math.round(em * font.lineHeight));
   }
 
   /* Add a slider with a label to the control panel flow */
   public function addSlider(
-    name: String, min: Float = 0, max: Float = 1
-  ) : NamedSlider {
+    name:String,
+    min:Float = 0,
+    max:Float = 1
+  ):NamedSlider {
     final slider = new NamedSlider(this, min, max, font);
     slider.label = name;
     sliders.push(slider);
@@ -75,14 +76,14 @@ class BasicControls extends Flow {
   }
 
   /* Add some arbitrary text to the control panel flow */
-  public function addText(label: String) : Text {
+  public function addText(label:String):Text {
     final text = new Text(font, this);
     text.text = label;
     return text;
   }
 
   /* Add a text button to the control panel flow. */
-  public function addButton(label: String, color: Color) : TextButton {
+  public function addButton(label:String, color:Color):TextButton {
     final button = new TextButton(this, color, font);
     button.text = label;
     return button;
@@ -105,7 +106,7 @@ class BasicControls extends Flow {
     this.needReflow = true;
   }
 
-  private function set_backgroundColor(c: Color) : Color {
+  private function set_backgroundColor(c:Color):Color {
     final rgba = c.toRGBA();
     backgroundTile = Tile.fromColor(rgba.toARGBInt(), 1, 1, rgba.a);
     return c;

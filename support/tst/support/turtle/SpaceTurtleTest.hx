@@ -3,17 +3,16 @@ package support.turtle;
 import format.abc.Data.ABCData;
 import support.linAlg2d.Space;
 import h3d.shader.pbr.CubeLod;
+
 using support.linAlg2d.AssertVec;
 
 import utest.Assert;
-
 import support.linAlg2d.Vec;
 import support.linAlg2d.Interval;
 
 class SpaceTurtleTest extends utest.Test {
-
-  var wrapped : ObservableTurtle;
-  var turtle : SpaceTurtle;
+  var wrapped:ObservableTurtle;
+  var turtle:SpaceTurtle;
 
   public function setup() {
     wrapped = new ObservableTurtle();
@@ -27,11 +26,13 @@ class SpaceTurtleTest extends utest.Test {
   function testMoveTurtle() {
     turtle.moveTo(1, 1);
     Assert.vecEquals(
-      new Vec(1, 1), turtle.position,
+      new Vec(1, 1),
+      turtle.position,
       "The turtle's position should be in the input space"
     );
     Assert.vecEquals(
-      new Vec(200, 100), wrapped.position,
+      new Vec(200, 100),
+      wrapped.position,
       "The wrapped turtle's position should be in the output space"
     );
   }
@@ -39,11 +40,13 @@ class SpaceTurtleTest extends utest.Test {
   function testSetPosition() {
     turtle.position = new Vec(-1, 1);
     Assert.vecEquals(
-      new Vec(-1, 1), turtle.position,
+      new Vec(-1, 1),
+      turtle.position,
       "The turtle's position should be in the input space"
     );
     Assert.vecEquals(
-      new Vec(100, 100), wrapped.position,
+      new Vec(100, 100),
+      wrapped.position,
       "The turtle's position should be in the output space"
     );
   }
@@ -51,22 +54,26 @@ class SpaceTurtleTest extends utest.Test {
   function testLineTo() {
     turtle.moveTo(0, 1).lineTo(1, -1);
     Assert.vecEquals(
-      new Vec(1, -1), turtle.position,
+      new Vec(1, -1),
+      turtle.position,
       "The turtle's position should be updated in the input space"
     );
     Assert.vecEquals(
-      new Vec(200, 200), wrapped.position,
+      new Vec(200, 200),
+      wrapped.position,
       "The wrapped turtle's position should be updated in the output space"
     );
 
     // one line should be emitted
     Assert.equals(1, wrapped.lines.length);
     Assert.vecEquals(
-      new Vec(150, 100), wrapped.lines[0].line.start,
+      new Vec(150, 100),
+      wrapped.lines[0].line.start,
       "The line's start point should be in the output space"
     );
     Assert.vecEquals(
-      new Vec(200, 200), wrapped.lines[0].line.end,
+      new Vec(200, 200),
+      wrapped.lines[0].line.end,
       "The line's end point should be in the output space"
     );
   }
@@ -80,7 +87,8 @@ class SpaceTurtleTest extends utest.Test {
     otherSpace.yOut = new Interval(0, 500);
     turtle.position = new Vec(1, 0);
     Assert.vecEquals(
-      new Vec(500, 250), wrapped.position,
+      new Vec(500, 250),
+      wrapped.position,
       "The turtle should use the provided space"
     );
   }

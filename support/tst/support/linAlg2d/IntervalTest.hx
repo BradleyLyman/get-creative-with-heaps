@@ -3,7 +3,6 @@ package support.linAlg2d;
 import utest.Assert;
 
 class IntervalTest extends utest.Test {
-
   function testClamp() {
     // given an interval
     final i = new Interval(-10, 25);
@@ -41,7 +40,7 @@ class IntervalTest extends utest.Test {
     Assert.floatEquals(1.0, i.normalize(i.end));
 
     // the midpoint sholud normalize to 0.5
-    Assert.floatEquals(0.5, i.normalize((i.start + i.end)/2));
+    Assert.floatEquals(0.5, i.normalize((i.start + i.end) / 2));
   }
 
   function testLerp() {
@@ -55,7 +54,7 @@ class IntervalTest extends utest.Test {
     Assert.floatEquals(i.end, i.lerp(1.0));
 
     // Lerping 0.5 should be the midpoint
-    Assert.floatEquals((i.start + i.end)/2.0, i.lerp(0.5));
+    Assert.floatEquals((i.start + i.end) / 2.0, i.lerp(0.5));
 
     // Lerping -1 should move the right distance beyond the start
     Assert.floatEquals(i.start - i.size(), i.lerp(-1));
@@ -76,14 +75,14 @@ class IntervalTest extends utest.Test {
 
   function testSubdivide() {
     final i = randomInterval();
-    final divisions : haxe.ds.Vector<Float> = i.subdivide(4);
+    final divisions:haxe.ds.Vector<Float> = i.subdivide(4);
 
     // 4 subintervals should have 5 endpoints
     Assert.equals(5, divisions.length);
 
     // The divisions should start and end with the interval's endpoints
     Assert.floatEquals(i.start, divisions[0]);
-    Assert.floatEquals(i.end, divisions[divisions.length-1]);
+    Assert.floatEquals(i.end, divisions[divisions.length - 1]);
   }
 
   /* generate a random interval */

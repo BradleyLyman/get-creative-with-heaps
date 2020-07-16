@@ -4,15 +4,14 @@ import h3d.Vector;
 using PixelTools;
 
 class Main extends hxd.App {
-
   /** A collection of image data which can be used onscreen **/
-  var images : Array<hxd.Pixels>;
+  var images:Array<hxd.Pixels>;
 
   /** The index into images[] for the currently displayed picture */
-  var imageIndex : Int;
+  var imageIndex:Int;
 
   /** A graphical object which knows how to paint bitmap data */
-  var displayed : h2d.Bitmap;
+  var displayed:h2d.Bitmap;
 
   override function init() {
     imageIndex = 0;
@@ -30,12 +29,12 @@ class Main extends hxd.App {
   }
 
   /**
-      Handle Window events.
-      When the mouse is clicked show the next image in our list.
-      When a number key is pressed, replace the pixels according to a sort
-      operation.
+    Handle Window events.
+    When the mouse is clicked show the next image in our list.
+    When a number key is pressed, replace the pixels according to a sort
+    operation.
   **/
-  function onEvent(event: hxd.Event) {
+  function onEvent(event:hxd.Event) {
     switch (event.kind) {
       case ERelease: // do nothing
         showNextImage();
@@ -46,8 +45,8 @@ class Main extends hxd.App {
   }
 
   /* Handle a number key release. */
-  function onCharUp(code: Int) {
-    final newPixels : hxd.Pixels = switch (code) {
+  function onCharUp(code:Int) {
+    final newPixels:hxd.Pixels = switch (code) {
       case Key.NUMBER_1: images[imageIndex].toSorted(orderByHue);
       case Key.NUMBER_2: images[imageIndex].toSorted(orderBySaturation);
       case Key.NUMBER_3: images[imageIndex].toSorted(orderByLightness);
@@ -57,8 +56,8 @@ class Main extends hxd.App {
   }
 
   /**
-      Update the current image index. If it's too big, wrap around to the
-      first image again.
+    Update the current image index. If it's too big, wrap around to the
+    first image again.
   **/
   function showNextImage() {
     imageIndex += 1;
@@ -68,15 +67,15 @@ class Main extends hxd.App {
     displayed.tile = h2d.Tile.fromPixels(images[imageIndex]);
   }
 
-  function orderByHue(a: Vector, b: Vector) : Bool {
+  function orderByHue(a:Vector, b:Vector):Bool {
     return a.toColorHSL().x > b.toColorHSL().x;
   }
 
-  function orderBySaturation(a: Vector, b: Vector) : Bool {
+  function orderBySaturation(a:Vector, b:Vector):Bool {
     return a.toColorHSL().y > b.toColorHSL().y;
   }
 
-  function orderByLightness(a: Vector, b: Vector) : Bool {
+  function orderByLightness(a:Vector, b:Vector):Bool {
     return a.toColorHSL().z > b.toColorHSL().z;
   }
 

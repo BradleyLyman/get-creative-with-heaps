@@ -6,15 +6,15 @@ import support.h2d.ui.NamedSlider;
 import support.linAlg2d.Interval;
 
 class Main extends hxd.App {
-  final domain: Interval = new Interval(0, Math.PI*2);
+  final domain:Interval = new Interval(0, Math.PI * 2);
 
-  var plot: Plot;
-  var tvals: haxe.ds.Vector<Float>;
-  var time: Float = 0.0;
+  var plot:Plot;
+  var tvals:haxe.ds.Vector<Float>;
+  var time:Float = 0.0;
 
-  var controls : BasicControls;
-  var f1 : NamedSlider;
-  var f2 : NamedSlider;
+  var controls:BasicControls;
+  var f1:NamedSlider;
+  var f2:NamedSlider;
 
   override function init() {
     plot = new Plot(s2d);
@@ -34,22 +34,22 @@ class Main extends hxd.App {
     plot.y = (s2d.height - side) / 2.0;
   }
 
-  override function update(dt: Float) {
+  override function update(dt:Float) {
     final speed = 0.5 * (Math.PI / 4);
 
     // pause when the control panel is visible
-    if (!controls.visible) time += dt*speed;
+    if (!controls.visible)
+      time += dt * speed;
 
     // plot the two functions with their respective frequencies
-    final xSignal = (t: Float) -> Math.cos((time + t)*f1.value);
-    final ySignal = (t: Float) -> Math.sin((time + t)*f2.value);
+    final xSignal = (t:Float) -> Math.cos((time + t) * f1.value);
+    final ySignal = (t:Float) -> Math.sin((time + t) * f2.value);
 
     plot.clear();
     final maxLenTurtle = new MaxLengthTurtle(plot.turtle, 0.5);
     for (i in tvals) {
       for (j in tvals) {
-        maxLenTurtle
-          .moveTo(xSignal(i), ySignal(i))
+        maxLenTurtle.moveTo(xSignal(i), ySignal(i))
           .lineTo(xSignal(j), ySignal(j));
       }
     }

@@ -3,7 +3,6 @@ package support.linAlg2d;
 import utest.Assert;
 
 class SpaceTest extends utest.Test {
-
   function testMapX() {
     final s = new Space();
     s.xOut = new Interval(100, 300); // imagine a region of pixels on screen

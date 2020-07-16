@@ -6,8 +6,8 @@ import support.linAlg2d.Vec;
 using support.linAlg2d.AssertVec;
 
 class DecoratedTurtleTest extends utest.Test {
-  var wrapped: ObservableTurtle;
-  var turtle: DecoratedTurtle;
+  var wrapped:ObservableTurtle;
+  var turtle:DecoratedTurtle;
 
   public function setup() {
     wrapped = new ObservableTurtle();
@@ -18,14 +18,16 @@ class DecoratedTurtleTest extends utest.Test {
     // when the wrapped turtle's position is changed
     wrapped.position = new Vec(1, 1);
     Assert.vecEquals(
-      wrapped.position, turtle.position,
+      wrapped.position,
+      turtle.position,
       "Then the outer turtle's position should match the wrapped turtle"
     );
 
     // when the outer turtle's position is changed
     turtle.position = new Vec(2, 2);
     Assert.vecEquals(
-      turtle.position, wrapped.position,
+      turtle.position,
+      wrapped.position,
       "Then the wrapped turtle's position should the outer turtle"
     );
   }
@@ -45,7 +47,8 @@ class DecoratedTurtleTest extends utest.Test {
     turtle.moveTo(123, -234);
     Assert.equals(0, wrapped.lines.length, "no lines should be emitted");
     Assert.vecEquals(
-      new Vec(123, -234), turtle.position,
+      new Vec(123, -234),
+      turtle.position,
       "The outer turtle's position should be updated"
     );
 
@@ -53,15 +56,14 @@ class DecoratedTurtleTest extends utest.Test {
     wrapped.moveTo(-834, 332);
     Assert.equals(0, wrapped.lines.length, "no lines should be emitted");
     Assert.vecEquals(
-      new Vec(-834, 332), turtle.position,
+      new Vec(-834, 332),
+      turtle.position,
       "The outer turtle's position should still be updated."
     );
   }
 
   function testLineTo() {
-    turtle
-      .moveTo(0, 0)
-      .lineTo(10, -10);
+    turtle.moveTo(0, 0).lineTo(10, -10);
     Assert.equals(1, wrapped.lines.length, "one line should be emitted");
     Assert.vecEquals(
       new Vec(0, 0),
@@ -74,7 +76,8 @@ class DecoratedTurtleTest extends utest.Test {
       "The line should end at the turtles new position."
     );
     Assert.vecEquals(
-      new Vec(10, -10), turtle.position,
+      new Vec(10, -10),
+      turtle.position,
       "The turtle should be moved to the line's endpoint."
     );
   }

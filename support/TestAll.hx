@@ -13,5 +13,5 @@ class TestAll {
     runner.addCase(new support.color.HSLTest());
     Report.create(runner);
     runner.run();
-	}
+  }
 }
