@@ -4,6 +4,42 @@ import support.linAlg2d.Vec;
 
 using support.turtle.VecTurtle;
 
+interface NodeIndex {
+  public function iterator():Iterator<Node>;
+  public function insert(node:Node):Void;
+  public function nearestNeighbors(node:Node, distance:Float):Array<Node>;
+}
+
+class BruteForce implements NodeIndex {
+  private var nodes:Array<Node> = [];
+
+  public function new() {}
+
+  public function iterator():Iterator<Node> {
+    return nodes.iterator();
+  }
+
+  public function insert(node:Node) {
+    nodes.push(node);
+  }
+
+  public function nearestNeighbors(node:Node, distance:Float):Array<Node> {
+    final sq = distance * distance;
+    final result:Array<Node> = [];
+    for (other in nodes) {
+      if (other == node) {
+        continue;
+      }
+
+      final d = (node.pos - other.pos).sqrLen();
+      if (d <= sq) {
+        result.push(other);
+      }
+    }
+    return result;
+  };
+}
+
 /**
   A Node is a kinematic point mass with a position, velocity, and
   acceleration.

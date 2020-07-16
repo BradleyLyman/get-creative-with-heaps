@@ -1,3 +1,7 @@
+import support.color.HSL;
+import support.turtle.Turtle;
+import Node.BruteForce;
+import Node.NodeIndex;
 import support.linAlg2d.Vec;
 import hxd.Res;
 import h2d.Interactive;
@@ -9,7 +13,8 @@ class Main extends hxd.App {
   var plot:Plot;
   var plotInteractive:Interactive;
 
-  var nodes:Array<Node> = [];
+  var first:Node;
+  var index:NodeIndex = new BruteForce();
 
   override function init() {
     plot = new Plot(s2d);
@@ -28,7 +33,10 @@ class Main extends hxd.App {
     final n = new Node();
     n.pos = plot.mousePos() + [0.1, 0.1];
     n.vel = Vec.ofPolar(Math.random() * Math.PI * 2, 200);
-    nodes.push(n);
+    index.insert(n);
+    if (first == null) {
+      first = n;
+    }
   }
 
   override function onResize() {
@@ -43,16 +51,48 @@ class Main extends hxd.App {
     plot.clear();
     stepAgents(dt);
     plot.turtle.lineWidth = 3;
-    for (node in nodes) {
+    for (node in index) {
       node.draw(plot.turtle, 4);
     }
+
+    debugIndex();
+  }
+
+  private function debugIndex() {
+    if (first == null) {
+      return;
+    }
+
+    final radius = 200;
+    plot.turtle.lineWidth = 2;
+    drawCircle(plot.turtle, first.pos, radius);
+    final nearby = index.nearestNeighbors(first, radius);
+
+    final oldColor = plot.turtle.color;
+    plot.turtle.color = new HSL(120, 1, 0.5, 1);
+    plot.turtle.lineWidth = 4;
+    for (node in nearby) {
+      node.draw(plot.turtle, 4.5);
+    }
+    plot.turtle.color = oldColor;
   }
 
   private function stepAgents(dt:Float) {
-    for (node in nodes) {
+    for (node in index) {
       node.bounds();
       node.integrate(dt);
     }
+  }
+
+  private function drawCircle(turtle:Turtle, at:Vec, radius:Float) {
+    final segments = 16;
+    final start = at + Vec.ofPolar(0, radius);
+    turtle.moveToVec(start);
+    for (i in 0...segments) {
+      final angle = i / segments * Math.PI * 2.0;
+      turtle.lineToVec(at + Vec.ofPolar(angle, radius));
+    }
+    turtle.lineToVec(start);
   }
 
   static function main() {
