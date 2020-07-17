@@ -15,7 +15,7 @@ class Node {
   public static var MAX_ACC:Float = 500;
   public static var X_BOUND:Interval = new Interval(-500, 500);
   public static var Y_BOUND:Interval = new Interval(-500, 500);
-  public static var MAX_TAIL_LEN:Int = 15;
+  public static var MAX_TAIL_LEN:Int = 5;
 
   public var pos:Vec;
   public var vel:Vec = [0, 0];
@@ -43,7 +43,7 @@ class Node {
     vel.limit(MAX_VEL);
 
     skipCount++;
-    if (skipCount > 2) {
+    if (skipCount > 6) {
       tail.push(pos);
       skipCount = 0;
     }
@@ -107,6 +107,7 @@ class Node {
     for (p in tail) {
       final norm = (count++) / MAX_TAIL_LEN;
       hsl.lightness = lerp(norm, 0.8, 0.1);
+      hsl.alpha = lerp(norm, 1, 0.5);
       turtle.lineWidth = lerp(norm, width / 4, width);
       turtle.lineToVec(p);
     }

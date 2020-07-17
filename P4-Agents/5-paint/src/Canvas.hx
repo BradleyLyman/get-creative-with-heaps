@@ -1,8 +1,7 @@
-import support.h2d.Plot;
+import h2d.Object;
 import h2d.Bitmap;
 import h2d.Tile;
 import h2d.Scene;
-import h2d.Graphics;
 import h3d.mat.Texture;
 import hxd.Window;
 import hxd.Pixels;
@@ -12,7 +11,7 @@ import hxd.Pixels;
   of the canvas are not cleared from frame to frame.
 **/
 class Canvas {
-  @:isVar public var s2d(default, null):Scene;
+  @:isVar public var root(default, null):Object;
 
   private var texture:Texture;
   private var bmp:Bitmap;
@@ -33,7 +32,7 @@ class Canvas {
     bmp.filter = new h2d.filter.Blur(3, 1, 2);
     pixels = texture.capturePixels();
 
-    this.s2d = new Scene();
+    this.root = new Object();
 
     onResize();
   }
@@ -57,8 +56,8 @@ class Canvas {
 
     bmp.scaleY = window.height / resolution;
     bmp.scaleX = window.width / resWidth;
-    s2d.scaleY = 1.0 / bmp.scaleY;
-    s2d.scaleX = 1.0 / bmp.scaleX;
+    root.scaleY = 1.0 / bmp.scaleY;
+    root.scaleX = 1.0 / bmp.scaleX;
 
     pixels.dispose();
     pixels = texture.capturePixels();
@@ -70,7 +69,7 @@ class Canvas {
     screen.
   **/
   public function update() {
-    s2d.drawTo(texture);
+    root.drawTo(texture);
 
     pixels.dispose();
     pixels = texture.capturePixels();

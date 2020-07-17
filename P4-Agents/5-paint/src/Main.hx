@@ -20,7 +20,7 @@ class Main extends hxd.App {
 
   override function init() {
     canvas = new Canvas(s2d);
-    cplot = new Plot(canvas.s2d);
+    cplot = new Plot(canvas.root);
     plot = new Plot(s2d);
     plotInteractive = new Interactive(1, 1, plot);
     new support.h2d.FullscreenButton(s2d);
@@ -40,12 +40,16 @@ class Main extends hxd.App {
     whisker = 25;
 
     onResize();
+
+    for (i in 0...50) {
+      addNode();
+    }
   }
 
   function addNode() {
     final n = new Node(plot.mousePos());
     n.vel = Vec.ofPolar(Math.random() * Math.PI * 2, force);
-    if (nodes.length < 100) {
+    if (nodes.length < 400) {
       nodes.push(n);
     } else {
       nodes[nodeInd] = n;
