@@ -11,6 +11,7 @@ class TestAll {
     runner.addCase(new support.turtle.DecoratedTurtleTest());
     runner.addCase(new support.color.RGBATest());
     runner.addCase(new support.color.HSLTest());
+    runner.addCase(new support.CircleBufferTest());
     Report.create(runner);
     runner.run();
   }
