@@ -1,0 +1,78 @@
+import support.h2d.Plot;
+import h2d.Bitmap;
+import h2d.Tile;
+import h2d.Scene;
+import h2d.Graphics;
+import h3d.mat.Texture;
+import hxd.Window;
+import hxd.Pixels;
+
+/**
+  Objects of this type represent a persistent on-screen image. The contents
+  of the canvas are not cleared from frame to frame.
+**/
+class Canvas {
+  @:isVar public var s2d(default, null):Scene;
+
+  private var texture:Texture;
+  private var bmp:Bitmap;
+  private var window:Window;
+  private var pixels:Pixels;
+  private final resolution:Int;
+
+  /**
+    Create a new fullscreen canvas which renders itself to the parent scene.
+  **/
+  public function new(parent:Scene, resolution:Int = 1080) {
+    this.resolution = resolution;
+    window = Window.getInstance();
+    window.addResizeEvent(onResize);
+
+    texture = new Texture(1, 1, [Target], RGBA);
+    bmp = new Bitmap(Tile.fromTexture(texture), parent);
+    bmp.filter = new h2d.filter.Blur(3, 1, 2);
+    pixels = texture.capturePixels();
+
+    this.s2d = new Scene();
+
+    onResize();
+  }
+
+  /* The last frame's pixel data. */
+  public function currentPixels():Pixels {
+    return pixels;
+  }
+
+  /**
+    Reszie the texture and update the bitmap's tile when the window changes
+    size.
+  **/
+  function onResize() {
+    final resWidth:Int = Math.round(
+      (window.width / window.height) * resolution
+    );
+
+    texture.resize(resWidth, resolution);
+    bmp.tile = Tile.fromTexture(texture);
+
+    bmp.scaleY = window.height / resolution;
+    bmp.scaleX = window.width / resWidth;
+    s2d.scaleY = 1.0 / bmp.scaleY;
+    s2d.scaleX = 1.0 / bmp.scaleX;
+
+    pixels.dispose();
+    pixels = texture.capturePixels();
+  }
+
+  /**
+    Update the canvas's contents.
+    If this isn't called then the scene's contents will not be visible on
+    screen.
+  **/
+  public function update() {
+    s2d.drawTo(texture);
+
+    pixels.dispose();
+    pixels = texture.capturePixels();
+  }
+}
