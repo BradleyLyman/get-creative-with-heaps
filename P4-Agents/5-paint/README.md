@@ -1,8 +1,8 @@
-# [Wandering Critters](http://bradlyman.github.io/get-creative-with-heaps/P4-Agents/2-wander)
+# [Painting](http://bradlyman.github.io/get-creative-with-heaps/P4-Agents/5-paint)
 
-<a href="http://bradlyman.github.io/get-creative-with-heaps/P4-Agents/2-wander/"
+<a href="http://bradlyman.github.io/get-creative-with-heaps/P4-Agents/5-paint/"
    title="Live Demo" >
-  ![demoscreenshot](https://bradlyman.github.io/get-creative-with-heaps/P4-Agents/2-wander/Screenshot.png)
+  ![demoscreenshot](https://bradlyman.github.io/get-creative-with-heaps/P4-Agents/5-paint/Screenshot.png)
 </a>
 
 # Run The Demo
